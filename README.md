@@ -38,8 +38,8 @@ pip-sync requirements.txt dev-requirements.txt
 ### Backend
 
 To run the backend server, make sure you have the virtual environment activated (see installation).
-Then `cd` into the backend folder, and run `python run.py` for a dev server. Navigate to `http://localhost:8000/`. The application will automatically reload if you change any of the source files.
+Then `cd` into the backend folder, and run `python run.py` for a dev server, and navigate to `http://localhost:8000/`. The application will automatically reload if you change any of the source files.
 
 ### Frontend
 
-`cd` to the frontend folder, and run `npm run start` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+`cd` to the frontend folder, and run `npm run start` for a dev server, and navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
