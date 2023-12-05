@@ -42,4 +42,4 @@ Then `cd` into the backend folder, and run `python run.py` for a dev server. Nav
 
 ### Frontend
 
-`cd` to the frontend folder, and run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+`cd` to the frontend folder, and run `npm run start` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
