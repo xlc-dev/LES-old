@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+uvloop
+pydantic
+pydantic-settings
+sqlmodel
+python-multipart
+polyfactory
