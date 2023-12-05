@@ -26,7 +26,7 @@ py -m venv venv
 Then, install deps:
 ```sh
 pip install pip-tools && pip install -r requirements.txt && pip install -r requirements.dev.txt
-pip-sync requirements.txt dev-requirements.txt
+pip-sync requirements.txt requirements.dev.txt
 ```
 
 ### Frontend
