@@ -22,5 +22,6 @@ jobs:
 
       - name: Install dependencies and run checks
         run: |
+          cd frontend
           npm ci
           npm run check
