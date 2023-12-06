@@ -85,6 +85,10 @@ class Logger(logging.Formatter):
         logging.error(value)
 
     @staticmethod
-    def exception(*, status_code: int, detail: str, headers=None) -> HTTPException:
+    def exception(
+        *, status_code: int, detail: str, headers=None
+    ) -> HTTPException:
         logging.error(detail + "\n" + traceback.format_exc())
-        raise HTTPException(status_code=status_code, detail=detail, headers=headers)
+        raise HTTPException(
+            status_code=status_code, detail=detail, headers=headers
+        )

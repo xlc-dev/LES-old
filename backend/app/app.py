@@ -88,9 +88,13 @@ def create_app() -> FastAPI:
         os.makedirs(folder)
 
     if settings.development:
-        logging.basicConfig(filename=f"{folder}/FastAPI.log", level=logging.DEBUG)
+        logging.basicConfig(
+            filename=f"{folder}/FastAPI.log", level=logging.DEBUG
+        )
     else:
-        logging.basicConfig(filename=f"{folder}/FastAPI.log", level=logging.WARNING)
+        logging.basicConfig(
+            filename=f"{folder}/FastAPI.log", level=logging.WARNING
+        )
 
     app.include_router(
         hello_router.router,

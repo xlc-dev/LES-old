@@ -33,7 +33,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     ) -> Sequence[ModelType]:
         return session.exec(select(self.model).offset(skip).limit(limit)).all()
 
-    def create(self, *, session: Session, obj_in: CreateSchemaType) -> ModelType:
+    def create(
+        self, *, session: Session, obj_in: CreateSchemaType
+    ) -> ModelType:
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.model(**obj_in_data)  # type: ignore
 
