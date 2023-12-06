@@ -16,5 +16,6 @@ jobs:
           node-version: 21
           cache: "npm"
 
+      - run: cd frontend
       - run: npm ci
       - run: npm run check
