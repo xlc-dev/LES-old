@@ -12,9 +12,7 @@ system("")
 
 
 def get_all_urls():
-    url_list = [
-        {"path": route.path, "name": route.name} for route in app.routes
-    ]
+    url_list = [{"path": route.path, "name": route.name} for route in app.routes]
     return url_list
 
 
