@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "format": "prettier --write \"src/**/*.+(js|ts|json|html)\"",
-    "check:prettier": "prettier --check .",
+    "check:prettier": "prettier --check ."
   },
   "private": true,
   "dependencies": {
