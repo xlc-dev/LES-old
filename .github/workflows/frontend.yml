@@ -12,13 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: ls -la
-      - run: cd frontend
-
       - uses: actions/setup-node@v3
         with:
           node-version: 21
           cache: "npm"
+          working-directory: frontend/
 
-      - run: npm ci
-      - run: npm run check
+      - name: Install dependencies and run checks
+        working-directory: frontend/
+        run: |
+          npm ci
+          npm run check
