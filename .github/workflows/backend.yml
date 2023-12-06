@@ -1,0 +1,29 @@
+name: Backend CI
+
+on:
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  npm-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          cd backend/app
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt && pip install -r requirements.dev.txt
+
+      - name: Run Python checks for backend
+        run: |
+          cd backend/app
+          black --check .
+          flake8
+          mypy
