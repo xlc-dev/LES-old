@@ -6,6 +6,7 @@ from pathlib import Path
 from fastapi import FastAPI, Request, Depends
 
 from fastapi.middleware.cors import CORSMiddleware
+
 # from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -15,9 +16,7 @@ from app.utils import create_db_and_tables, set_sec_headers
 
 import app.factory as factory_router
 
-from app.core.routers import (
-    hello_router
-)
+from app.core.routers import hello_router
 
 
 def create_app() -> FastAPI:
