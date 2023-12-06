@@ -47,6 +47,6 @@ if __name__ == "__main__":
         port=config.settings.port,
         use_colors=config.settings.uvcorn_colors,
         reload=reload,
-        loop="uvloop",
+        # loop="uvloop",
         workers=2,
     )

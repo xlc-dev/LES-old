@@ -1,6 +1,6 @@
 fastapi
 uvicorn
-uvloop
+# uvloop
 pydantic
 pydantic-settings
 sqlmodel
