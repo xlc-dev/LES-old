@@ -405,7 +405,7 @@ def seed(session: Session = Depends(get_session)) -> None:
     for i in range(1, 101):
         inv_norm = norm.ppf(random.random(), loc=1, scale=0.2)
 
-        # Max inv cap is 0.3
+        # Min inv cap is 0.3
         if inv_norm < 0.3:
             inv_norm = 0.3
 
