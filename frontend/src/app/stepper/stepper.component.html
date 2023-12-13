@@ -1,25 +1,25 @@
 <div class="progress-wrapper">
   <div id="progress-bar-container">
     <ul>
-      <li class="step step01 active">
+      <li class="step step01" [class.active]="activeStep >= 1" (click)="setActiveStep(1)">
         <div class="step-inner">Algorithm</div>
       </li>
-      <li class="step step02">
+      <li class="step step02" [class.active]="activeStep >= 2" (click)="setActiveStep(2)">
         <div class="step-inner">Pricing model</div>
       </li>
-      <li class="step step03">
+      <li class="step step03" [class.active]="activeStep >= 3" (click)="setActiveStep(3)">
         <div class="step-inner">Twin world</div>
       </li>
     </ul>
     <div id="line">
-      <div id="line-progress"></div>
+      <div id="line-progress" [style.width]="getLineProgressWidth()"></div>
     </div>
     <div id="progress-content-section">
-      <div class="section-content step1 active">
+      <div class="section-content step1" [class.active]="activeStep === 1">
         <h2>Select an algorithm</h2>
         <div class="container">
           <div class="items-frame">
-            <div class="item" *ngFor="let item of algorithms" (mouseover)="changeDescription(item.description)">
+            <div class="item" *ngFor="let item of algorithms" (click)="pinDescription(item.description, 1)" (mouseover)="changeDescription(item.description)">
               {{ item.name }}
             </div>
           </div>
@@ -28,11 +28,11 @@
           </div>
         </div>
       </div>
-      <div class="section-content step2">
+      <div class="section-content step2" [class.active]="activeStep === 2">
         <h2>Select a pricing model</h2>
         <div class="container">
           <div class="items-frame">
-            <div class="item" *ngFor="let item of pricingmodels" (mouseover)="changeDescription(item.description)">
+            <div class="item" *ngFor="let item of pricingmodels" (click)="pinDescription(item.description, 2)" (mouseover)="changeDescription(item.description)">
               {{ item.name }}
             </div>
           </div>
@@ -41,11 +41,11 @@
           </div>
         </div>
       </div>
-      <div class="section-content step3">
+      <div class="section-content step3" [class.active]="activeStep === 3">
         <h2>Select a twin world environment</h2>
         <div class="container">
           <div class="items-frame">
-            <div class="item" *ngFor="let item of twinworlds" (mouseover)="changeDescription(item.description)">
+            <div class="item" *ngFor="let item of twinworlds" (click)="pinDescription(item.description, 3)" (mouseover)="changeDescription(item.description)">
               {{ item.name }}
             </div>
           </div>

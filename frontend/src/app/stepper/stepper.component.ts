@@ -28,12 +28,43 @@ export class StepperComponent implements OnInit, AfterViewInit {
     { name: 'Twin world 3', description: 'Description of Twin world 3' },
   ];
 
+  activeStep: number = 1;
   currentDescription: string = '';
+  pinnedDescription: string | null = null;
 
   constructor(private elementRef: ElementRef, private router: Router) { }
 
   ngOnInit(): void {
+    this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = '#1e1e2d';
+  }
 
+  setActiveStep(step: number): void {
+    this.activeStep = step;
+    this.resetDescriptions();
+  }
+
+  getLineProgressWidth(): string {
+    switch (this.activeStep) {
+      case 1: return '12%';
+      case 2: return '52%';
+      case 3: return '100%';
+      default: return '0%';
+    }
+  }
+
+  pinDescription(description: string, step: number) {
+    this.pinnedDescription = description;
+    this.currentDescription = description;
+
+    if (step < 3) {
+      this.setActiveStep(step + 1);
+    } else {
+      this.navigateToSchedulableLoad();
+    }
+  }
+
+  private navigateToSchedulableLoad() {
+    this.router.navigate(['/sl']);
   }
 
   changeDescription(description: string) {
@@ -44,63 +75,6 @@ export class StepperComponent implements OnInit, AfterViewInit {
     this.currentDescription = '';
   }
 
-  private activateStep(stepNumber: number) {
-    $('.step').removeClass('active');
-    $(`.step0${stepNumber}`).addClass('active');
-    let progressBarWidth = '0%';
-    switch (stepNumber) {
-      case 1:
-        progressBarWidth = '12%';
-        break;
-      case 2:
-        progressBarWidth = '52%';
-        break;
-      case 3:
-        progressBarWidth = '100%';
-        break;
-    }
-    $('#line-progress').css('width', progressBarWidth);
-    $('.section-content').removeClass('active');
-    $(`.section-content.step${stepNumber}`).addClass('active');
-  }
-
   ngAfterViewInit() {
-    const self = this;
-
-    this.elementRef.nativeElement.ownerDocument
-      .body.style.backgroundColor = '#1e1e2d';
-
-    $(".step").click(function() {
-      $(this).addClass("active").prevAll().addClass("active");
-      $(this).nextAll().removeClass("active");
-      self.resetDescriptions();
-    });
-
-    $(".step01").click(function() {
-      $("#line-progress").css("width", "12%");
-      $(".step1").addClass("active").siblings().removeClass("active");
-    });
-
-    $(".step02").click(function() {
-      $("#line-progress").css("width", "52%");
-      $(".step2").addClass("active").siblings().removeClass("active");
-    });
-
-    $(".step03").click(function() {
-      $("#line-progress").css("width", "100%");
-      $(".step3").addClass("active").siblings().removeClass("active");
-    });
-
-    $(".step1 .item").click(function() {
-      self.activateStep(2);
-    });
-
-    $(".step2 .item").click(function() {
-      self.activateStep(3);
-    });
-
-    $(".step3 .item").click(function() {
-      self.router.navigate(['/sl']);
-    });
   }
 }
