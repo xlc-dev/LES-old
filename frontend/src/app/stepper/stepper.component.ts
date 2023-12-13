@@ -1,5 +1,6 @@
-import {Component, ElementRef, OnInit, AfterViewInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
+import { Router } from '@angular/router';
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-stepper',
@@ -28,32 +29,39 @@ export class StepperComponent implements OnInit, AfterViewInit {
   ];
 
   currentDescription: string = '';
-  pinnedDescription: string | null = null;
 
-  selectedAlgorithm: any = null;
-  selectedPricingModel: any = null;
-  selectedTwinWorld: any = null;
-
-  constructor(private elementRef: ElementRef) { }
+  constructor(private elementRef: ElementRef, private router: Router) { }
 
   ngOnInit(): void {
 
   }
 
   changeDescription(description: string) {
-    if (this.pinnedDescription === null) {
       this.currentDescription = description;
-    }
-  }
-
-  pinDescription(description: string) {
-    this.pinnedDescription = description;
-    this.currentDescription = description;
   }
 
   resetDescriptions() {
     this.currentDescription = '';
-    this.pinnedDescription = null;
+  }
+
+  private activateStep(stepNumber: number) {
+    $('.step').removeClass('active');
+    $(`.step0${stepNumber}`).addClass('active');
+    let progressBarWidth = '0%';
+    switch (stepNumber) {
+      case 1:
+        progressBarWidth = '12%';
+        break;
+      case 2:
+        progressBarWidth = '52%';
+        break;
+      case 3:
+        progressBarWidth = '100%';
+        break;
+    }
+    $('#line-progress').css('width', progressBarWidth);
+    $('.section-content').removeClass('active');
+    $(`.section-content.step${stepNumber}`).addClass('active');
   }
 
   ngAfterViewInit() {
@@ -81,6 +89,18 @@ export class StepperComponent implements OnInit, AfterViewInit {
     $(".step03").click(function() {
       $("#line-progress").css("width", "100%");
       $(".step3").addClass("active").siblings().removeClass("active");
+    });
+
+    $(".step1 .item").click(function() {
+      self.activateStep(2);
+    });
+
+    $(".step2 .item").click(function() {
+      self.activateStep(3);
+    });
+
+    $(".step3 .item").click(function() {
+      self.router.navigate(['/sl']);
     });
   }
 }

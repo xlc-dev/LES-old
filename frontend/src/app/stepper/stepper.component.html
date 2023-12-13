@@ -14,13 +14,12 @@
     <div id="line">
       <div id="line-progress"></div>
     </div>
-    <!-- progress-bar-container -->
     <div id="progress-content-section">
       <div class="section-content step1 active">
         <h2>Select an algorithm</h2>
         <div class="container">
           <div class="items-frame">
-            <div class="item" *ngFor="let item of algorithms" (click)="pinDescription(item.description)" (mouseover)="changeDescription(item.description)">
+            <div class="item" *ngFor="let item of algorithms" (mouseover)="changeDescription(item.description)">
               {{ item.name }}
             </div>
           </div>
@@ -33,7 +32,7 @@
         <h2>Select a pricing model</h2>
         <div class="container">
           <div class="items-frame">
-            <div class="item" *ngFor="let item of pricingmodels" (click)="pinDescription(item.description)" (mouseover)="changeDescription(item.description)">
+            <div class="item" *ngFor="let item of pricingmodels" (mouseover)="changeDescription(item.description)">
               {{ item.name }}
             </div>
           </div>
@@ -46,7 +45,7 @@
         <h2>Select a twin world environment</h2>
         <div class="container">
           <div class="items-frame">
-            <div class="item" *ngFor="let item of twinworlds" (click)="pinDescription(item.description)" (mouseover)="changeDescription(item.description)">
+            <div class="item" *ngFor="let item of twinworlds" (mouseover)="changeDescription(item.description)">
               {{ item.name }}
             </div>
           </div>
