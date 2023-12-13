@@ -7,7 +7,7 @@ from app.app import create_app
 # App factory
 app = create_app()
 
-# Make ASNI get processed everywhere properly
+# Make ANSI get processed everywhere properly
 system("")
 
 
