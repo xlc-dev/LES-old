@@ -14,9 +14,9 @@ from fastapi.middleware.gzip import GZipMiddleware
 from app.config import settings
 from app.utils import create_db_and_tables, set_sec_headers
 
-import app.factory as factory_router
+import app.seeder as seed_router
 
-from app.core.routers import hello_router
+from app.core.routers import simulate_router
 
 
 def create_app() -> FastAPI:
@@ -32,8 +32,12 @@ def create_app() -> FastAPI:
 
     tags_metadata = [
         {
-            "name": "hello",
-            "description": "Operations with Hello World",
+            "name": "Seed",
+            "description": "Seed the database with data",
+        },
+        {
+            "name": "Simulate",
+            "description": "Simulate the twinworld",
         },
     ]
 
@@ -42,7 +46,7 @@ def create_app() -> FastAPI:
         description=f"API for the {settings.project_name} app",
         version="0.1",
         openapi_tags=tags_metadata,
-        openapi_url=settings.openapi_url,
+        openapi_url=settings.openapi_url if settings.development else None,
         redoc_url=None,
         swagger_ui_parameters={"docExpansion": "none"},
         dependencies=[Depends(set_sec_headers)],
@@ -97,16 +101,16 @@ def create_app() -> FastAPI:
         )
 
     app.include_router(
-        hello_router.router,
+        simulate_router.router,
         prefix=f"{settings.api_prefix}/hello",
-        tags=["hello"],
+        tags=["Simulate"],
     )
 
     if settings.development:
         app.include_router(
-            factory_router.router,
-            prefix=f"{settings.api_prefix}/factory",
-            tags=["Factory"],
+            seed_router.router,
+            prefix=f"{settings.api_prefix}/seed",
+            tags=["Seed"],
         )
 
     @app.on_event("startup")
