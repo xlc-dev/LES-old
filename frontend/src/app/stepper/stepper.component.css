@@ -1,3 +1,21 @@
+.container {
+  display: flex;
+}
+
+.items-frame, .description-frame {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px;
+}
+
+.items-frame {
+  width: 200px;
+}
+
+.description-frame {
+  flex-grow: 1;
+}
+
 #progress-bar-container li .step-inner {
   position: absolute;
   width: 100%;
@@ -45,7 +63,7 @@
 
 #progress-bar-container #line-progress {
   content: " ";
-  width: 8%;
+  width: 12%;
   height: 100%;
   background: #207893;
   position: absolute;
