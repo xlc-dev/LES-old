@@ -2,11 +2,13 @@ import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterOutlet } from "@angular/router";
 import {NgbInputDatepicker, NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import * as $ from 'jquery';
+import {StepperComponent} from "./stepper/stepper.component";
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NgbInputDatepicker],
+  imports: [CommonModule, RouterOutlet, NgbInputDatepicker, StepperComponent],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.css",
 })
