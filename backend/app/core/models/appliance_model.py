@@ -32,12 +32,15 @@ class ApplianceDays(str, Enum):
         return str(self.value)
 
 
-class Appliance(SQLModel, table=True):
-    id: int = Field(primary_key=True)
+class ApplianceBase(SQLModel):
     name: ApplianceType = Field(index=True, nullable=False)
-    power: int = Field(nullable=False)  # in Kwh
+    power: float = Field(nullable=False)  # in Kwh
     duration: int = Field(nullable=False)  # in hours
-    daily_usage: int = Field(nullable=False)  # in hours
+    daily_usage: float = Field(nullable=False)  # in hours
+
+
+class Appliance(ApplianceBase, table=True):
+    id: int = Field(primary_key=True)
 
     household: "Household" = Relationship(back_populates="appliances")
     household_id: int = Field(foreign_key="household.id")
@@ -47,10 +50,37 @@ class Appliance(SQLModel, table=True):
     )
 
 
-class ApplianceTimeWindow(SQLModel, table=True):
-    id: int = Field(primary_key=True)
+class ApplianceTimeWindowBase(SQLModel):
     day: ApplianceDays = Field(nullable=False)
     bitmap_window: int = Field(nullable=False)  # 24 bit bitmap
 
+
+class ApplianceTimeWindow(ApplianceTimeWindowBase, table=True):
+    id: int = Field(primary_key=True)
+
     appliance: "Appliance" = Relationship(back_populates="appliance_windows")
     appliance_id: int = Field(foreign_key="appliance.id")
+
+
+class ApplianceTimeWindowRead(ApplianceTimeWindowBase):
+    pass
+
+
+class ApplianceTimeWindowCreate(ApplianceTimeWindowBase):
+    pass
+
+
+class ApplianceTimeWindowUpdate(ApplianceTimeWindowBase):
+    pass
+
+
+class ApplianceRead(ApplianceBase):
+    appliance_windows: list[ApplianceTimeWindowRead] = []
+
+
+class ApplianceCreate(ApplianceBase):
+    pass
+
+
+class ApplianceUpdate(ApplianceBase):
+    pass

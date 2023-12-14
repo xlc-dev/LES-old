@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     port: int = 8000
     development: bool = False
     uvcorn_colors: bool = True
-    workers: int = 1
+    workers: int = 2
 
     project_name: str = "LES"
     server_host: str = "0.0.0.0"
