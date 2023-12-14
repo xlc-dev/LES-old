@@ -4,7 +4,6 @@ from sqlmodel import SQLModel, Field
 
 
 class CostModelBase(SQLModel):
-    id: int = Field(primary_key=True)
     name: str = Field(index=True, unique=True, nullable=False)
     description: str = Field(nullable=False)
     price_network_buy_consumer: float = Field(nullable=False)
@@ -16,4 +15,16 @@ class CostModelBase(SQLModel):
 
 
 class CostModel(CostModelBase, table=True):
+    id: int = Field(primary_key=True)
+
+
+class CostModelRead(CostModelBase):
+    id: int
+
+
+class CostModelCreate(CostModelBase):
+    pass
+
+
+class CostModelUpdate(CostModelBase):
     pass
