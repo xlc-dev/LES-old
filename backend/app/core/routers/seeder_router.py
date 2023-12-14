@@ -1,6 +1,6 @@
-from typing import Optional, Dict
-import math
 import random
+import math
+from typing import Optional, Dict
 
 from scipy.stats import norm
 from fastapi import APIRouter, Depends, status
@@ -19,10 +19,10 @@ from app.core.models import (
     appliance_model,
     household_model,
     twinworld_model,
+    algorithm_model,
 )
 
 from app.core.models.appliance_model import ApplianceType, ApplianceDays
-
 
 router = APIRouter()
 
@@ -186,8 +186,8 @@ def create_dishwasher(
         frequency,
         inv_norm,
         rand,
-        6,
-        4,
+        0.3,
+        0.8,
     )
 
 
@@ -221,8 +221,8 @@ def create_washingmachine(
         frequency,
         inv_norm,
         rand,
-        7,
-        5,
+        0.7,
+        0.9,
     )
 
 
@@ -326,8 +326,8 @@ def create_stove(
         frequency,
         random.random() * 0.15 + 0.85,
         rand,
-        5,
-        2,
+        0.5,
+        0.5,
     )
 
 
@@ -381,12 +381,27 @@ def create_household(
     return household
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model="None")
 def seed(session: Session = Depends(get_session)) -> None:
     "Seeds the database with initial data for the twinworld"
     delete_db_and_tables()
     create_db_and_tables()
     random.seed()
+
+    # TODO: add proper algorithms
+    algorithm_1 = algorithm_model.Algorithm(
+        name="Algorithm 1",
+        description="An algorithm that does something",
+    )
+
+    session.add(algorithm_1)
+
+    algorithm_2 = algorithm_model.Algorithm(
+        name="Algorithm 2",
+        description="An algorithm that does something else",
+    )
+
+    session.add(algorithm_2)
 
     buy_consumer = 0.4
     sell_consumer = 0.1
@@ -426,6 +441,8 @@ def seed(session: Session = Depends(get_session)) -> None:
     )
 
     session.add(twinworld_2)
+
+    session.flush()
 
     for i in range(1, 101):
         inv_norm = norm.ppf(random.random(), loc=1, scale=0.2)
