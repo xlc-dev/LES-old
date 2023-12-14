@@ -9,7 +9,8 @@
 \033[1m* Uvcorn:\033[0m
  - port:            Int:  Set port of server.                              8000
  - development:     Bool: Enables Development environment.                False
- - colors:          Bool: Allows Uvicorn to use colors or not.             True
+ - uvcorn_colors:   Bool: Allows Uvicorn to use colors or not.             True
+ - workers:         Int:  Number of workers.                                  1
 \033[1m* App:\033[0m
  - project_name:    Str:  The name of the application.                      LES
  - server_host:     Str:  The url of the server.                        0.0.0.0
@@ -29,6 +30,7 @@ class Settings(BaseSettings):
     port: int = 8000
     development: bool = False
     uvcorn_colors: bool = True
+    workers: int = 1
 
     project_name: str = "LES"
     server_host: str = "0.0.0.0"

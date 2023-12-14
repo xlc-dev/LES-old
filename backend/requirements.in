@@ -1,8 +1,6 @@
 fastapi
 uvicorn
-# uvloop
-pydantic
+uvloop
 pydantic-settings
 sqlmodel
-python-multipart
 scipy

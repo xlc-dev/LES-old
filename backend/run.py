@@ -1,8 +1,10 @@
-from uvicorn import run
+import platform
 from os import system
 
-import app.config as config
+from uvicorn import run
+
 from app.app import create_app
+import app.config as config
 
 # App factory
 app = create_app()
@@ -29,24 +31,30 @@ if __name__ == "__main__":
             + "MAKE SURE THIS IS \033[1;31mNOT\033[0m IN PRODUCTION"
         )
 
-    # urls = get_all_urls()
+    urls = get_all_urls()
 
-    # print('\nAll routes:\n')
+    print("\nAll routes:\n")
 
-    # for url in urls:
-    #     print(url)
+    for url in urls:
+        print(url)
 
     print(
         "\n======================================================="
         + "========================"
     )
 
+    # Check if the OS is Linux or macOS and enable uvloop if true
+    if platform.system() in ["Linux", "Darwin"]:
+        loop = "uvloop"
+    else:
+        loop = None
+
     run(
         "run:app",
+        reload=reload,
+        loop=loop,
         host=config.settings.server_host,
         port=config.settings.port,
         use_colors=config.settings.uvcorn_colors,
-        reload=reload,
-        # loop="uvloop",
-        workers=2,
+        workers=config.settings.workers,
     )
