@@ -20,18 +20,17 @@ source venv/bin/activate
 On Windows:
 ```sh
 py -m venv venv
-.\venv\Scripts\activate
+source venv/Scripts/activate
 ```
 
-Then, install deps:
+Then, install the dependencies:
 ```sh
 pip install pip-tools && pip install -r requirements.txt && pip install -r requirements.dev.txt
-pip-sync requirements.txt requirements.dev.txt
 ```
 
 ### Frontend
 
-`cd` to the frontend folder, and run `npm ci`.
+`cd` to the frontend folder, and run `npm i`.
 
 ## Development
 

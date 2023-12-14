@@ -16,9 +16,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         :param ModelType:
             A SQLModel class
         :param CreateSchemaType:
-            A Pydantic schema class for creating objects
+            A SQLModel schema class for creating objects
         :param UpdateSchemaType:
-            A Pydantic schema class for updating objects
+            A SQLModel schema class for updating objects
         """
         self.model = model
 

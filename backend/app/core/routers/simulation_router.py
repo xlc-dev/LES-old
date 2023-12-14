@@ -1,32 +1,80 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Body, status
 
-from sqlmodel import Session
+from sqlmodel import Session, SQLModel
 
 from app.utils import get_session
 
-from app.core.schemas import simulation_schema
+from app.core.models.costmodel_model import CostModelRead
+from app.core.models.twinworld_model import TwinWorldRead
+from app.core.models.algorithm_model import AlgorithmRead
+from app.core.models.household_model import HouseholdRead
 
-from app.core.routers.twinworld_router import get_twinworlds
-from app.core.routers.costmodel_router import get_costmodels
+from app.core.crud.costmodel_crud import costmodel_crud
+from app.core.crud.twinworld_crud import twinworld_crud
+from app.core.crud.algorithm_crud import algorithm_crud
+from app.core.crud.household_crud import household_crud
 
 router = APIRouter()
 
 
-@router.get("/load-data", response_model=simulation_schema.SimulationData)
-async def get_data(*, session: Session = Depends(get_session)):
-    twinworlds = await get_twinworlds(session=session)
-    costmodels = await get_costmodels(session=session)
+class SimulationData(SQLModel):
+    twin_world: list[TwinWorldRead]
+    cost_model: list[CostModelRead]
+    algorithm: list[AlgorithmRead]
 
-    return simulation_schema.SimulationData(
-        twin_world=twinworlds, cost_model=costmodels
+
+@router.get("/load-data", response_model=SimulationData)
+async def get_data(*, session: Session = Depends(get_session)):
+    twinworlds = twinworld_crud.get_multi(session=session)
+    costmodels = costmodel_crud.get_multi(session=session)
+    algorithms = algorithm_crud.get_multi(session=session)
+
+    return SimulationData(
+        twin_world=twinworlds, cost_model=costmodels, algorithm=algorithms
     )
 
 
-@router.post("/start")
-async def start(*, session: Session = Depends(get_session)):
-    # get data from request body
-    # send back initial planning
-    return {"message": "Simulation started"}
+@router.post("/start", response_model=list[HouseholdRead])
+async def start(
+    *,
+    algorithm_id: int = Body(...),
+    twinworld_id: int = Body(...),
+    costmodel_id: int = Body(...),
+    session: Session = Depends(get_session),
+):
+    twinworld = twinworld_crud.get(session=session, id=twinworld_id)
+
+    if not twinworld:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No twinworld found with id: {twinworld_id}",
+        )
+
+    costmodel = costmodel_crud.get(session=session, id=costmodel_id)
+
+    if not costmodel:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No costmodel found with id: {costmodel_id}",
+        )
+
+    algorithm = algorithm_crud.get(session=session, id=algorithm_id)
+
+    if not algorithm:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No algorithm found with id: {algorithm_id}",
+        )
+
+    results = household_crud.get_by_twinworld(session=session, id=twinworld.id)
+
+    if not results:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No results found for twinworld with id: {twinworld_id}",
+        )
+
+    return results
 
 
 @router.post("/stop")
