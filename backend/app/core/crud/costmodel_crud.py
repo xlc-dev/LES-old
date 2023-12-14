@@ -1,8 +1,11 @@
 from sqlmodel import Session, select
 
 from app.core.crud.base import CRUDBase
-from app.core.models.costmodel_model import CostModel
-from app.core.schemas.costmodel_schema import CostModelCreate, CostModelUpdate
+from app.core.models.costmodel_model import (
+    CostModel,
+    CostModelCreate,
+    CostModelUpdate,
+)
 
 
 class CRUDCostModel(CRUDBase[CostModel, CostModelCreate, CostModelUpdate]):

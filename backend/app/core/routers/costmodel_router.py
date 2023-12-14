@@ -7,20 +7,19 @@ from sqlmodel import Session
 from app.utils import get_session
 
 from app.core.crud.costmodel_crud import costmodel_crud
-from app.core.schemas import costmodel_schema
 from app.core.models import costmodel_model
 
 router = APIRouter()
 
 
-@router.get("/", response_model=list[costmodel_schema.CostModelRead])
+@router.get("/", response_model=list[costmodel_model.CostModelRead])
 async def get_costmodels(
     *, session: Session = Depends(get_session)
 ) -> Sequence[costmodel_model.CostModel]:
     return costmodel_crud.get_multi(session=session)
 
 
-@router.get("/{id}/", response_model=costmodel_schema.CostModelRead)
+@router.get("/{id}/", response_model=costmodel_model.CostModelRead)
 async def get_costmodel(
     *, id: int, session: Session = Depends(get_session)
 ) -> costmodel_model.CostModel:
@@ -38,7 +37,7 @@ async def get_costmodel(
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def post_costmodel(
     *,
-    form_data: costmodel_schema.CostModelCreate,
+    form_data: costmodel_model.CostModelCreate,
     session: Session = Depends(get_session),
 ) -> None:
     check_costmodel = costmodel_crud.get_by_name(
