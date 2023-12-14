@@ -15,6 +15,7 @@ from app.utils import (
 )
 
 from app.core.models import (
+    costmodel_model,
     appliance_model,
     household_model,
     twinworld_model,
@@ -373,7 +374,7 @@ def create_household(
         size=household_size,
         energy_usage=total_energy_usage,
         solar_panels=solar_panels,
-        solar_yield=solar_yield,
+        solar_yield_yearly=solar_yield,
         twinworld_id=twinworld_id,
     )
 
@@ -387,17 +388,41 @@ def seed(session: Session = Depends(get_session)) -> None:
     create_db_and_tables()
     random.seed()
 
-    # TODO: name + description
+    buy_consumer = 0.4
+    sell_consumer = 0.1
+    fixed_division = 0.5
+
+    costmodel_fixed = costmodel_model.CostModel(
+        name="Fixed Price",
+        description=f"A fixed price for buying and selling energy. The price for buying from the utility is {buy_consumer} and the price for selling is {sell_consumer}. The price is determined by {buy_consumer * fixed_division + (1 - fixed_division) * sell_consumer}. A higher fixed devisision means a higher trading price.",  # noqa: E501
+        price_network_buy_consumer=buy_consumer,
+        price_network_sell_consumer=sell_consumer,
+        fixed_division=fixed_division,
+        algo_1="algo1",
+    )
+
+    session.add(costmodel_fixed)
+
+    costmodel_temo = costmodel_model.CostModel(
+        name="TEMO",
+        description=f"A price model based on the TEMO model. The price for buying from the utility is {buy_consumer} and the price for selling is {sell_consumer}. The price is determined by a formula that compares the energy need to the various prices available, and returns internal buying and selling prices.",  # noqa: E501
+        price_network_buy_consumer=buy_consumer,
+        price_network_sell_consumer=sell_consumer,
+        algo_1="algo1",
+    )
+
+    session.add(costmodel_temo)
+
     twinworld_1 = twinworld_model.TwinWorld(
-        name="TwinWorld 1",
-        description="A world with a twin",
+        name="TwinWorld Large",
+        description="A larger twin world depicting a typical neighborhood and its energy usage and appliances",  # noqa: E501
     )
 
     session.add(twinworld_1)
 
     twinworld_2 = twinworld_model.TwinWorld(
-        name="TwinWorld 2",
-        description="A world with a twin",
+        name="TwinWorld Small",
+        description="A smaller twin world depicting a typical neighborhood and its energy usage and appliances",  # noqa: E501
     )
 
     session.add(twinworld_2)

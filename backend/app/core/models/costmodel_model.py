@@ -1,9 +1,19 @@
-from sqlmodel import Field
+from typing import Optional
 
-from app.core.models.base_model import BaseModel
+from sqlmodel import SQLModel, Field
 
 
-class CostModel(BaseModel, table=True):
+class CostModelBase(SQLModel):
+    id: int = Field(primary_key=True)
     name: str = Field(index=True, unique=True, nullable=False)
-    buy_price: int = Field(nullable=False)
-    sell_price: int = Field(nullable=False)
+    description: str = Field(nullable=False)
+    price_network_buy_consumer: float = Field(nullable=False)
+    price_network_sell_consumer: float = Field(nullable=False)
+    fixed_division: Optional[float] = Field(nullable=True)
+    stock_time_delta: Optional[int] = Field(nullable=True)
+    algo_1: str = Field(nullable=False)
+    algo_2: Optional[str] = Field(nullable=True)
+
+
+class CostModel(CostModelBase, table=True):
+    pass
