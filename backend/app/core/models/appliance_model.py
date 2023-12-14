@@ -1,9 +1,7 @@
 from typing import TYPE_CHECKING
 from enum import Enum
 
-from sqlmodel import Field, Relationship
-
-from app.core.models.base_model import BaseModel
+from sqlmodel import SQLModel, Field, Relationship
 
 
 if TYPE_CHECKING:
@@ -34,13 +32,12 @@ class ApplianceDays(str, Enum):
         return str(self.value)
 
 
-class Appliance(BaseModel, table=True):
-    "Table for storing all types of appliances"
-
+class Appliance(SQLModel, table=True):
+    id: int = Field(primary_key=True)
     name: ApplianceType = Field(index=True, nullable=False)
-    power: int = Field(nullable=False)
-    duration: int = Field(nullable=False)
-    daily_usage: int = Field(nullable=False)
+    power: int = Field(nullable=False)  # in Kwh
+    duration: int = Field(nullable=False)  # in hours
+    daily_usage: int = Field(nullable=False)  # in hours
 
     household: "Household" = Relationship(back_populates="appliances")
     household_id: int = Field(foreign_key="household.id")
@@ -50,9 +47,10 @@ class Appliance(BaseModel, table=True):
     )
 
 
-class ApplianceTimeWindow(BaseModel, table=True):
+class ApplianceTimeWindow(SQLModel, table=True):
+    id: int = Field(primary_key=True)
     day: ApplianceDays = Field(nullable=False)
-    bitmap_window: int = Field(nullable=False)
+    bitmap_window: int = Field(nullable=False)  # 24 bit bitmap
 
     appliance: "Appliance" = Relationship(back_populates="appliance_windows")
     appliance_id: int = Field(foreign_key="appliance.id")

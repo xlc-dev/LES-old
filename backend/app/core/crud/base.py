@@ -2,14 +2,11 @@ from typing import Any, Generic, Optional, Type, TypeVar, Sequence
 
 from fastapi.encoders import jsonable_encoder
 
-from pydantic import BaseModel
-from sqlmodel import Session, select
+from sqlmodel import SQLModel, Session, select
 
-from app.core.models import base_model
-
-ModelType = TypeVar("ModelType", bound=base_model.BaseModel)
-CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
-UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
+ModelType = TypeVar("ModelType", bound=SQLModel)
+CreateSchemaType = TypeVar("CreateSchemaType", bound=SQLModel)
+UpdateSchemaType = TypeVar("UpdateSchemaType", bound=SQLModel)
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
@@ -25,7 +22,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         self.model = model
 
-    def get(self, *, session: Session, id: Any) -> Optional[ModelType]:
+    def get(self, *, session: Session, id: int) -> Optional[ModelType]:
         return session.get(self.model, id)
 
     def get_multi(

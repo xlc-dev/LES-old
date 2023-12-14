@@ -5,24 +5,26 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request, Depends
 
-from fastapi.middleware.cors import CORSMiddleware
-
 # from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 
 from app.config import settings
 from app.utils import create_db_and_tables, set_sec_headers
 
-import app.seeder as seed_router
-
-from app.core.routers import simulate_router
+from app.core.routers import (
+    seeder_router,
+    simulate_router,
+    twinworld_router,
+    costmodel_router,
+)
 
 
 def create_app() -> FastAPI:
     """Application factory for API.
 
-    This factory does a multitude of things:
+    This factory does the following:
         - Enable CORS
         - Setup Logging
         - Include routers
@@ -32,12 +34,20 @@ def create_app() -> FastAPI:
 
     tags_metadata = [
         {
-            "name": "Seed",
-            "description": "Seed the database with data",
-        },
-        {
             "name": "Simulate",
             "description": "Simulate the twinworld",
+        },
+        {
+            "name": "Twinworld",
+            "description": "Twinworld API",
+        },
+        {
+            "name": "Costmodel",
+            "description": "Costmodel API",
+        },
+        {
+            "name": "Seed",
+            "description": "Seed the database with data",
         },
     ]
 
@@ -102,13 +112,25 @@ def create_app() -> FastAPI:
 
     app.include_router(
         simulate_router.router,
-        prefix=f"{settings.api_prefix}/hello",
+        prefix=f"{settings.api_prefix}/simulate",
         tags=["Simulate"],
+    )
+
+    app.include_router(
+        twinworld_router.router,
+        prefix=f"{settings.api_prefix}/twinworld",
+        tags=["Twinworld"],
+    )
+
+    app.include_router(
+        costmodel_router.router,
+        prefix=f"{settings.api_prefix}/costmodel",
+        tags=["Costmodel"],
     )
 
     if settings.development:
         app.include_router(
-            seed_router.router,
+            seeder_router.router,
             prefix=f"{settings.api_prefix}/seed",
             tags=["Seed"],
         )
