@@ -1,4 +1,3 @@
-import platform
 from os import system
 
 from uvicorn import run
@@ -43,16 +42,9 @@ if __name__ == "__main__":
         + "========================"
     )
 
-    # Check if the OS is Linux or macOS and enable uvloop if true
-    if platform.system() in ["Linux", "Darwin"]:
-        loop = "uvloop"
-    else:
-        loop = None
-
     run(
         "run:app",
         reload=reload,
-        loop=loop,
         host=config.settings.server_host,
         port=config.settings.port,
         use_colors=config.settings.uvcorn_colors,

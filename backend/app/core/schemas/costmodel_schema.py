@@ -1,13 +1,13 @@
-from app.core.models.costmodel_model import CostModel
+from app.core.models.costmodel_model import CostModelBase
 
 
-class CostModelRead(CostModel):
+class CostModelRead(CostModelBase):
     pass
 
 
-class CostModelCreate(CostModel):
+class CostModelCreate(CostModelBase):
     pass
 
 
-class CostModelUpdate(CostModel):
+class CostModelUpdate(CostModelBase):
     pass

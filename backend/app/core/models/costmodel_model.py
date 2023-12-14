@@ -3,7 +3,7 @@ from typing import Optional
 from sqlmodel import SQLModel, Field
 
 
-class CostModel(SQLModel, table=True):
+class CostModelBase(SQLModel):
     id: int = Field(primary_key=True)
     name: str = Field(index=True, unique=True, nullable=False)
     description: str = Field(nullable=False)
@@ -13,3 +13,7 @@ class CostModel(SQLModel, table=True):
     stock_time_delta: Optional[int] = Field(nullable=True)
     algo_1: str = Field(nullable=False)
     algo_2: Optional[str] = Field(nullable=True)
+
+
+class CostModel(CostModelBase, table=True):
+    pass

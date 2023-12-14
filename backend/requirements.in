@@ -1,6 +1,5 @@
 fastapi
 uvicorn
-uvloop
 pydantic-settings
 sqlmodel
 scipy
