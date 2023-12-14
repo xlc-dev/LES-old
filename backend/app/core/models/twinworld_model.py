@@ -8,10 +8,23 @@ if TYPE_CHECKING:
 
 
 class TwinWorldBase(SQLModel):
-    id: int = Field(primary_key=True)
     name: str = Field(index=True, unique=True, nullable=False)
     description: str = Field(nullable=False)
 
 
 class TwinWorld(TwinWorldBase, table=True):
+    id: int = Field(primary_key=True)
+
     household: list["Household"] = Relationship(back_populates="twinworld")
+
+
+class TwinWorldRead(TwinWorldBase):
+    id: int
+
+
+class TwinWorldCreate(TwinWorldBase):
+    pass
+
+
+class TwinWorldUpdate(TwinWorldBase):
+    pass
