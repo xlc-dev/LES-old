@@ -24,9 +24,11 @@ async def get_data(*, session: Session = Depends(get_session)):
 
 @router.post("/start")
 async def start(*, session: Session = Depends(get_session)):
+    # get data from request body
+    # send back initial planning
     return {"message": "Simulation started"}
 
 
 @router.post("/stop")
-def stop():
+async def stop(*, session: Session = Depends(get_session)):
     return {"message": "Simulation ended"}

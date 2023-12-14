@@ -15,7 +15,7 @@ from app.utils import create_db_and_tables, set_sec_headers
 
 from app.core.routers import (
     seeder_router,
-    simulate_router,
+    simulation_router,
     twinworld_router,
     costmodel_router,
 )
@@ -111,7 +111,7 @@ def create_app() -> FastAPI:
         )
 
     app.include_router(
-        simulate_router.router,
+        simulation_router.router,
         prefix=f"{settings.api_prefix}/simulate",
         tags=["Simulate"],
     )
