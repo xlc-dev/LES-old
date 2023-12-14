@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import {CommonModule} from "@angular/common";
 
@@ -9,7 +9,7 @@ import {CommonModule} from "@angular/common";
   templateUrl: './stepper.component.html',
   styleUrl: './stepper.component.css'
 })
-export class StepperComponent implements OnInit, AfterViewInit {
+export class StepperComponent implements OnInit {
   algorithms = [
     { name: 'Algorithm 1', description: 'Description of Algorithm 1' },
     { name: 'Algorithm 2', description: 'Description of Algorithm 2' },
@@ -73,8 +73,5 @@ export class StepperComponent implements OnInit, AfterViewInit {
 
   resetDescriptions() {
     this.currentDescription = '';
-  }
-
-  ngAfterViewInit() {
   }
 }
