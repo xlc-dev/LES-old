@@ -99,7 +99,7 @@ export class StepperComponent implements OnInit {
       twinWorlds: this.selectedTwinWorlds
     };
 
-    this.http.post('localhost:8000/api/simulate/save', payload).subscribe(() => {
+    this.http.post('http://localhost:8000/api/simulate/save', payload).subscribe(() => {
       this.navigateToSchedulableLoad();
     });
   }

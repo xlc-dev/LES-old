@@ -50,7 +50,7 @@
         <div class="container">
           <div class="items-frame">
             <div class="item" *ngFor="let item of twinworlds"
-                 (click)="pinDescription(item.description, 3); onTwinWorldSelected(item)"
+                 (click)="onTwinWorldSelected(item)"
                  (mouseover)="changeDescription(item.description)">
               {{ item.name }}
             </div>

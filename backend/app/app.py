@@ -4,7 +4,6 @@ import logging
 from pathlib import Path
 
 from fastapi import FastAPI, Request, Depends
-
 # from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -19,7 +18,6 @@ from app.core.routers import (
     twinworld_router,
     costmodel_router,
 )
-
 
 def create_app() -> FastAPI:
     """Application factory for API.
@@ -89,23 +87,12 @@ def create_app() -> FastAPI:
             filename=f"{folder}/FastAPI.log", level=logging.WARNING
         )
 
-    # TODO: CORS
-    # app.add_middleware(HTTPSRedirectMiddleware)
-    app.add_middleware(GZipMiddleware)
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost"])
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[settings.server_host],
+        allow_origins=["*"],
         allow_credentials=True,
-        allow_methods=["GET", "POST", "PATCH", "DELETE"],
-        allow_headers=[
-            "Access-Control-Allow-Headers",
-            "Accept-Encoding",
-            "Content-Type",
-            "Authorization",
-            "Access-Control-Allow-Origin",
-        ],
-        expose_headers=[],
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     app.include_router(

@@ -1,8 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Body, status
+from pydantic import BaseModel
 
 from sqlmodel import Session, SQLModel
 
 from app.utils import get_session
+from typing import List
+
+from app.core.models.algorithm_model import Algorithm, AlgorithmCreate
+from app.core.models.costmodel_model import CostModel, CostModelCreate
+from app.core.models.twinworld_model import TwinWorld, TwinWorldCreate
 
 from app.core.models.costmodel_model import CostModelRead
 from app.core.models.twinworld_model import TwinWorldRead
@@ -14,7 +20,15 @@ from app.core.crud.twinworld_crud import twinworld_crud
 from app.core.crud.algorithm_crud import algorithm_crud
 from app.core.crud.household_crud import household_crud
 
+from app.utils import get_session
+
 router = APIRouter()
+
+
+class SaveSelectionRequest(BaseModel):
+    algorithms: List[AlgorithmCreate]
+    pricingModels: List[CostModelCreate]
+    twinWorlds: List[TwinWorldCreate]
 
 
 class SimulationData(SQLModel):
@@ -35,15 +49,16 @@ async def get_data(*, session: Session = Depends(get_session)):
 
 
 @router.post("/save")
-async def save_selection(algorithms: list, pricingModels: list, twinWorlds: list):
-    for algorithm in algorithms:
-        await algorithm_crud.create(algorithm)
+def save_selection(request_data: SaveSelectionRequest, session: Session = Depends(get_session)):
+    print("Received data:", request_data)
+    for algorithm_data in request_data.algorithms:
+        algorithm_crud.create(obj_in=algorithm_data, session=session)
 
-    for pricingModel in pricingModels:
-        await algorithm_crud.create(pricingModel)
+    for pricing_model_data in request_data.pricingModels:
+        costmodel_crud.create(obj_in=pricing_model_data, session=session)
 
-    for twinWorld in twinWorlds:
-        await algorithm_crud.create(twinWorld)
+    for twin_world_data in request_data.twinWorlds:
+        twinworld_crud.create(obj_in=twin_world_data, session=session)
 
     return {"message": "Data saved successfully"}
 
