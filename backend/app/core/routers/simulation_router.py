@@ -34,6 +34,20 @@ async def get_data(*, session: Session = Depends(get_session)):
     )
 
 
+@router.post("/save")
+async def save_selection(algorithms: list, pricingModels: list, twinWorlds: list):
+    for algorithm in algorithms:
+        await algorithm_crud.create(algorithm)
+
+    for pricingModel in pricingModels:
+        await algorithm_crud.create(pricingModel)
+
+    for twinWorld in twinWorlds:
+        await algorithm_crud.create(twinWorld)
+
+    return {"message": "Data saved successfully"}
+
+
 @router.post("/start", response_model=list[HouseholdRead])
 async def start(
     *,

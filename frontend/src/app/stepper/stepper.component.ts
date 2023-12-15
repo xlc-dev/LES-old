@@ -1,11 +1,12 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import {CommonModule} from "@angular/common";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
 
 @Component({
   selector: 'app-stepper',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HttpClientModule],
   templateUrl: './stepper.component.html',
   styleUrl: './stepper.component.css'
 })
@@ -32,7 +33,11 @@ export class StepperComponent implements OnInit {
   currentDescription: string = '';
   pinnedDescription: string | null = null;
 
-  constructor(private elementRef: ElementRef, private router: Router) { }
+  selectedAlgorithms: any[] = [];
+  selectedPricingModels: any[] = [];
+  selectedTwinWorlds: any[] = [];
+
+  constructor(private elementRef: ElementRef, private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
     this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = '#1e1e2d';
@@ -73,5 +78,29 @@ export class StepperComponent implements OnInit {
 
   resetDescriptions() {
     this.currentDescription = '';
+  }
+
+  onAlgorithmSelected(algorithm: any) {
+    this.selectedAlgorithms.push(algorithm);
+  }
+
+  onPricingModelSelected(model: any) {
+    this.selectedPricingModels.push(model);
+  }
+
+  onTwinWorldSelected(world: any) {
+    this.selectedTwinWorlds.push(world);
+  }
+
+  completeSelection() {
+    const payload = {
+      algorithms: this.selectedAlgorithms,
+      pricingModels: this.selectedPricingModels,
+      twinWorlds: this.selectedTwinWorlds
+    };
+
+    this.http.post('localhost:8000/api/simulate/save', payload).subscribe(() => {
+      this.navigateToSchedulableLoad();
+    });
   }
 }
