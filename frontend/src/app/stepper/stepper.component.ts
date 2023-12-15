@@ -2,32 +2,22 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import {CommonModule} from "@angular/common";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {ApiService} from "../api.service";
 
 @Component({
   selector: 'app-stepper',
   standalone: true,
   imports: [CommonModule, HttpClientModule],
   templateUrl: './stepper.component.html',
-  styleUrl: './stepper.component.css'
+  styleUrl: './stepper.component.css',
+  providers: [ApiService]
 })
 export class StepperComponent implements OnInit {
-  algorithms = [
-    { name: 'Algorithm 1', description: 'Description of Algorithm 1' },
-    { name: 'Algorithm 2', description: 'Description of Algorithm 2' },
-    { name: 'Algorithm 3', description: 'Description of Algorithm 3' },
-  ];
+  algorithms: any[] = [];
 
-  pricingmodels = [
-    { name: 'Pricing model 1', description: 'Description of Pricing model 1' },
-    { name: 'Pricing model 2', description: 'Description of Pricing model 2' },
-    { name: 'Pricing model 3', description: 'Description of Pricing model 3' },
-  ];
+  pricingmodels: any[] = [];
 
-  twinworlds = [
-    { name: 'Twin world 1', description: 'Description of Twin world 1' },
-    { name: 'Twin world 2', description: 'Description of Twin world 2' },
-    { name: 'Twin world 3', description: 'Description of Twin world 3' },
-  ];
+  twinworlds: any[] = [];
 
   activeStep: number = 1;
   currentDescription: string = '';
@@ -37,11 +27,18 @@ export class StepperComponent implements OnInit {
   selectedPricingModels: any[] = [];
   selectedTwinWorlds: any[] = [];
 
-  constructor(private elementRef: ElementRef, private http: HttpClient, private router: Router) { }
+  constructor(private apiService: ApiService, private elementRef: ElementRef, private router: Router) { }
 
   ngOnInit(): void {
     this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = '#1e1e2d';
+
+    this.apiService.loadData().subscribe((res) => {
+      this.algorithms =res.algorithm;
+      this.pricingmodels =res.cost_model;
+      this.twinworlds =res.twin_world;
+    })
   }
+
 
   setActiveStep(step: number): void {
     this.activeStep = step;
@@ -93,14 +90,14 @@ export class StepperComponent implements OnInit {
   }
 
   completeSelection() {
-    const payload = {
-      algorithms: this.selectedAlgorithms,
-      pricingModels: this.selectedPricingModels,
-      twinWorlds: this.selectedTwinWorlds
-    };
-
-    this.http.post('http://localhost:8000/api/simulate/save', payload).subscribe(() => {
-      this.navigateToSchedulableLoad();
+    const payload: any = {
+      algorithm_id: this.selectedAlgorithms[0].id,
+      twinworld_id: this.selectedTwinWorlds[0].id,
+      costmodel_id: this.selectedPricingModels[0].id
+    }
+    this.apiService.startSimulation(payload).subscribe((res) => {
+      console.log(res)
+      this.navigateToSchedulableLoad()
     });
   }
 }

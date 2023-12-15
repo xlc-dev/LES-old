@@ -48,19 +48,19 @@ async def get_data(*, session: Session = Depends(get_session)):
     )
 
 
-@router.post("/save")
-def save_selection(request_data: SaveSelectionRequest, session: Session = Depends(get_session)):
-    print("Received data:", request_data)
-    for algorithm_data in request_data.algorithms:
-        algorithm_crud.create(obj_in=algorithm_data, session=session)
-
-    for pricing_model_data in request_data.pricingModels:
-        costmodel_crud.create(obj_in=pricing_model_data, session=session)
-
-    for twin_world_data in request_data.twinWorlds:
-        twinworld_crud.create(obj_in=twin_world_data, session=session)
-
-    return {"message": "Data saved successfully"}
+# @router.post("/save")
+# def save_selection(request_data: SaveSelectionRequest, session: Session = Depends(get_session)):
+#     print("Received data:", request_data)
+#     for algorithm_data in request_data.algorithms:
+#         algorithm_crud.create(obj_in=algorithm_data, session=session)
+#
+#     for pricing_model_data in request_data.pricingModels:
+#         costmodel_crud.create(obj_in=pricing_model_data, session=session)
+#
+#     for twin_world_data in request_data.twinWorlds:
+#         twinworld_crud.create(obj_in=twin_world_data, session=session)
+#
+#     return {"message": "Data saved successfully"}
 
 
 @router.post("/start", response_model=list[HouseholdRead])
