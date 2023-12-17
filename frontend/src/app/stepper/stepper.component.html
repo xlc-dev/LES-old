@@ -19,9 +19,12 @@
         <h2>Select an algorithm</h2>
         <div class="container">
           <div class="items-frame">
-            <div class="item" *ngFor="let item of algorithms"
-                 (click)="pinDescription(item.description, 1); onAlgorithmSelected(item)"
-                 (mouseover)="changeDescription(item.description)">
+            <div
+              class="item"
+              *ngFor="let item of algorithms"
+              (click)="pinDescription(item.description, 1); onAlgorithmSelected(item)"
+              (mouseover)="changeDescription(item.description)"
+            >
               {{ item.name }}
             </div>
           </div>
@@ -34,9 +37,12 @@
         <h2>Select a pricing model</h2>
         <div class="container">
           <div class="items-frame">
-            <div class="item" *ngFor="let item of pricingmodels"
-                 (click)="pinDescription(item.description, 2); onPricingModelSelected(item)"
-                 (mouseover)="changeDescription(item.description)">
+            <div
+              class="item"
+              *ngFor="let item of pricingmodels"
+              (click)="pinDescription(item.description, 2); onPricingModelSelected(item)"
+              (mouseover)="changeDescription(item.description)"
+            >
               {{ item.name }}
             </div>
           </div>
@@ -49,9 +55,12 @@
         <h2>Select a twin world environment</h2>
         <div class="container">
           <div class="items-frame">
-            <div class="item" *ngFor="let item of twinworlds"
-                 (click)="onTwinWorldSelected(item)"
-                 (mouseover)="changeDescription(item.description)">
+            <div
+              class="item"
+              *ngFor="let item of twinworlds"
+              (click)="onTwinWorldSelected(item)"
+              (mouseover)="changeDescription(item.description)"
+            >
               {{ item.name }}
             </div>
           </div>

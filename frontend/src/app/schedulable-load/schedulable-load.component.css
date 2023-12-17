@@ -3,6 +3,7 @@
   justify-content: space-between;
 }
 
-.comp1, .comp2 {
+.comp1,
+.comp2 {
   flex-grow: 1;
 }

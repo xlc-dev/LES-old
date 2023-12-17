@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterOutlet } from "@angular/router";
-import {NgbInputDatepicker, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {StepperComponent} from "./stepper/stepper.component";
+import { NgbInputDatepicker, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { StepperComponent } from "./stepper/stepper.component";
 
 @Component({
   selector: "app-root",
@@ -13,8 +13,7 @@ import {StepperComponent} from "./stepper/stepper.component";
 })
 export class AppComponent {
   title = "frontend";
-  constructor(private modalService: NgbModal) {
-  }
+  constructor(private modalService: NgbModal) {}
 
   public open(modal: any): void {
     this.modalService.open(modal);
