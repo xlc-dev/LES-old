@@ -63,7 +63,7 @@
     }
   };
 
-  const selectOption = (optionId: any, category: keyof SimulationData) => {
+  const selectOption = (optionId: any, category: any) => {
     selectedIDs[category] = optionId;
     nextStep();
   };
