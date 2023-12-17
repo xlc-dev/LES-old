@@ -4,6 +4,7 @@ import logging
 from pathlib import Path
 
 from fastapi import FastAPI, Request, Depends
+from fastapi.routing import APIRoute
 
 # from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.cors import CORSMiddleware
@@ -51,6 +52,10 @@ def create_app() -> FastAPI:
         },
     ]
 
+    # Custom OpenAPI ID generator for type-safe client generation
+    def custom_generate_unique_id(route: APIRoute):
+        return f"{route.tags[0]}-{route.name}"
+
     app = FastAPI(
         title=settings.project_name,
         description=f"API for the {settings.project_name} app",
@@ -60,6 +65,7 @@ def create_app() -> FastAPI:
         redoc_url=None,
         swagger_ui_parameters={"docExpansion": "none"},
         dependencies=[Depends(set_sec_headers)],
+        generate_unique_id=custom_generate_unique_id,
     )
 
     folder = os.path.join(Path().resolve(), "data/logs")
@@ -95,7 +101,7 @@ def create_app() -> FastAPI:
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost"])
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[settings.server_host],
+        allow_origins=[settings.server_host, "http://localhost:5173"],
         allow_credentials=True,
         allow_methods=["GET", "POST", "PATCH", "DELETE"],
         allow_headers=[
