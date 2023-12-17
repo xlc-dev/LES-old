@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ApplianceRead } from './ApplianceRead';
+import type { ApplianceRead } from "./ApplianceRead";
 
 export type HouseholdRead = {
   name: string;
@@ -14,4 +14,3 @@ export type HouseholdRead = {
   id: number;
   appliances?: Array<ApplianceRead>;
 };
-

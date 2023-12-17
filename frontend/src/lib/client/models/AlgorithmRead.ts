@@ -8,4 +8,3 @@ export type AlgorithmRead = {
   description: string;
   id: number;
 };
-

@@ -2,16 +2,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Body_start_api_simulate_start_post } from '../models/Body_start_api_simulate_start_post';
-import type { HouseholdRead } from '../models/HouseholdRead';
-import type { SimulationData } from '../models/SimulationData';
+import type { Body_start_api_simulate_start_post } from "../models/Body_start_api_simulate_start_post";
+import type { HouseholdRead } from "../models/HouseholdRead";
+import type { SimulationData } from "../models/SimulationData";
 
-import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { CancelablePromise } from "../core/CancelablePromise";
+import { OpenAPI } from "../core/OpenAPI";
+import { request as __request } from "../core/request";
 
 export class SimulateService {
-
   /**
    * Get Data
    * @returns SimulationData Successful Response
@@ -19,8 +18,8 @@ export class SimulateService {
    */
   public static getDataApiSimulateLoadDataGet(): CancelablePromise<SimulationData> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/simulate/load-data',
+      method: "GET",
+      url: "/api/simulate/load-data",
     });
   }
 
@@ -31,13 +30,13 @@ export class SimulateService {
    * @throws ApiError
    */
   public static startApiSimulateStartPost(
-    requestBody: Body_start_api_simulate_start_post,
+    requestBody: Body_start_api_simulate_start_post
   ): CancelablePromise<Array<HouseholdRead>> {
     return __request(OpenAPI, {
-      method: 'POST',
-      url: '/api/simulate/start',
+      method: "POST",
+      url: "/api/simulate/start",
       body: requestBody,
-      mediaType: 'application/json',
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
@@ -51,9 +50,8 @@ export class SimulateService {
    */
   public static stopApiSimulateStopPost(): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: 'POST',
-      url: '/api/simulate/stop',
+      method: "POST",
+      url: "/api/simulate/stop",
     });
   }
-
 }

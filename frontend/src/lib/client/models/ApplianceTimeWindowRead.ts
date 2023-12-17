@@ -3,10 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ApplianceDays } from './ApplianceDays';
+import type { ApplianceDays } from "./ApplianceDays";
 
 export type ApplianceTimeWindowRead = {
   day: ApplianceDays;
   bitmap_window: number;
 };
-

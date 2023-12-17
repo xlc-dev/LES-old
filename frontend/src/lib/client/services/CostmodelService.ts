@@ -2,15 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CostModelCreate } from '../models/CostModelCreate';
-import type { CostModelRead } from '../models/CostModelRead';
+import type { CostModelCreate } from "../models/CostModelCreate";
+import type { CostModelRead } from "../models/CostModelRead";
 
-import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { CancelablePromise } from "../core/CancelablePromise";
+import { OpenAPI } from "../core/OpenAPI";
+import { request as __request } from "../core/request";
 
 export class CostmodelService {
-
   /**
    * Get Costmodels
    * @returns CostModelRead Successful Response
@@ -18,8 +17,8 @@ export class CostmodelService {
    */
   public static getCostmodelsApiCostmodelGet(): CancelablePromise<Array<CostModelRead>> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/costmodel/',
+      method: "GET",
+      url: "/api/costmodel/",
     });
   }
 
@@ -30,13 +29,13 @@ export class CostmodelService {
    * @throws ApiError
    */
   public static postCostmodelApiCostmodelPost(
-    requestBody: CostModelCreate,
+    requestBody: CostModelCreate
   ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: 'POST',
-      url: '/api/costmodel/',
+      method: "POST",
+      url: "/api/costmodel/",
       body: requestBody,
-      mediaType: 'application/json',
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
@@ -49,19 +48,16 @@ export class CostmodelService {
    * @returns CostModelRead Successful Response
    * @throws ApiError
    */
-  public static getCostmodelApiCostmodelIdGet(
-    id: number,
-  ): CancelablePromise<CostModelRead> {
+  public static getCostmodelApiCostmodelIdGet(id: number): CancelablePromise<CostModelRead> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/costmodel/{id}/',
+      method: "GET",
+      url: "/api/costmodel/{id}/",
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         422: `Validation Error`,
       },
     });
   }
-
 }

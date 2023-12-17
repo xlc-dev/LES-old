@@ -2,12 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { CancelablePromise } from "../core/CancelablePromise";
+import { OpenAPI } from "../core/OpenAPI";
+import { request as __request } from "../core/request";
 
 export class SeedService {
-
   /**
    * Seed
    * Seeds the database with initial data for the twinworld
@@ -16,9 +15,8 @@ export class SeedService {
    */
   public static seedApiSeedPost(): CancelablePromise<null> {
     return __request(OpenAPI, {
-      method: 'POST',
-      url: '/api/seed/',
+      method: "POST",
+      url: "/api/seed/",
     });
   }
-
 }

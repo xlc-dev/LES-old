@@ -8,4 +8,3 @@ export type TwinWorldRead = {
   description: string;
   id: number;
 };
-

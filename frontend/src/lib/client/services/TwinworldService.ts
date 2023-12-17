@@ -2,15 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { TwinWorldCreate } from '../models/TwinWorldCreate';
-import type { TwinWorldRead } from '../models/TwinWorldRead';
+import type { TwinWorldCreate } from "../models/TwinWorldCreate";
+import type { TwinWorldRead } from "../models/TwinWorldRead";
 
-import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { CancelablePromise } from "../core/CancelablePromise";
+import { OpenAPI } from "../core/OpenAPI";
+import { request as __request } from "../core/request";
 
 export class TwinworldService {
-
   /**
    * Get Twinworlds
    * @returns TwinWorldRead Successful Response
@@ -18,8 +17,8 @@ export class TwinworldService {
    */
   public static getTwinworldsApiTwinworldGet(): CancelablePromise<Array<TwinWorldRead>> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/twinworld/',
+      method: "GET",
+      url: "/api/twinworld/",
     });
   }
 
@@ -30,13 +29,13 @@ export class TwinworldService {
    * @throws ApiError
    */
   public static postTwinworldApiTwinworldPost(
-    requestBody: TwinWorldCreate,
+    requestBody: TwinWorldCreate
   ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: 'POST',
-      url: '/api/twinworld/',
+      method: "POST",
+      url: "/api/twinworld/",
       body: requestBody,
-      mediaType: 'application/json',
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
@@ -49,19 +48,16 @@ export class TwinworldService {
    * @returns TwinWorldRead Successful Response
    * @throws ApiError
    */
-  public static getTwinworldApiTwinworldIdGet(
-    id: number,
-  ): CancelablePromise<TwinWorldRead> {
+  public static getTwinworldApiTwinworldIdGet(id: number): CancelablePromise<TwinWorldRead> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/twinworld/{id}/',
+      method: "GET",
+      url: "/api/twinworld/{id}/",
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         422: `Validation Error`,
       },
     });
   }
-
 }

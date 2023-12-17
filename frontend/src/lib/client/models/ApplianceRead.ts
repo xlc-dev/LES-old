@@ -3,8 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ApplianceTimeWindowRead } from './ApplianceTimeWindowRead';
-import type { ApplianceType } from './ApplianceType';
+import type { ApplianceTimeWindowRead } from "./ApplianceTimeWindowRead";
+import type { ApplianceType } from "./ApplianceType";
 
 export type ApplianceRead = {
   name: ApplianceType;
@@ -13,4 +13,3 @@ export type ApplianceRead = {
   daily_usage: number;
   appliance_windows?: Array<ApplianceTimeWindowRead>;
 };
-
