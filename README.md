@@ -41,4 +41,4 @@ Then `cd` into the backend folder, and run `python run.py` for a dev server, and
 
 ### Frontend
 
-`cd` to the frontend folder, and run `npm run start` for a dev server, and navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+`cd` to the frontend folder, and run `npm run dev` for a dev server, and navigate to `http://localhost:5173/`. The application will automatically reload if you change any of the source files.
