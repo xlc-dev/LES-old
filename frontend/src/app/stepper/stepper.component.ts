@@ -4,6 +4,7 @@ import {CommonModule} from "@angular/common";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {ApiService} from "../api.service";
 
+
 @Component({
   selector: 'app-stepper',
   standalone: true,
@@ -33,9 +34,9 @@ export class StepperComponent implements OnInit {
     this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = '#1e1e2d';
 
     this.apiService.loadData().subscribe((res) => {
-      this.algorithms =res.algorithm;
-      this.pricingmodels =res.cost_model;
-      this.twinworlds =res.twin_world;
+      this.algorithms = res.algorithm;
+      this.pricingmodels = res.cost_model;
+      this.twinworlds = res.twin_world;
     })
   }
 
@@ -90,14 +91,15 @@ export class StepperComponent implements OnInit {
   }
 
   completeSelection() {
-    const payload: any = {
+    const payload = {
       algorithm_id: this.selectedAlgorithms[0].id,
       twinworld_id: this.selectedTwinWorlds[0].id,
       costmodel_id: this.selectedPricingModels[0].id
-    }
-    this.apiService.startSimulation(payload).subscribe((res) => {
-      console.log(res)
-      this.navigateToSchedulableLoad()
-    });
+    };
+    this.apiService.setSimulationPayload(payload);
+    this.apiService.triggerSimulation();
+    this.navigateToSchedulableLoad();
+    // this.router.navigate(['/sl']);
   }
+
 }

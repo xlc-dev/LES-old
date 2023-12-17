@@ -1,3 +1,20 @@
-<div class="sidebar">
-  <button class="sidebar-item">Item 1</button>
+<div *ngIf="simulationData && simulationData.households">
+  <table>
+    <thead>
+    <tr>
+      <th>Household ID</th>
+      <th>Appliances</th>
+      <th>Energy Usage</th>
+      <!-- Add other headers as needed -->
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let household of simulationData.households">
+      <td>{{ household.id }}</td>
+      <td>{{ household.appliances }}</td>
+      <td>{{ household.energy_usage }}</td>
+      <!-- Add other data fields as needed -->
+    </tr>
+    </tbody>
+  </table>
 </div>
