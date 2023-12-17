@@ -2,8 +2,8 @@
 
 ## Requirements
 
-- Node 21.0+ and npm
-- Python 3.11
+- Any moderately modern verison of Node and NPM
+- Python 3.11+
 
 ## Installation
 
@@ -17,7 +17,7 @@ python -m venv venv
 source venv/bin/activate
 ```
 
-On Windows:
+On Windows in Git Bash:
 ```sh
 py -m venv venv
 source venv/Scripts/activate
