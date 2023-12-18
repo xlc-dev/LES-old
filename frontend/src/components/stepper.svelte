@@ -63,11 +63,7 @@
     }
   };
 
-  const selectOption = (
-    optionId: number,
-    category: "twin_world" | "cost_model" | "algorithm",
-    optionName: string
-  ) => {
+  const selectOption = (optionId: number, category: any, optionName: string) => {
     selectedIDs[category] = optionId;
     twdata.update((data) => ({ ...data, [category]: optionName }));
     nextStep();
