@@ -14,8 +14,8 @@
 
   let selectedIDs = {
     twin_world: 0,
-    algorithm: 0,
     cost_model: 0,
+    algorithm: 0,
   };
 
   let currentDescription: string = "";
@@ -34,24 +34,33 @@
 
   const nextStep = async () => {
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
+
     if (currentStep < keys.length) {
-      currentStep += 1;
-      currentDescription = simulationData[keys[currentStep - 1]][0]?.description || "";
-    } else {
+      // Check if any selectedID is still 0
       if (
         selectedIDs.algorithm === 0 ||
         selectedIDs.twin_world === 0 ||
         selectedIDs.cost_model === 0
       ) {
-        alert("Please select all options");
         return;
       }
 
-      await SimulateService.startApiSimulateStartPost({
-        algorithm_id: selectedIDs.algorithm,
-        twinworld_id: selectedIDs.twin_world,
-        costmodel_id: selectedIDs.cost_model,
-      }).then((res) => ($stepperData = res));
+      // If all IDs are non-zero, but we haven't reached the final step, don't proceed
+      currentStep += 1;
+      currentDescription = simulationData[keys[currentStep - 1]][0]?.description || "";
+    } else {
+      // If all IDs are non-zero at this stage, execute the API call
+      if (
+        selectedIDs.algorithm !== 0 &&
+        selectedIDs.twin_world !== 0 &&
+        selectedIDs.cost_model !== 0
+      ) {
+        await SimulateService.startApiSimulateStartPost({
+          algorithm_id: selectedIDs.algorithm,
+          twinworld_id: selectedIDs.twin_world,
+          costmodel_id: selectedIDs.cost_model,
+        }).then((res) => ($stepperData = res));
+      }
     }
   };
 
@@ -68,14 +77,39 @@
     twdata.update((data) => ({ ...data, [category]: optionName }));
     nextStep();
   };
+
+  const isStepCompleted = (step: number): boolean => {
+    const keys = Object.keys(selectedIDs) as (keyof typeof selectedIDs)[];
+    const currentStepKey = keys[step - 1];
+    return selectedIDs[currentStepKey] !== 0;
+  };
+
+  const goToStep = (stepNumber: number) => {
+    currentStep = stepNumber;
+    currentDescription = simulationData[Object.keys(simulationData)[currentStep - 1]][0]?.description || "";
+  };
 </script>
 
 <div class="max-w-3xl mx-auto">
-  <div class="bg-gray-200 h-4 rounded-full mt-8">
-    <div
-      class="bg-blue-500 h-full rounded-full duration-300 ease-in-out transition-width"
-      style={`width: ${(currentStep - 1) * 50}%`}>
-    </div>
+  <div class="flex items-center justify-between mt-8">
+    {#key selectedIDs}
+      {#each Object.keys(simulationData) as _, index}
+        <div class="relative flex items-center">
+          <button
+            class={`h-8 w-8 flex items-center justify-center rounded-full border-2
+              ${currentStep === index + 1 ? 'bg-les-red-dark border-les-red text-white' :
+              (isStepCompleted(index + 1) ? 'bg-les-highlight border-blue-500 text-white' : 'border-gray-300 text-gray-400')}`}
+            on:click={() => goToStep(index + 1)}>
+            <span class="text-sm font-bold">
+              {#if isStepCompleted(index + 1)}✔{:else}{index + 1}{/if}
+            </span>
+          </button>
+          {#if index !== Object.keys(simulationData).length - 1}
+            <div class="h-0.5 flex-grow bg-red-400 mx-2 self-center"></div>
+          {/if}
+        </div>
+      {/each}
+    {/key}
   </div>
 
   {#each Object.keys(simulationData) as key, index}
@@ -98,7 +132,7 @@
                   on:click={() => selectOption(option.id, key, option.name)}
                   on:focus={() => updateDescription(option.description)}
                   on:mouseover={() => updateDescription(option.description)}
-                  class="cursor-pointer hover:text-blue-500">
+                  class="cursor-pointer hover:text-les-highlight">
                   {option.name}
                 </button>
               {/each}
@@ -112,7 +146,7 @@
     {/if}
   {/each}
   {#if currentStep !== 1}
-    <button class="mt-8 px-4 py-2 rounded-lg bg-blue-500 text-white" on:click={prevStep}
+    <button class="mt-8 px-4 py-2 rounded-lg bg-les-highlight text-white border-blue-500 border-2" on:click={prevStep}
       >Back</button>
   {/if}
 </div>
