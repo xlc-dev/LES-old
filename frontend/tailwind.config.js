@@ -8,6 +8,8 @@ export default {
         "custom-gray": "#373737",
         "custom-blue": "#1565c0",
         "custom-red": "#f23f44",
+        "les-bg": "#1e1e2d",
+        "les-frame": "#dadada"
       },
       transitionProperty: {
         width: "width",
