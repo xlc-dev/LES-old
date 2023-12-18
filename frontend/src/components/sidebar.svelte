@@ -1,9 +1,9 @@
 <script lang="ts">
   import { twdata } from "../lib/stores";
 
-  function handleButtonClick(action) {
+  const handleButtonClick = (action) => {
     console.log(`Button clicked: ${action}`);
-  }
+  };
 </script>
 
 <div class="w-64 h-screen p-4">
@@ -20,8 +20,8 @@
   <div class="flex flex-col"></div>
   <div class="mt-auto fixed bottom-0">
     <h3 class="text-lg font-semibold text-white">Selected Options:</h3>
-    <p class="text-white">Twin World: {$twdata.twin_world || "Not selected"}</p>
-    <p class="text-white">Cost Model: {$twdata.cost_model || "Not selected"}</p>
-    <p class="text-white">Algorithm: {$twdata.algorithm || "Not selected"}</p>
+    <p class="text-white">Twin World: {$twdata.twin_world}</p>
+    <p class="text-white">Cost Model: {$twdata.cost_model}</p>
+    <p class="text-white">Algorithm: {$twdata.algorithm}</p>
   </div>
 </div>

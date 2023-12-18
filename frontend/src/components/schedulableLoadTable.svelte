@@ -1,14 +1,14 @@
 <script lang="ts">
   import { stepperData } from "../lib/stores";
 
-  function formatAppliances(appliances) {
+  const formatAppliances = (appliances) => {
     return appliances
       .map(
         (appliance) =>
           `${appliance.name} (Power: ${appliance.power}, Duration: ${appliance.duration})`
       )
       .join(", ");
-  }
+  };
 </script>
 
 <table class="min-w-full leading-normal">
