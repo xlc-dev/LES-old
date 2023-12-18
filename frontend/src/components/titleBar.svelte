@@ -1,5 +1,4 @@
 <script lang="ts">
   export let title = "Dashboard";
+  console.log(title);
 </script>
-
-<h1>{title}</h1>
