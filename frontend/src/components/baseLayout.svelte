@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {stepperData, twdata} from "../lib/stores";
+  import { stepperData, twdata } from "../lib/stores";
   import Sidebar from "../partials/Sidebar.svelte";
   import SchedulableLoadTable from "../partials/SchedulableLoadTable.svelte";
 

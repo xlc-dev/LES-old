@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import {stepperData, twdata} from "../lib/stores";
+  import { stepperData, twdata } from "../lib/stores";
 
   import { SimulateService, type SimulationData } from "../lib/client";
 
@@ -63,9 +63,13 @@
     }
   };
 
-  const selectOption = (optionId: number, category: 'twin_world' | 'cost_model' | 'algorithm', optionName: string) => {
+  const selectOption = (
+    optionId: number,
+    category: "twin_world" | "cost_model" | "algorithm",
+    optionName: string
+  ) => {
     selectedIDs[category] = optionId;
-    twdata.update(data => ({ ...data, [category]: optionName }));
+    twdata.update((data) => ({ ...data, [category]: optionName }));
     nextStep();
   };
 </script>
