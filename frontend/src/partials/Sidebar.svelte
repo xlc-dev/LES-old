@@ -7,7 +7,7 @@
   }
 </script>
 
-<div class="w-64 bg-les-bg h-screen p-4">
+<div class="w-64 h-screen p-4">
   <div class="flex flex-col">
     <button class="mb-2 p-2 bg-blue-500 text-white" on:click={() => handleButtonClick('Action1')}>Dashboard</button>
     <button class="mb-2 p-2 bg-blue-500 text-white" on:click={() => handleButtonClick('Action2')}>Simulation</button>
