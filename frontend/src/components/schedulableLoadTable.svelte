@@ -11,7 +11,7 @@
   };
 </script>
 
-<table class="min-w-full leading-normal">
+<table class="min-w-full leading-normal rounded-lg overflow-hidden">
   <thead>
     <tr>
       <th
@@ -46,26 +46,26 @@
   </thead>
   <tbody>
     {#each $stepperData as data}
-      <tr>
-        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+      <tr class="hover:!bg-les-frame bg-white cursor-pointer text-sm">
+        <td class="px-5 py-5 border-b border-gray-200">
           {data.id}
         </td>
-        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+        <td class="px-5 py-5 border-b border-gray-200">
           {data.name}
         </td>
-        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+        <td class="px-5 py-5 border-b border-gray-200">
           {data.size}
         </td>
-        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+        <td class="px-5 py-5 border-b border-gray-200">
           {data.energy_usage}
         </td>
-        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+        <td class="px-5 py-5 border-b border-gray-200">
           {data.solar_panels}
         </td>
-        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+        <td class="px-5 py-5 border-b border-gray-200">
           {data.solar_yield_yearly}
         </td>
-        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+        <td class="px-5 py-5 border-b border-gray-200">
           {formatAppliances(data.appliances)}
         </td>
       </tr>
