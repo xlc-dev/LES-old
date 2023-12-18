@@ -6,6 +6,8 @@
   import Result from "./result.svelte";
   import SchedulableLoadTable from "./schedulableLoadTable.svelte";
   import Simulation from "./simulation.svelte";
+  import StockMarket from "./stockMarket.svelte";
+  import Dashboard from "./dashboard.svelte";
 
   let selectedComponent = null;
   let title = "Dashboard";
@@ -14,7 +16,7 @@
   const handleButtonClick = (action: string) => {
     switch (action) {
       case "Dashboard":
-        selectedComponent = null;
+        selectedComponent = Dashboard;
         title = "Dashboard";
         break;
       case "Simulation":
@@ -26,7 +28,7 @@
         title = "Schedulable Loads";
         break;
       case "StockMarket":
-        selectedComponent = null;
+        selectedComponent = StockMarket;
         title = "Stock Market";
         break;
       case "Stop":
