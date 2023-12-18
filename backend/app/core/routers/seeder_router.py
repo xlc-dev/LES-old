@@ -1,5 +1,6 @@
 import random
 import math
+import pandas
 from typing import Optional, Dict
 
 from scipy.stats import norm
@@ -20,11 +21,28 @@ from app.core.models import (
     household_model,
     twinworld_model,
     algorithm_model,
+    energyflow_model,
 )
 
 from app.core.models.appliance_model import ApplianceType, ApplianceDays
 
 router = APIRouter()
+
+def create_energyflow():
+    energy_flow_hour = pandas.read_csv("../../../energyflow.csv", sep=";")
+
+    hourly_data = []  # Create an empty list to store EnergyFlow objects
+
+    for index, row in energy_flow_hour.iterrows():
+        # Assuming EnergyFlow is a class where you store your data
+        energy_flow = energyflow_model.EnergyFlow(
+            timestamp=row['timestamp'],
+            energy_used=row['energy_used'],
+            solar_produced=row['solar_produced'],
+        )
+        hourly_data.append(energy_flow)  # Append each object to the list
+
+    return hourly_data
 
 
 def add_appliance_to_session(session: Session, appliance):
@@ -387,6 +405,10 @@ def seed(session: Session = Depends(get_session)) -> None:
     delete_db_and_tables()
     create_db_and_tables()
     random.seed()
+
+    energyflow = create_energyflow()
+    for x in energyflow:
+        session.add(x)
 
     # TODO: add proper algorithms
     algorithm_1 = algorithm_model.Algorithm(

@@ -2,7 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, Body, status
 
 from sqlmodel import Session, SQLModel
 
+from random import random
+
 from app.utils import get_session
+from app.simulation import plan_new
 
 from app.core.models.costmodel_model import CostModelRead
 from app.core.models.twinworld_model import TwinWorldRead
@@ -80,3 +83,23 @@ async def start(
 @router.post("/stop")
 async def stop(*, session: Session = Depends(get_session)):
     return {"message": "Simulation ended"}
+
+
+@router.post("/plan")
+async def plan(
+    *, planning: list[HouseholdRead], session: Session = Depends(get_session)
+):
+    if planning[0].appliances[0].appliance_windows[0].bitmap_plan is None:
+        for household in planning:
+            for appliance in household.appliances:
+                for timewindow in appliance.appliance_windows:
+                    print(timewindow.day, timewindow.bitmap_window, household.name, appliance.name, appliance.daily_usage)
+                    usage = appliance.daily_usage
+                    while usage < random.random():
+                        starttime = max
+                        plan_new(appliance.name, starttime, appliance.duration)
+        # plan_new (appliance=planning[0].appliances[0].name[0])
+    return
+
+
+# , response_model=list[HouseholdRead]

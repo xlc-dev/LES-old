@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from enum import Enum
 
 from sqlmodel import SQLModel, Field, Relationship
@@ -53,6 +53,7 @@ class Appliance(ApplianceBase, table=True):
 class ApplianceTimeWindowBase(SQLModel):
     day: ApplianceDays = Field(nullable=False)
     bitmap_window: int = Field(nullable=False)  # 24 bit bitmap
+    bitmap_plan: Optional[int] = Field(nullable=True)  # 24 bit bitmap
 
 
 class ApplianceTimeWindow(ApplianceTimeWindowBase, table=True):
