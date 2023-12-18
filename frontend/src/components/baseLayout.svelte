@@ -10,7 +10,7 @@
   import Dashboard from "./dashboard.svelte";
 
   let selectedComponent = null;
-  let title = "Dashboard";
+  let title = "Schedulable Loads";
   let stop = false;
 
   const handleButtonClick = (action: string) => {
