@@ -4,9 +4,9 @@
   import { twdata } from "../lib/stores";
 
   const dispatch = createEventDispatcher();
-  let currentComponent = "SchedulableLoads";
+  export let currentComponent: string;
 
-  const handleButtonClick = (action) => {
+  const handleButtonClick = (action: string) => {
     dispatch("click", { action });
     currentComponent = action;
   };
@@ -22,7 +22,7 @@
       <button
         class="flex items-center gap-3 hover:bg-les-bg-dark w-full p-4 transition-colors duration-200 {currentComponent ===
         'Dashboard'
-          ? 'bg-les-bg-dark hover:!bg-les-bg'
+          ? 'bg-les-bg-dark'
           : ''}"
         on:click={() => handleButtonClick("Dashboard")}>
         <img src="/rectangle.png" alt="" />
@@ -31,7 +31,7 @@
       <button
         class="flex items-center gap-3 hover:bg-les-bg-dark w-full p-4 transition-colors duration-200 {currentComponent ===
         'Simulation'
-          ? 'bg-les-bg-dark hover:!bg-les-bg'
+          ? 'bg-les-bg-dark'
           : ''}"
         on:click={() => handleButtonClick("Simulation")}>
         <img src="/adjustment.png" alt="" />
@@ -39,19 +39,19 @@
       </button>
       <button
         class="flex items-center gap-3 hover:bg-les-bg-dark w-full p-4 transition-colors duration-200 {currentComponent ===
-        'SchedulableLoads'
-          ? 'bg-les-bg-dark hover:!bg-les-bg'
+        'Schedulable Loads'
+          ? 'bg-les-bg-dark'
           : ''}"
-        on:click={() => handleButtonClick("SchedulableLoads")}>
+        on:click={() => handleButtonClick("Schedulable Loads")}>
         <img src="/calendar.png" alt="" />
         <p class="text-les-frame">Schedulable Loads</p>
       </button>
       <button
         class="flex items-center gap-3 hover:bg-les-bg-dark w-full p-4 transition-colors duration-200 {currentComponent ===
-        'StockMarket'
-          ? 'bg-les-bg-dark hover:!bg-les-bg'
+        'Stock Market'
+          ? 'bg-les-bg-dark'
           : ''}"
-        on:click={() => handleButtonClick("StockMarket")}>
+        on:click={() => handleButtonClick("Stock Market")}>
         <img src="/money.png" alt="" />
         <p class="text-les-frame">Stock Market</p>
       </button>
