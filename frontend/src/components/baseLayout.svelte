@@ -1,9 +1,6 @@
 <script lang="ts">
-  import { stepperData, twdata } from "../lib/stores";
-  import Sidebar from "../partials/Sidebar.svelte";
-  import SchedulableLoadTable from "../partials/SchedulableLoadTable.svelte";
-
-  console.log($stepperData);
+  import Sidebar from "./sidebar.svelte";
+  import SchedulableLoadTable from "./schedulableLoadTable.svelte";
 </script>
 
 <div class="flex">
