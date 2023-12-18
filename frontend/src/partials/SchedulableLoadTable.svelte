@@ -1,4 +1,3 @@
-<!-- SchedulableLoadTable.svelte -->
 <script lang="ts">
   import { stepperData } from "../lib/stores";
 

@@ -1,4 +1,3 @@
-<!-- Sidebar.svelte -->
 <script lang="ts">
   import { twdata } from "../lib/stores";
 
