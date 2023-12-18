@@ -23,11 +23,11 @@
         selectedComponent = Simulation;
         title = "Simulation";
         break;
-      case "SchedulableLoads":
+      case "Schedulable Loads":
         selectedComponent = SchedulableLoadTable;
         title = "Schedulable Loads";
         break;
-      case "StockMarket":
+      case "Stock Market":
         selectedComponent = StockMarket;
         title = "Stock Market";
         break;
