@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { stepperData } from "../lib/stores";
+  import {stepperData, twdata} from "../lib/stores";
 
   import { SimulateService, type SimulationData } from "../lib/client";
 
@@ -63,8 +63,9 @@
     }
   };
 
-  const selectOption = (optionId: any, category: any) => {
+  const selectOption = (optionId: number, category: 'twin_world' | 'cost_model' | 'algorithm', optionName: string) => {
     selectedIDs[category] = optionId;
+    twdata.update(data => ({ ...data, [category]: optionName }));
     nextStep();
   };
 </script>
@@ -94,7 +95,7 @@
             <ul class="flex flex-col gap-4 items-start">
               {#each simulationData[key] as option (option.id)}
                 <button
-                  on:click={() => selectOption(option.id, key)}
+                  on:click={() => selectOption(option.id, key, option.name)}
                   on:focus={() => updateDescription(option.description)}
                   on:mouseover={() => updateDescription(option.description)}
                   class="cursor-pointer hover:text-blue-500">
