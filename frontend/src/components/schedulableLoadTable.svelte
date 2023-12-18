@@ -81,7 +81,10 @@
           {data.solar_yield_yearly}
         </td>
         <td class="px-5 py-5 border-b border-gray-200">
-          {formatAppliances(data.appliances)}
+          {#each data.appliances as appliance}
+          {appliance.name}
+            <br>
+          {/each}
         </td>
       </tr>
     {/each}
