@@ -21,17 +21,11 @@
     appliances: []
   };
 
-  let filteredData = get(stepperData);
-  let showDropdown = null;
+  let filteredData = [];
 
-  function applyFilters() {
-    let isAnyFilterSelected = Object.values(selectedFilters).some(filter => filter.length > 0);
-    if (!isAnyFilterSelected) {
-      filteredData = get(stepperData);
-      return;
-    }
-
-    filteredData = get(stepperData).filter(item => {
+  $: {
+    let data = get(stepperData);
+    filteredData = data.filter(item => {
       let matchesSize = selectedFilters.size.length === 0 || selectedFilters.size.includes(item.size);
       let matchesEnergyUsage = selectedFilters.energyUsage.length === 0 || selectedFilters.energyUsage.some(range => item.energy_usage >= range.min && item.energy_usage < range.max);
       let matchesSolarPanels = selectedFilters.solarPanels.length === 0 || selectedFilters.solarPanels.includes(item.solar_panels);
@@ -42,6 +36,7 @@
     });
   }
 
+  let showDropdown = null;
   function toggleDropdown(filterName) {
     showDropdown = showDropdown === filterName ? null : filterName;
   }
@@ -77,7 +72,7 @@
             <div class="py-1">
               {#each options as option}
                 <label class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                  <input type="checkbox" class="mr-2" bind:group={selectedFilters[filterName]} value={option}>
+                  <input type="checkbox" class="mr-2" bind:group={selectedFilters[filterName]} value={option} on:change={() => {}}>
                   {typeof option === 'object' ? `${option.min}-${option.max}` : option}
                 </label>
               {/each}
@@ -87,9 +82,6 @@
       </div>
     {/each}
   </div>
-  <button class="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" on:click={applyFilters}>
-    Apply Filters
-  </button>
 </div>
 
 <table class="min-w-full leading-normal rounded-lg overflow-hidden">
