@@ -1,12 +1,8 @@
 <script lang="ts">
-  import { stepperData } from "../lib/stores";
   import { get } from 'svelte/store';
   import { slide } from 'svelte/transition';
+  import {activatedHousehold, stepperData} from "../lib/stores";
   import type { HouseholdRead } from "../lib/client";
-  import HomeView from "./homeView.svelte";
-  import {createEventDispatcher} from "svelte";
-
-  const dispatch = createEventDispatcher();
 
   let expandedRow = null;
   let sortColumn = null;
@@ -47,16 +43,6 @@
 
 
   let showDropdown = null;
-
-  $: selectedHousehold = household;
-
-  let household: HouseholdRead;
-
-  const showHome = (action: HouseholdRead) => {
-    household = action;
-    dispatch("changename", { action: action.name });
-    console.log(household);
-  };
 
   function toggleDropdown(filterName) {
     showDropdown = showDropdown === filterName ? null : filterName;
@@ -100,7 +86,6 @@
   }
 </script>
 
-{#if !selectedHousehold}
 <div class="flex justify-between items-center rounded-lg bg-gray-100 p-2">
   <div class="flex space-x-4">
     <input type="text" class="px-3 py-2 border border-gray-300 rounded-md" placeholder="Search by ID or NAME" bind:value={searchQuery}>
@@ -170,12 +155,12 @@
     {#each filteredData as data}
       <tr class="hover:!bg-les-frame bg-white cursor-pointer text-sm" on:click={() => toggleRow(data.id)}>
         <td class="px-5 py-5 border-b border-gray-200">
-          <button class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4" on:click={() => showHome(data)}>
+          <button class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4" on:click={() => $activatedHousehold = data}>
             {data.id}
           </button>
         </td>
         <td class="px-5 py-5 border-b border-gray-200">
-          <button class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4" on:click={() => showHome(data)}>
+          <button class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4" on:click={() => $activatedHousehold = data}>
             {data.name}
           </button>
         </td>
@@ -227,6 +212,3 @@
     {/each}
   </tbody>
 </table>
-{:else}
-  <HomeView {household} />
-{/if}
