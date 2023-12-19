@@ -1,7 +1,7 @@
 <script lang="ts">
   import { stepperData } from "../lib/stores";
   import { get } from 'svelte/store';
-  import { fade, slide } from 'svelte/transition';
+  import { slide } from 'svelte/transition';
 
   let expandedRow = null;
   let sortColumn = null;
@@ -65,6 +65,13 @@
 
   const numberOfColumns = 7;
 
+  function getCellColor(bitmap, hour) {
+    const bitmapString = bitmap.toString(2).padStart(24, '0');
+    return bitmapString[hour] === '1' ? 'bg-blue-500' : 'bg-black';
+  }
+
+  const hours = Array.from({ length: 24 }, (_, i) => i);
+
   function sortData(column) {
     sortColumn = column;
     filteredData = filteredData.slice().sort((a, b) => {
@@ -80,7 +87,7 @@
   <div class="flex space-x-4">
     <input type="text" class="px-3 py-2 border border-gray-300 rounded-md" placeholder="Search by ID or NAME" bind:value={searchQuery}>
     {#each Object.entries(filters) as [filterName, options]}
-      <div class="relative" id={`${filterName}-dropdown`} on:click|stopPropagation={createHandleClickOutside(filterName)}>
+      <button class="relative" id={`${filterName}-dropdown`} on:click|stopPropagation={createHandleClickOutside(filterName)}>
         <button class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" on:click={() => toggleDropdown(filterName)} on:keydown={(e) => e.key === 'Enter' && toggleDropdown(filterName)}>
           {toReadableName(filterName)}
         </button>
@@ -96,7 +103,7 @@
             </div>
           </div>
         {/if}
-      </div>
+      </button>
     {/each}
   </div>
 </div>
@@ -175,12 +182,18 @@
             <div transition:slide>
               <div class="p-4">
                 <strong>Appliances:</strong>
-                {#each data.appliances as appliance}
-                  <div>
-                    <span>{appliance.name}</span> -
-                    <span>Usage: {appliance.daily_usage}</span>
-                  </div>
-                {/each}
+                <div class="grid-table">
+                  <div></div> <!-- Empty cell for top-left corner -->
+                  {#each hours as hour}
+                    <div class="grid-header">{hour}</div>
+                  {/each}
+                  {#each data.appliances as appliance}
+                    <div class="appliance-name">{appliance.name}</div>
+                    {#each hours as hour}
+                      <div class={`grid-cell ${getCellColor(appliance.appliance_windows[0].bitmap_window, hour)}`}></div>
+                    {/each}
+                  {/each}
+                </div>
               </div>
             </div>
           </td>
@@ -189,3 +202,21 @@
     {/each}
   </tbody>
 </table>
+
+<style>
+  .grid-table {
+    display: grid;
+    grid-template-columns: auto repeat(24, 20px);
+    border-collapse: collapse;
+  }
+  .grid-cell, .grid-header {
+    border: 1px solid black;
+    width: 20px;
+    height: 20px;
+  }
+  .appliance-name {
+    text-align: right;
+    padding-right: 10px;
+    border: 1px solid black;
+  }
+</style>
