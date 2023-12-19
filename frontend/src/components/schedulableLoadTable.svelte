@@ -50,6 +50,14 @@
     };
   }
 
+  function toReadableName(camelCase) {
+    return camelCase
+            // Insert a space before all caps
+            .replace(/([A-Z])/g, ' $1')
+            // Uppercase the first character
+            .replace(/^./, str => str.toUpperCase());
+  }
+
   function sortData(column) {
     sortColumn = column;
     filteredData = filteredData.slice().sort((a, b) => {
@@ -66,7 +74,7 @@
     {#each Object.entries(filters) as [filterName, options]}
       <div class="relative" id={`${filterName}-dropdown`} on:click|stopPropagation={createHandleClickOutside(filterName)}>
         <button class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" on:click={() => toggleDropdown(filterName)} on:keydown={(e) => e.key === 'Enter' && toggleDropdown(filterName)}>
-          {filterName}
+          {toReadableName(filterName)}
         </button>
         {#if showDropdown === filterName}
           <div class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10" in:slide={{ duration: 750 }} out:slide={{ duration: 750 }}>
