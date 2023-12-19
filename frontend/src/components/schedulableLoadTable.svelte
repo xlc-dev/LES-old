@@ -6,6 +6,7 @@
   let expandedRow = null;
   let sortColumn = null;
   let sortOrder = 'asc';
+  let searchQuery = '';
 
   let filters = {
     size: Array.from({ length: 10 }, (_, i) => i + 1),
@@ -28,13 +29,14 @@
   $: {
     let data = get(stepperData);
     filteredData = data.filter(item => {
-      let matchesSize = selectedFilters.size.length === 0 || selectedFilters.size.includes(item.size);
-      let matchesEnergyUsage = selectedFilters.energyUsage.length === 0 || selectedFilters.energyUsage.some(range => item.energy_usage >= range.min && item.energy_usage < range.max);
-      let matchesSolarPanels = selectedFilters.solarPanels.length === 0 || selectedFilters.solarPanels.includes(item.solar_panels);
-      let matchesSolarYieldYearly = selectedFilters.solarYieldYearly.length === 0 || selectedFilters.solarYieldYearly.some(range => item.solar_yield_yearly >= range.min && item.solar_yield_yearly < range.max);
-      let matchesAppliances = selectedFilters.appliances.length === 0 || item.appliances.some(appliance => selectedFilters.appliances.includes(appliance.name));
+      const matchesSearch = !searchQuery || item.id.toString().includes(searchQuery) || item.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSize = selectedFilters.size.length === 0 || selectedFilters.size.includes(item.size);
+      const matchesEnergyUsage = selectedFilters.energyUsage.length === 0 || selectedFilters.energyUsage.some(range => item.energy_usage >= range.min && item.energy_usage < range.max);
+      const matchesSolarPanels = selectedFilters.solarPanels.length === 0 || selectedFilters.solarPanels.includes(item.solar_panels);
+      const matchesSolarYieldYearly = selectedFilters.solarYieldYearly.length === 0 || selectedFilters.solarYieldYearly.some(range => item.solar_yield_yearly >= range.min && item.solar_yield_yearly < range.max);
+      const matchesAppliances = selectedFilters.appliances.length === 0 || item.appliances.some(appliance => selectedFilters.appliances.includes(appliance.name));
 
-      return matchesSize && matchesEnergyUsage && matchesSolarPanels && matchesSolarYieldYearly && matchesAppliances;
+      return matchesSearch && matchesSize && matchesEnergyUsage && matchesSolarPanels && matchesSolarYieldYearly && matchesAppliances;
     });
   }
 
@@ -76,13 +78,14 @@
 
 <div class="flex justify-between items-center rounded-lg bg-gray-100 p-2">
   <div class="flex space-x-4">
+    <input type="text" class="px-3 py-2 border border-gray-300 rounded-md" placeholder="Search by ID or NAME" bind:value={searchQuery}>
     {#each Object.entries(filters) as [filterName, options]}
       <div class="relative" id={`${filterName}-dropdown`} on:click|stopPropagation={createHandleClickOutside(filterName)}>
         <button class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" on:click={() => toggleDropdown(filterName)} on:keydown={(e) => e.key === 'Enter' && toggleDropdown(filterName)}>
           {toReadableName(filterName)}
         </button>
         {#if showDropdown === filterName}
-          <div class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10" in:slide={{ duration: 750 }} out:slide={{ duration: 750 }}>
+          <div class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10" in:slide={{ duration: 500 }} out:slide={{ duration: 500 }}>
             <div class="py-1">
               {#each options as option}
                 <label class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
