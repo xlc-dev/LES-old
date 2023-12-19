@@ -19,6 +19,7 @@ from app.core.routers import (
     simulation_router,
     twinworld_router,
     costmodel_router,
+    algorithm_router,
 )
 
 
@@ -47,8 +48,12 @@ def create_app() -> FastAPI:
             "description": "Costmodel API",
         },
         {
+            "name": "Algorithm",
+            "description": "Algorithm API",
+        },
+        {
             "name": "Seed",
-            "description": "Seed the database with data",
+            "description": "Seed the database with data. Only available in development mode. It will delete all current data in the database to replace with new seed data.",
         },
     ]
 
@@ -130,6 +135,12 @@ def create_app() -> FastAPI:
         costmodel_router.router,
         prefix=f"{settings.api_prefix}/costmodel",
         tags=["Costmodel"],
+    )
+
+    app.include_router(
+        algorithm_router.router,
+        prefix=f"{settings.api_prefix}/algorithm",
+        tags=["Algorithm"],
     )
 
     if settings.development:
