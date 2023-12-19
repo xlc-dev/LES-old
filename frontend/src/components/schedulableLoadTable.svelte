@@ -153,30 +153,30 @@
   </thead>
   <tbody>
     {#each filteredData as data}
-      <tr class="hover:!bg-les-frame bg-white cursor-pointer text-sm" on:click={() => toggleRow(data.id)}>
-        <td class="px-5 py-5 border-b border-gray-200">
+      <tr class="hover:!bg-les-frame bg-white cursor-pointer text-sm {expandedRow === data.id ? '' : 'border-b border-gray-200'}" on:click={() => toggleRow(data.id)}>
+        <td class="px-5 py-5">
           <button class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4" on:click={() => $activatedHousehold = data}>
             {data.id}
           </button>
         </td>
-        <td class="px-5 py-5 border-b border-gray-200">
+        <td class="px-5 py-5">
           <button class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4" on:click={() => $activatedHousehold = data}>
             {data.name}
           </button>
         </td>
-        <td class="px-5 py-5 border-b border-gray-200">
+        <td class="px-5 py-5">
           {data.size}
         </td>
-        <td class="px-5 py-5 border-b border-gray-200">
+        <td class="px-5 py-5">
           {data.energy_usage}
         </td>
-        <td class="px-5 py-5 border-b border-gray-200">
+        <td class="px-5 py-5">
           {data.solar_panels}
         </td>
-        <td class="px-5 py-5 border-b border-gray-200">
+        <td class="px-5 py-5">
           {data.solar_yield_yearly}
         </td>
-        <td class="px-5 py-5 border-b border-gray-200">
+        <td class="px-5 py-5">
           {#each data.appliances as appliance}
           {appliance.name}
             <br>
@@ -206,7 +206,13 @@
                 </div>
               </div>
             </div>
+            <div class="border-b border-gray-200"></div>
           </td>
+        </tr>
+      {/if}
+      {#if expandedRow !== data.id}
+        <tr class="border-b border-gray-200">
+          <td colspan={numberOfColumns}></td>
         </tr>
       {/if}
     {/each}
