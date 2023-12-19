@@ -23,6 +23,12 @@ py -m venv venv
 source venv/Scripts/activate
 ```
 
+Or on Powershell/Command Prompt:
+```sh
+py -m venv venv
+.\venv\Scripts\activate
+```
+
 Then, install the dependencies:
 ```sh
 pip install pip-tools && pip install -r requirements.txt && pip install -r requirements.dev.txt
@@ -37,7 +43,7 @@ pip install pip-tools && pip install -r requirements.txt && pip install -r requi
 ### Backend
 
 To run the backend server, make sure you have the virtual environment activated (see installation).
-Then `cd` into the backend folder, and run `python run.py` for a dev server, and navigate to `http://localhost:8000/`. The application will automatically reload if you change any of the source files.
+Then `cd` into the backend folder, and run `python run.py` for a dev server, and navigate to `http://localhost:8000/`.
 
 ### Frontend
 
