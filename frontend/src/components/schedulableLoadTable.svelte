@@ -3,6 +3,7 @@
   import { get } from 'svelte/store';
   import { fade, slide } from 'svelte/transition';
 
+  let expandedRow = null;
   let sortColumn = null;
   let sortOrder = 'asc';
 
@@ -52,11 +53,15 @@
 
   function toReadableName(camelCase) {
     return camelCase
-            // Insert a space before all caps
             .replace(/([A-Z])/g, ' $1')
-            // Uppercase the first character
             .replace(/^./, str => str.toUpperCase());
   }
+
+  function toggleRow(id) {
+    expandedRow = expandedRow === id ? null : id;
+  }
+
+  const numberOfColumns = 7;
 
   function sortData(column) {
     sortColumn = column;
@@ -135,7 +140,7 @@
   </thead>
   <tbody>
     {#each filteredData as data}
-      <tr class="hover:!bg-les-frame bg-white cursor-pointer text-sm">
+      <tr class="hover:!bg-les-frame bg-white cursor-pointer text-sm" on:click={() => toggleRow(data.id)}>
         <td class="px-5 py-5 border-b border-gray-200">
           {data.id}
         </td>
@@ -161,6 +166,23 @@
           {/each}
         </td>
       </tr>
+      {#if expandedRow === data.id}
+        <tr>
+          <td colspan={numberOfColumns}>
+            <div transition:slide>
+              <div class="p-4">
+                <strong>Appliances:</strong>
+                {#each data.appliances as appliance}
+                  <div>
+                    <span>{appliance.name}</span> -
+                    <span>Usage: {appliance.usage}</span>
+                  </div>
+                {/each}
+              </div>
+            </div>
+          </td>
+        </tr>
+      {/if}
     {/each}
   </tbody>
 </table>
