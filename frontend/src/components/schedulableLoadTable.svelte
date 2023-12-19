@@ -22,6 +22,7 @@
   };
 
   let filteredData = get(stepperData);
+  let showDropdown = null;
 
   function applyFilters() {
     let isAnyFilterSelected = Object.values(selectedFilters).some(filter => filter.length > 0);
@@ -41,6 +42,18 @@
     });
   }
 
+  function toggleDropdown(filterName) {
+    showDropdown = showDropdown === filterName ? null : filterName;
+  }
+
+  function createHandleClickOutside(filterName) {
+    return function(event) {
+      if (!event.target.closest(`#${filterName}-dropdown`)) {
+        showDropdown = null;
+      }
+    };
+  }
+
   function sortData(column) {
     sortColumn = column;
     filteredData = filteredData.slice().sort((a, b) => {
@@ -52,21 +65,31 @@
   }
 </script>
 
-<div class="filter-bar">
-  {#each Object.entries(filters) as [filterName, options]}
-    <div class="dropdown">
-      <button>{filterName}</button>
-      <div class="dropdown-content">
-        {#each options as option}
-          <label>
-            <input type="checkbox" bind:group={selectedFilters[filterName]} value={option}>
-            {typeof option === 'object' ? `${option.min}-${option.max}` : option}
-          </label>
-        {/each}
+<div class="flex justify-between items-center bg-gray-100 p-4">
+  <div class="flex space-x-4">
+    {#each Object.entries(filters) as [filterName, options]}
+      <div class="relative" id={`${filterName}-dropdown`} on:click|stopPropagation={createHandleClickOutside(filterName)}>
+        <button class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" on:click={() => toggleDropdown(filterName)} on:keydown={(e) => e.key === 'Enter' && toggleDropdown(filterName)}>
+          {filterName}
+        </button>
+        {#if showDropdown === filterName}
+          <div class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+            <div class="py-1">
+              {#each options as option}
+                <label class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  <input type="checkbox" class="mr-2" bind:group={selectedFilters[filterName]} value={option}>
+                  {typeof option === 'object' ? `${option.min}-${option.max}` : option}
+                </label>
+              {/each}
+            </div>
+          </div>
+        {/if}
       </div>
-    </div>
-  {/each}
-  <button on:click={applyFilters}>Apply Filters</button>
+    {/each}
+  </div>
+  <button class="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" on:click={applyFilters}>
+    Apply Filters
+  </button>
 </div>
 
 <table class="min-w-full leading-normal rounded-lg overflow-hidden">
