@@ -67,7 +67,7 @@
 
   function getCellColor(bitmap, hour) {
     const bitmapString = bitmap.toString(2).padStart(24, '0');
-    return bitmapString[hour] === '1' ? 'bg-blue-500' : 'bg-black';
+    return bitmapString[hour] === '1' ? 'bg-blue-600' : 'bg-gray-700';
   }
 
   const hours = Array.from({ length: 24 }, (_, i) => i === 23 ? 0 : i + 1);
