@@ -195,7 +195,7 @@
       </tr>
       {#if expandedRow === data.id}
         <tr>
-          <td colspan={numberOfColumns}>
+          <td class="hover:!bg-les-frame bg-white cursor-pointer text-sm" colspan={numberOfColumns}>
             <div transition:slide>
               <div class="p-4">
                 <strong>Appliances:</strong>
