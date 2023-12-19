@@ -2,6 +2,8 @@
   import { stepperData } from "../lib/stores";
   import { get } from 'svelte/store';
   import { slide } from 'svelte/transition';
+  import type { HouseholdRead } from "../lib/client";
+  import HomeView from "./homeView.svelte";
 
   let expandedRow = null;
   let sortColumn = null;
@@ -40,7 +42,17 @@
     });
   }
 
+
   let showDropdown = null;
+
+  $: selectedHousehold = household;
+
+  let household: HouseholdRead;
+
+  const showHome = (data: HouseholdRead) => {
+    household = data;
+  };
+
   function toggleDropdown(filterName) {
     showDropdown = showDropdown === filterName ? null : filterName;
   }
@@ -149,13 +161,18 @@
     </tr>
   </thead>
   <tbody>
+  {#if !selectedHousehold}
     {#each filteredData as data}
       <tr class="hover:!bg-les-frame bg-white cursor-pointer text-sm" on:click={() => toggleRow(data.id)}>
         <td class="px-5 py-5 border-b border-gray-200">
-          {data.id}
+          <button class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4" on:click={() => showHome(data)}>
+            {data.id}
+          </button>
         </td>
         <td class="px-5 py-5 border-b border-gray-200">
-          {data.name}
+          <button class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4" on:click={() => showHome(data)}>
+            {data.name}
+          </button>
         </td>
         <td class="px-5 py-5 border-b border-gray-200">
           {data.size}
@@ -204,23 +221,8 @@
         </tr>
       {/if}
     {/each}
+  {:else}
+    <HomeView {household} />
+    {/if}
   </tbody>
 </table>
-
-<style>
-  .grid-table {
-    display: grid;
-    grid-template-columns: auto repeat(24, 20px);
-    border-collapse: collapse;
-  }
-  .grid-cell, .grid-header {
-    border: 1px solid black;
-    width: 20px;
-    height: 20px;
-  }
-  .appliance-name {
-    text-align: right;
-    padding-right: 10px;
-    border: 1px solid black;
-  }
-</style>
