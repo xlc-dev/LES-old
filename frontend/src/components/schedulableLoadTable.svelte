@@ -1,6 +1,7 @@
 <script lang="ts">
   import { stepperData } from "../lib/stores";
   import { get } from 'svelte/store';
+  import { fade, slide } from 'svelte/transition';
 
   let sortColumn = null;
   let sortOrder = 'asc';
@@ -68,7 +69,7 @@
           {filterName}
         </button>
         {#if showDropdown === filterName}
-          <div class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+          <div class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10" in:slide={{ duration: 750 }} out:slide={{ duration: 750 }}>
             <div class="py-1">
               {#each options as option}
                 <label class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
