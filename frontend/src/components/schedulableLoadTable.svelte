@@ -70,7 +70,7 @@
     return bitmapString[hour] === '1' ? 'bg-blue-500' : 'bg-black';
   }
 
-  const hours = Array.from({ length: 24 }, (_, i) => i);
+  const hours = Array.from({ length: 24 }, (_, i) => i === 23 ? 0 : i + 1);
 
   function sortData(column) {
     sortColumn = column;
@@ -184,16 +184,16 @@
                 <strong>Appliances:</strong>
                 <div class="flex flex-col">
                   <div class="flex">
-                    <div class="w-32"></div>
+                    <div class="w-36"></div>
                     {#each hours as hour}
-                      <div class="w-5 h-5 text-center">{hour}</div>
+                      <div class="w-6 h-6 text-center">{hour}</div>
                     {/each}
                   </div>
                   {#each data.appliances as appliance}
                     <div class="flex items-center">
-                      <div class="w-32 text-right pr-2">{appliance.name}</div>
+                      <div class="w-36 text-right pr-2 whitespace-nowrap">{appliance.name}</div>
                       {#each hours as hour}
-                        <div class={`w-5 h-5 border border-white ${getCellColor(appliance.appliance_windows[0].bitmap_window, hour)}`}></div>
+                        <div class={`w-6 h-6 border border-white ${getCellColor(appliance.appliance_windows[0].bitmap_window, hour)}`}></div>
                       {/each}
                     </div>
                   {/each}
