@@ -175,7 +175,7 @@
                 {#each data.appliances as appliance}
                   <div>
                     <span>{appliance.name}</span> -
-                    <span>Usage: {appliance.usage}</span>
+                    <span>Usage: {appliance.daily_usage}</span>
                   </div>
                 {/each}
               </div>
