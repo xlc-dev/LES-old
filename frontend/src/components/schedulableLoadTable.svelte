@@ -182,16 +182,20 @@
             <div transition:slide>
               <div class="p-4">
                 <strong>Appliances:</strong>
-                <div class="grid-table">
-                  <div></div> <!-- Empty cell for top-left corner -->
-                  {#each hours as hour}
-                    <div class="grid-header">{hour}</div>
-                  {/each}
-                  {#each data.appliances as appliance}
-                    <div class="appliance-name">{appliance.name}</div>
+                <div class="flex flex-col">
+                  <div class="flex">
+                    <div class="w-32"></div>
                     {#each hours as hour}
-                      <div class={`grid-cell ${getCellColor(appliance.appliance_windows[0].bitmap_window, hour)}`}></div>
+                      <div class="w-5 h-5 text-center">{hour}</div>
                     {/each}
+                  </div>
+                  {#each data.appliances as appliance}
+                    <div class="flex items-center">
+                      <div class="w-32 text-right pr-2">{appliance.name}</div>
+                      {#each hours as hour}
+                        <div class={`w-5 h-5 border border-white ${getCellColor(appliance.appliance_windows[0].bitmap_window, hour)}`}></div>
+                      {/each}
+                    </div>
                   {/each}
                 </div>
               </div>
