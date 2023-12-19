@@ -61,7 +61,7 @@
   }
 </script>
 
-<div class="flex justify-between items-center bg-gray-100 p-4">
+<div class="flex justify-between items-center rounded-lg bg-gray-100 p-2">
   <div class="flex space-x-4">
     {#each Object.entries(filters) as [filterName, options]}
       <div class="relative" id={`${filterName}-dropdown`} on:click|stopPropagation={createHandleClickOutside(filterName)}>
@@ -84,6 +84,8 @@
     {/each}
   </div>
 </div>
+
+<br>
 
 <table class="min-w-full leading-normal rounded-lg overflow-hidden">
   <thead>
