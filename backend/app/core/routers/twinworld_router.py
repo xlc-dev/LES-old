@@ -51,3 +51,26 @@ async def post_twinworld(
         )
 
     twinworld_crud.create(session=session, obj_in=form_data)
+
+
+@router.delete("/{id}/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_twinworld(
+    *,
+    id: int,
+    session: Session = Depends(get_session),
+) -> None:
+    twinworld = twinworld_crud.get(session=session, id=id)
+
+    if not twinworld:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Twinworld with ID: {id} not found",
+        )
+
+    if twinworld.id == 1 or twinworld.id == 2:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Twinworld with ID: {id} is not allowed to be deleted.",
+        )
+
+    twinworld_crud.remove(session=session, id=id)
