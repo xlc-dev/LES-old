@@ -4,6 +4,9 @@
   import { slide } from 'svelte/transition';
   import type { HouseholdRead } from "../lib/client";
   import HomeView from "./homeView.svelte";
+  import {createEventDispatcher} from "svelte";
+
+  const dispatch = createEventDispatcher();
 
   let expandedRow = null;
   let sortColumn = null;
@@ -49,8 +52,10 @@
 
   let household: HouseholdRead;
 
-  const showHome = (data: HouseholdRead) => {
-    household = data;
+  const showHome = (action: HouseholdRead) => {
+    household = action;
+    dispatch("changename", { action: action.name });
+    console.log(household);
   };
 
   function toggleDropdown(filterName) {
@@ -82,7 +87,7 @@
     return bitmapString[hour] === '1' ? 'bg-blue-600' : 'bg-gray-700';
   }
 
-  const hours = Array.from({ length: 24 }, (_, i) => i === 23 ? 0 : i + 1);
+  const hours = Array.from({ length: 24 }, (_, i) => i);
 
   function sortData(column) {
     sortColumn = column;
@@ -95,6 +100,7 @@
   }
 </script>
 
+{#if !selectedHousehold}
 <div class="flex justify-between items-center rounded-lg bg-gray-100 p-2">
   <div class="flex space-x-4">
     <input type="text" class="px-3 py-2 border border-gray-300 rounded-md" placeholder="Search by ID or NAME" bind:value={searchQuery}>
@@ -126,42 +132,41 @@
   <thead>
     <tr>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         ID
         <button on:click={() => sortData('id')}>Sort</button>
       </th>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Name
         <button on:click={() => sortData('name')}>Sort</button>
       </th>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Size
       </th>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Energy Usage
         <button on:click={() => sortData('energy_usage')}>Sort</button>
       </th>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Solar Panels
         <button on:click={() => sortData('solar_panels')}>Sort</button>
       </th>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Solar Yield Yearly
         <button on:click={() => sortData('solar_yield_yearly')}>Sort</button>
       </th>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Appliances
       </th>
     </tr>
   </thead>
   <tbody>
-  {#if !selectedHousehold}
     {#each filteredData as data}
       <tr class="hover:!bg-les-frame bg-white cursor-pointer text-sm" on:click={() => toggleRow(data.id)}>
         <td class="px-5 py-5 border-b border-gray-200">
@@ -200,7 +205,7 @@
               <div class="p-4">
                 <div class="flex flex-col">
                   <div class="flex">
-                    <div class="w-36 text-right pr-2">Appliances:</div>
+                    <div class="w-36 text-right pr-2 font-bold">Appliances:</div>
                     {#each hours as hour}
                       <div class="w-6 h-6 text-center">{hour}</div>
                     {/each}
@@ -220,8 +225,8 @@
         </tr>
       {/if}
     {/each}
-  {:else}
-    <HomeView {household} />
-    {/if}
   </tbody>
 </table>
+{:else}
+  <HomeView {household} />
+{/if}

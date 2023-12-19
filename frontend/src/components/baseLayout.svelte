@@ -36,6 +36,8 @@
         break;
     }
   };
+
+  $: title = title;
 </script>
 
 {#if !stop}
@@ -51,7 +53,7 @@
         {/key}
       </div>
     {:else}
-      <SchedulableLoadTable />
+      <SchedulableLoadTable on:changename = {(e) => title = e.detail.action}/>
     {/if}
   </main>
 {:else}
