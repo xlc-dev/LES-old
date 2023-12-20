@@ -64,14 +64,6 @@
     }
   };
 
-  const startSimulation = async () => {
-    await SimulateService.startApiSimulateStartPost({
-      algorithm_id: selectedIDs.algorithm,
-      twinworld_id: selectedIDs.twin_world,
-      costmodel_id: selectedIDs.cost_model,
-    }).then((res) => ($stepperData = res));
-  };
-
   const prevStep = () => {
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
     if (currentStep > 1) {
