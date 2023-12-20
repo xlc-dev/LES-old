@@ -136,9 +136,39 @@
     }
   };
 
-  const uploadTwinWorld = async () => {};
+  const uploadTwinWorld = async (event) => {
+    const target = event.target;
 
-  const uploadAlgorithm = async () => {};
+    const formData = {
+      name: target.name.value,
+      description: target.description.value,
+    };
+
+    try {
+      await TwinworldService.postTwinworldApiTwinworldPost(formData);
+      submitted = true;
+      simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const uploadAlgorithm = async (event) => {
+    const target = event.target;
+
+    const formData = {
+      name: target.name.value,
+      description: target.description.value,
+    };
+
+    try {
+      await AlgorithmService.postAlgorithmApiAlgorithmPost(formData);
+      submitted = true;
+      simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const startSimulation = async () => {
     await SimulateService.startApiSimulateStartPost({
@@ -149,11 +179,15 @@
   };
 </script>
 
-<div class="max-w-3xl mx-auto">
+<div class="max-w-3xl mx-auto pt-8">
+  <h1 class="font-bold text-white text-4xl text-center">Local Energy System Simulation</h1>
+  <p class="text-white text-xl text-center py-4">
+    Welcome to the Local Energy System simulation. Explaination here.
+  </p>
   <div class="flex items-center justify-between mt-16">
     {#key selectedIDs}
       {#each Object.keys(simulationData) as stepName, index}
-        <div class="relative flex items-center">
+        <div class="relative flex items-center pb-8">
           <button
             class={`h-8 w-8 flex items-center justify-center rounded-full border-2
             ${
@@ -167,7 +201,7 @@
             <span class="text-sm font-bold">
               {#if isStepCompleted(index + 1)}✔{:else}{index + 1}{/if}
             </span>
-            <span class="absolute bottom-10 text-xs font-semibold">
+            <span class="absolute bottom-20 text-xs font-semibold w-20">
               {stepName.charAt(0).toUpperCase() + stepName.slice(1).replace("_", " ")}
             </span>
           </button>
@@ -178,6 +212,17 @@
               }`}>
             </div>
           {/if}
+          <p class="text-white absolute top-10 transform -translate-x-28 w-64 text-center">
+            {#if selectedIDs.twin_world !== 0 && stepName === "twin_world"}
+              {$twdata.twin_world}
+            {:else if selectedIDs.cost_model !== 0 && stepName === "cost_model"}
+              {$twdata.cost_model}
+            {:else if selectedIDs.algorithm !== 0 && stepName === "algorithm"}
+              {$twdata.algorithm}
+            {:else}
+              -
+            {/if}
+          </p>
         </div>
       {/each}
     {/key}
@@ -185,7 +230,7 @@
 
   {#each Object.keys(simulationData) as key, index}
     {#if currentStep === index + 1}
-      <div class="mt-8 bg-white rounded-lg p-4 min-h-[20em]">
+      <div class="mt-8 bg-white rounded-lg p-4 min-h-[20em] border-4 border-gray-400 shadow">
         <h2 class="text-3xl font-semibold text-center">
           {key.charAt(0).toUpperCase() + key.slice(1).replace("_", " ")}
         </h2>
@@ -232,40 +277,145 @@
             </div>
           </div>
         </div>
+        <div class="flex justify-between mt-8">
+          {#if currentStep !== 1}
+            <button
+              class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-les-bg-dark"
+              on:click={prevStep}>Back</button>
+          {/if}
+          {#if selectedIDs.algorithm !== 0 && selectedIDs.twin_world !== 0 && selectedIDs.cost_model !== 0}
+            <button
+              class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-blue hover:brightness-110"
+              on:click={startSimulation}>Start</button>
+          {/if}
+        </div>
       </div>
     {/if}
   {/each}
-  <div class="flex justify-between mt-8">
-    {#if currentStep !== 1}
-      <button
-        class="px-4 py-2 rounded-lg bg-les-highlight text-white border-les-blue border-2 hover:bg-les-blue transition-colors duration-200"
-        on:click={prevStep}>Back</button>
+  <div class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow">
+    {#if submitted}
+      <p class="text-green-600 text-2xl text-center font-bold pt-4 pb-6">Successfully uploaded!</p>
     {/if}
-    {#if selectedIDs.algorithm !== 0 && selectedIDs.twin_world !== 0 && selectedIDs.cost_model !== 0}
-      <button
-        class="px-4 py-2 rounded-lg bg-les-highlight text-white border-les-red border-2 hover:bg-les-red transition-colors duration-200"
-        on:click={startSimulation}>Start</button>
-    {/if}
-  </div>
-  <div class="mt-8">
-    <p class="font-bold text-lg text-white mb-4">Selected:</p>
-    <p class="text-white">
-      {#if selectedIDs.twin_world !== 0}
-        Twin World: {$twdata.twin_world}
-      {:else}
-        Twin World: -
-      {/if}
-      {#if selectedIDs.cost_model !== 0}
-        <br />Cost Model: {$twdata.cost_model}
-      {:else}
-        <br />Cost Model: -
-      {/if}
-      {#if selectedIDs.algorithm !== 0}
-        <br />Algorithm: {$twdata.algorithm}
-      {:else}
-        <br />Algorithm: -
-      {/if}
+    <p class="font-bold text-lg mb-4">
+      Upload Custom {Object.keys(simulationData)[currentStep - 1].charAt(0).toUpperCase() +
+        Object.keys(simulationData)[currentStep - 1].slice(1).replace("_", " ")}:
     </p>
+    {#if currentStep === 1}
+      <form method="post" on:submit|preventDefault={uploadTwinWorld} class="flex flex-col gap-6">
+        <label for="name" class="font-bold pt-4">Name:</label>
+        <input
+          type="text"
+          name="name"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required />
+        <label for="description" class="font-bold">Description:</label>
+        <textarea
+          name="description"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required></textarea>
+        <button
+          type="submit"
+          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+          >Submit</button>
+      </form>
+    {:else if currentStep === 2}
+      <form
+        method="post"
+        on:submit|preventDefault={uploadCostModel}
+        class="flex flex-col space-y-3">
+        <label for="name" class="font-bold pt-4">Name:</label>
+        <input
+          type="text"
+          name="name"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required />
+        <label for="description" class="font-bold">Description:</label>
+        <textarea
+          name="description"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required
+          rows="8"></textarea>
+        <div>
+          <label for="price_network_buy_consumer" class="font-bold"
+            >Price Network Buy Consumer</label>
+          <p class="text-sm text-gray-500">
+            This is the price for buying from the network as a consumer.
+          </p>
+        </div>
+        <input
+          step="any"
+          type="number"
+          name="price_network_buy_consumer"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required />
+        <div>
+          <label for="price_network_sell_consumer" class="font-bold"
+            >Price Network Sell Consumer</label>
+          <p class="text-sm text-gray-500">
+            This is the price for selling to the network as a consumer.
+          </p>
+        </div>
+        <input
+          step="any"
+          type="number"
+          name="price_network_sell_consumer"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required />
+        <div>
+          <label for="fixed_division" class="font-bold">Fixed Division</label>
+          <p class="text-sm text-gray-500">This is the fixed division for the cost model.</p>
+        </div>
+        <input
+          step="any"
+          type="number"
+          name="fixed_division"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
+        <div>
+          <label for="stock_time_delta" class="font-bold">Stock Time Delta</label>
+          <p class="text-sm text-gray-500">This is the stock time delta for the cost model.</p>
+        </div>
+        <input
+          type="number"
+          name="stock_time_delta"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
+        <div>
+          <label for="algo1" class="font-bold">Algorithm 1</label>
+          <p class="text-sm text-gray-500">This is the first algorithm for the cost model.</p>
+        </div>
+        <input
+          type="text"
+          name="algo1"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required />
+        <label for="algo2" class="font-bold">Algorithm 2</label>
+        <input
+          type="text"
+          name="algo2"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
+        <button
+          type="submit"
+          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+          >Submit</button>
+      </form>
+    {:else if currentStep === 3}
+      <form method="post" on:submit|preventDefault={uploadAlgorithm} class="flex flex-col gap-6">
+        <label for="name" class="font-bold pt-4">Name:</label>
+        <input
+          type="text"
+          name="name"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required />
+        <label for="description" class="font-bold">Description:</label>
+        <textarea
+          name="description"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required></textarea>
+        <button
+          type="submit"
+          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+          >Submit</button>
+      </form>
+    {/if}
   </div>
   <div class="mt-8 bg-white rounded-lg p-4 mb-8">
     {#if submitted}
