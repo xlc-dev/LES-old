@@ -144,9 +144,24 @@
       automaticLayout: true,
     });
 
-    editor.onDidChangeModelContent(() => {
-      onChange(editor.getValue());
-    });
+    function handleEditorChange() {
+      const newValue = editor.getValue();
+      if (validatePythonSyntax(newValue)) {
+        onChange(newValue);
+        monaco.editor.setModelMarkers(editor.getModel(), 'python', []);
+      } else {
+        monaco.editor.setModelMarkers(editor.getModel(), 'python', [{
+          startLineNumber: 1,
+          startColumn: 1,
+          endLineNumber: 1,
+          endColumn: 1,
+          message: 'Code is not valid Python syntax',
+          severity: monaco.MarkerSeverity.Error
+        }]);
+      }
+    }
+
+    editor.onDidChangeModelContent(handleEditorChange);
 
     return {
       update({ initialCode }) {
@@ -158,6 +173,11 @@
         editor.dispose();
       },
     };
+  }
+
+  function validatePythonSyntax(code) {
+    const pythonPattern = /(?:def|class)\s+\w+\s*\(.*\)\s*:\s*|import\s+\w+|from\s+\w+\s+import\s+\w+/;
+    return pythonPattern.test(code);
   }
 
   const uploadCostModel = async (event) => {
