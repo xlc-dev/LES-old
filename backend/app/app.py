@@ -53,7 +53,7 @@ def create_app() -> FastAPI:
         },
         {
             "name": "Seed",
-            "description": "Seed the database with data. Only available in development mode. It will delete all current data in the database to replace with new seed data.",
+            "description": "Seed the database with data. Only available in development mode. It will delete all current data in the database to replace with new seed data.",  # noqa: E501
         },
     ]
 
