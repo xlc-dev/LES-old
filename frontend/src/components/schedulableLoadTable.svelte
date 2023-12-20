@@ -189,12 +189,13 @@
             <div transition:slide>
               <div class="p-4 flex justify-center">
                 <div class="flex flex-col items-center">
-                  <div class="font-bold mb-2">Appliances:</div>
-                  <div class="flex">
-                    <div class="w-36"></div>
-                    {#each hours as hour}
-                      <div class="w-6 h-6 text-center">{hour}</div>
-                    {/each}
+                  <div class="flex w-full justify-start">
+                    <div class="w-36 text-right pr-2 font-bold">Appliances:</div>
+                    <div class="flex">
+                      {#each hours as hour}
+                        <div class="w-6 h-6 text-center">{hour}</div>
+                      {/each}
+                    </div>
                   </div>
                   {#each data.appliances as appliance}
                     <div class="flex items-center">
