@@ -7,7 +7,7 @@
 <h1 class="font-bold text-4xl pb-4 flex items-center gap-4">
   <img src="/house.svg" alt="" class="h-24" />{household.name} Data
 </h1>
-<div class="flex flex-col xl:flex-row gap-12 justify-between max-w-5xl">
+<div class="flex flex-col gap-12 justify-between">
   <table class="min-w-full leading-normal rounded-lg overflow-hidden">
     <thead>
       <tr>
