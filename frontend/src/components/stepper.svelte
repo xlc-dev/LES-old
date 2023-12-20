@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { stepperData, twdata } from "../lib/stores";
+  import * as monaco from 'monaco-editor';
 
   import {
     SimulateService,
@@ -12,6 +13,10 @@
   } from "../lib/client";
 
   let currentStep: number = 1;
+  let algo1Editor, algo2Editor;
+
+  let algo1Code = '';
+  let algo2Code = '';
 
   let simulationData: SimulationData = {
     algorithm: [],
@@ -38,7 +43,25 @@
 
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
     currentDescription = simulationData[keys[currentStep - 1]][0]?.description || "";
+
+    algo1Editor = monaco.editor.create(document.getElementById('algo1-editor'), {
+      value: '',
+      language: 'python',
+      lineNumbers: 'on',
+      automaticLayout: true,
+    });
+
+    algo2Editor = monaco.editor.create(document.getElementById('algo2-editor'), {
+      value: '',
+      language: 'python',
+      lineNumbers: 'on',
+      automaticLayout: true,
+    });
   });
+
+  const getAlgoCode = (editor) => {
+    return editor.getValue();
+  };
 
   const nextStep = async () => {
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
@@ -113,6 +136,30 @@
     }
   };
 
+  function initMonaco(node, { initialCode, onChange }) {
+    const editor = monaco.editor.create(node, {
+      value: initialCode,
+      language: 'python',
+      lineNumbers: 'on',
+      automaticLayout: true,
+    });
+
+    editor.onDidChangeModelContent(() => {
+      onChange(editor.getValue());
+    });
+
+    return {
+      update({ initialCode }) {
+        if (initialCode !== editor.getValue()) {
+          editor.setValue(initialCode);
+        }
+      },
+      destroy() {
+        editor.dispose();
+      },
+    };
+  }
+
   const uploadCostModel = async (event) => {
     const target = event.target;
 
@@ -123,8 +170,8 @@
       price_network_sell_consumer: target.price_network_sell_consumer.value,
       fixed_division: target.fixed_division.value,
       stock_time_delta: target.stock_time_delta.value,
-      algo_1: target.algo1.value,
-      algo_2: target.algo2.value,
+      algo_1: algo1Code,
+      algo_2: algo2Code,
     };
 
     try {
@@ -382,16 +429,9 @@
           <label for="algo1" class="font-bold">Algorithm 1</label>
           <p class="text-sm text-gray-500">This is the first algorithm for the cost model.</p>
         </div>
-        <input
-          type="text"
-          name="algo1"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required />
+        <div use:initMonaco={{ initialCode: algo1Code, onChange: (code) => algo1Code = code }} class="editor-container"></div>
         <label for="algo2" class="font-bold">Algorithm 2</label>
-        <input
-          type="text"
-          name="algo2"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
+        <div use:initMonaco={{ initialCode: algo2Code, onChange: (code) => algo2Code = code }} class="editor-container"></div>
         <button
           type="submit"
           class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
@@ -418,3 +458,10 @@
     {/if}
   </div>
 </div>
+
+<style>
+  .editor-container {
+    height: 200px;
+    border: 1px solid #ddd;
+  }
+</style>
