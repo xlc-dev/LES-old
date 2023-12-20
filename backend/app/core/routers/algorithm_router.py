@@ -51,3 +51,26 @@ async def post_algorithm(
         )
 
     algorithm_crud.create(session=session, obj_in=form_data)
+
+
+@router.delete("/{id}/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_algorithm(
+    *,
+    id: int,
+    session: Session = Depends(get_session),
+) -> None:
+    algorithm = algorithm_crud.get(session=session, id=id)
+
+    if not algorithm:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"algorithm with ID: {id} not found",
+        )
+
+    if algorithm.id == 1 or algorithm.id == 2:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"algorithm with ID: {id} is not allowed to be deleted.",
+        )
+
+    algorithm_crud.remove(session=session, id=id)

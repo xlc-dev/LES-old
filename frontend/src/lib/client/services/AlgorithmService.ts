@@ -2,38 +2,38 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { TwinWorldCreate } from "../models/TwinWorldCreate";
-import type { TwinWorldRead } from "../models/TwinWorldRead";
+import type { AlgorithmCreate } from "../models/AlgorithmCreate";
+import type { AlgorithmRead } from "../models/AlgorithmRead";
 
 import type { CancelablePromise } from "../core/CancelablePromise";
 import { OpenAPI } from "../core/OpenAPI";
 import { request as __request } from "../core/request";
 
-export class TwinworldService {
+export class AlgorithmService {
   /**
-   * Get Twinworlds
-   * @returns TwinWorldRead Successful Response
+   * Get Algorithms
+   * @returns AlgorithmRead Successful Response
    * @throws ApiError
    */
-  public static getTwinworldsApiTwinworldGet(): CancelablePromise<Array<TwinWorldRead>> {
+  public static getAlgorithmsApiAlgorithmGet(): CancelablePromise<Array<AlgorithmRead>> {
     return __request(OpenAPI, {
       method: "GET",
-      url: "/api/twinworld/",
+      url: "/api/algorithm/",
     });
   }
 
   /**
-   * Post Twinworld
+   * Post Algorithm
    * @param requestBody
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static postTwinworldApiTwinworldPost(
-    requestBody: TwinWorldCreate
+  public static postAlgorithmApiAlgorithmPost(
+    requestBody: AlgorithmCreate
   ): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: "POST",
-      url: "/api/twinworld/",
+      url: "/api/algorithm/",
       body: requestBody,
       mediaType: "application/json",
       errors: {
@@ -43,15 +43,15 @@ export class TwinworldService {
   }
 
   /**
-   * Get Twinworld
+   * Get Algorithm
    * @param id
-   * @returns TwinWorldRead Successful Response
+   * @returns AlgorithmRead Successful Response
    * @throws ApiError
    */
-  public static getTwinworldApiTwinworldIdGet(id: number): CancelablePromise<TwinWorldRead> {
+  public static getAlgorithmApiAlgorithmIdGet(id: number): CancelablePromise<AlgorithmRead> {
     return __request(OpenAPI, {
       method: "GET",
-      url: "/api/twinworld/{id}/",
+      url: "/api/algorithm/{id}/",
       path: {
         id: id,
       },
@@ -62,15 +62,15 @@ export class TwinworldService {
   }
 
   /**
-   * Delete Twinworld
+   * Delete Algorithm
    * @param id
    * @returns void
    * @throws ApiError
    */
-  public static deleteTwinworldApiTwinworldIdDelete(id: number): CancelablePromise<void> {
+  public static deleteAlgorithmApiAlgorithmIdDelete(id: number): CancelablePromise<void> {
     return __request(OpenAPI, {
       method: "DELETE",
-      url: "/api/twinworld/{id}/",
+      url: "/api/algorithm/{id}/",
       path: {
         id: id,
       },
