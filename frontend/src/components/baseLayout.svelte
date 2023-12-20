@@ -20,7 +20,9 @@
   let unsubscribe;
 
   const handleButtonClick = (action: string) => {
-      unsubscribe();
+    if (unsubscribe) {
+      unsubscribe()
+    }
     $activatedHousehold = null;
     switch (action) {
       case "Dashboard":
