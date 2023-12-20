@@ -181,7 +181,9 @@
 
 <div class="max-w-3xl mx-auto pt-8">
   <h1 class="font-bold text-white text-4xl text-center">Local Energy System Simulation</h1>
-  <p class="text-white text-xl text-center py-4">Welcome to the Local Energy System simulation. Explaination here.</p>
+  <p class="text-white text-xl text-center py-4">
+    Welcome to the Local Energy System simulation. Explaination here.
+  </p>
   <div class="flex items-center justify-between mt-16">
     {#key selectedIDs}
       {#each Object.keys(simulationData) as stepName, index}
@@ -313,7 +315,8 @@
           required></textarea>
         <button
           type="submit"
-          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200">Submit</button>
+          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+          >Submit</button>
       </form>
     {:else if currentStep === 2}
       <form
@@ -391,7 +394,8 @@
           class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
         <button
           type="submit"
-          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200">Submit</button>
+          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+          >Submit</button>
       </form>
     {:else if currentStep === 3}
       <form method="post" on:submit|preventDefault={uploadAlgorithm} class="flex flex-col gap-6">
@@ -408,7 +412,8 @@
           required></textarea>
         <button
           type="submit"
-          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200">Submit</button>
+          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+          >Submit</button>
       </form>
     {/if}
   </div>
