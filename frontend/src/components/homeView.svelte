@@ -39,6 +39,7 @@
       </tr>
     </tbody>
   </table>
+
   <table class="min-w-full leading-normal rounded-lg overflow-hidden">
     <thead>
       <tr>
