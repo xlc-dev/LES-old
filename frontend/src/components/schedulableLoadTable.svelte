@@ -187,10 +187,11 @@
         <tr>
           <td class="hover:!bg-les-frame bg-white cursor-pointer text-sm" colspan={numberOfColumns}>
             <div transition:slide>
-              <div class="p-4">
-                <div class="flex flex-col">
+              <div class="p-4 flex justify-center">
+                <div class="flex flex-col items-center">
+                  <div class="font-bold mb-2">Appliances:</div>
                   <div class="flex">
-                    <div class="w-36 text-right pr-2 font-bold">Appliances:</div>
+                    <div class="w-36"></div>
                     {#each hours as hour}
                       <div class="w-6 h-6 text-center">{hour}</div>
                     {/each}
