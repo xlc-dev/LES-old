@@ -298,7 +298,7 @@
     {/if}
     <p class="font-bold text-lg mb-4">
       Upload Custom {Object.keys(simulationData)[currentStep - 1].charAt(0).toUpperCase() +
-        Object.keys(simulationData)[currentStep - 1].slice(1).replace("_", " ")}:
+    Object.keys(simulationData)[currentStep - 1].slice(1).replace("_", " ")}:
     </p>
     {#if currentStep === 1}
       <form method="post" on:submit|preventDefault={uploadTwinWorld} class="flex flex-col gap-6">
@@ -316,7 +316,7 @@
         <button
           type="submit"
           class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
-          >Submit</button>
+        >Submit</button>
       </form>
     {:else if currentStep === 2}
       <form
@@ -337,7 +337,7 @@
           rows="8"></textarea>
         <div>
           <label for="price_network_buy_consumer" class="font-bold"
-            >Price Network Buy Consumer</label>
+          >Price Network Buy Consumer</label>
           <p class="text-sm text-gray-500">
             This is the price for buying from the network as a consumer.
           </p>
@@ -350,7 +350,7 @@
           required />
         <div>
           <label for="price_network_sell_consumer" class="font-bold"
-            >Price Network Sell Consumer</label>
+          >Price Network Sell Consumer</label>
           <p class="text-sm text-gray-500">
             This is the price for selling to the network as a consumer.
           </p>
@@ -395,7 +395,7 @@
         <button
           type="submit"
           class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
-          >Submit</button>
+        >Submit</button>
       </form>
     {:else if currentStep === 3}
       <form method="post" on:submit|preventDefault={uploadAlgorithm} class="flex flex-col gap-6">
@@ -413,129 +413,7 @@
         <button
           type="submit"
           class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
-          >Submit</button>
-      </form>
-    {/if}
-  </div>
-  <div class="mt-8 bg-white rounded-lg p-4 mb-8">
-    {#if submitted}
-      <p class="text-green-600 text-2xl text-center font-bold pt-4 pb-6">Successfully uploaded!</p>
-    {/if}
-    <p class="font-bold text-lg mb-4">
-      Upload Custom {Object.keys(simulationData)[currentStep - 1].charAt(0).toUpperCase() +
-        Object.keys(simulationData)[currentStep - 1].slice(1).replace("_", " ")}:
-    </p>
-    {#if currentStep === 1}
-      <form method="post" on:submit|preventDefault={uploadTwinWorld} class="flex flex-col gap-6">
-        <label for="name" class="font-bold pt-4">Name:</label>
-        <input
-          type="text"
-          name="name"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required />
-        <label for="description" class="font-bold">Description:</label>
-        <textarea
-          name="description"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required></textarea>
-        <button
-          type="submit"
-          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight">Submit</button>
-      </form>
-    {:else if currentStep === 2}
-      <form
-        method="post"
-        on:submit|preventDefault={uploadCostModel}
-        class="flex flex-col space-y-3">
-        <label for="name" class="font-bold pt-4">Name:</label>
-        <input
-          type="text"
-          name="name"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required />
-        <label for="description" class="font-bold">Description:</label>
-        <textarea
-          name="description"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required
-          rows="8"></textarea>
-        <div>
-          <label for="price_network_buy_consumer" class="font-bold"
-            >Price Network Buy Consumer</label>
-          <p class="text-sm text-gray-500">
-            This is the price for buying from the network as a consumer.
-          </p>
-        </div>
-        <input
-          step="any"
-          type="number"
-          name="price_network_buy_consumer"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required />
-        <div>
-          <label for="price_network_sell_consumer" class="font-bold"
-            >Price Network Sell Consumer</label>
-          <p class="text-sm text-gray-500">
-            This is the price for selling to the network as a consumer.
-          </p>
-        </div>
-        <input
-          step="any"
-          type="number"
-          name="price_network_sell_consumer"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required />
-        <div>
-          <label for="fixed_division" class="font-bold">Fixed Division</label>
-          <p class="text-sm text-gray-500">This is the fixed division for the cost model.</p>
-        </div>
-        <input
-          step="any"
-          type="number"
-          name="fixed_division"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
-        <div>
-          <label for="stock_time_delta" class="font-bold">Stock Time Delta</label>
-          <p class="text-sm text-gray-500">This is the stock time delta for the cost model.</p>
-        </div>
-        <input
-          type="number"
-          name="stock_time_delta"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
-        <div>
-          <label for="algo1" class="font-bold">Algorithm 1</label>
-          <p class="text-sm text-gray-500">This is the first algorithm for the cost model.</p>
-        </div>
-        <input
-          type="text"
-          name="algo1"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required />
-        <label for="algo2" class="font-bold">Algorithm 2</label>
-        <input
-          type="text"
-          name="algo2"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
-        <button
-          type="submit"
-          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight">Submit</button>
-      </form>
-    {:else if currentStep === 3}
-      <form method="post" on:submit|preventDefault={uploadAlgorithm} class="flex flex-col gap-6">
-        <label for="name" class="font-bold pt-4">Name:</label>
-        <input
-          type="text"
-          name="name"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required />
-        <label for="description" class="font-bold">Description:</label>
-        <textarea
-          name="description"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required></textarea>
-        <button
-          type="submit"
-          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight">Submit</button>
+        >Submit</button>
       </form>
     {/if}
   </div>

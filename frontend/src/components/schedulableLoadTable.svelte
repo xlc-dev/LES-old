@@ -68,11 +68,6 @@
 
   const numberOfColumns = 7;
 
-  function getCellColor(bitmap, hour) {
-    const bitmapString = bitmap.toString(2).padStart(24, '0');
-    return bitmapString[hour] === '1' ? 'bg-blue-600' : 'bg-gray-700';
-  }
-
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
   function sortData(column) {
@@ -201,7 +196,7 @@
           <td class="hover:!bg-les-frame bg-white cursor-pointer text-sm" colspan={numberOfColumns}>
             <div transition:slide>
               <div class="p-4 flex justify-center">
-                <SchedulableLoadGrid appliances={data.appliances} hours={hours} getCellColor={getCellColor} />
+                <SchedulableLoadGrid appliances={data.appliances} hours={hours} />
               </div>
             </div>
             <div class="border-b-4 border-gray-200"></div>

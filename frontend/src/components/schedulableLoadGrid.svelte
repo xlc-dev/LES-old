@@ -1,9 +1,13 @@
 <script lang="ts">
     export let appliances;
     export let hours;
-    export let getCellColor;
 
     const numberOfColumns = 7;
+
+    function getCellColor(bitmap, hour) {
+      const bitmapString = bitmap.toString(2).padStart(24, '0');
+      return bitmapString[hour] === '1' ? 'bg-blue-600' : 'bg-gray-700';
+    }
 </script>
 
 <div class="flex flex-col items-center">
