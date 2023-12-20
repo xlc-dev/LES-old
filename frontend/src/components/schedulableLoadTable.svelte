@@ -2,7 +2,7 @@
   import { get } from 'svelte/store';
   import { slide } from 'svelte/transition';
   import {activatedHousehold, stepperData} from "../lib/stores";
-  import type { HouseholdRead } from "../lib/client";
+  import SchedulableLoadGrid from './schedulableLoadGrid.svelte';
 
   let expandedRow = null;
   let sortColumn = null;
@@ -188,24 +188,7 @@
           <td class="hover:!bg-les-frame bg-white cursor-pointer text-sm" colspan={numberOfColumns}>
             <div transition:slide>
               <div class="p-4 flex justify-center">
-                <div class="flex flex-col items-center">
-                  <div class="flex w-full justify-start">
-                    <div class="w-36 text-right pr-2 font-bold">Appliances:</div>
-                    <div class="flex">
-                      {#each hours as hour}
-                        <div class="w-6 h-6 text-center">{hour}</div>
-                      {/each}
-                    </div>
-                  </div>
-                  {#each data.appliances as appliance}
-                    <div class="flex items-center">
-                      <div class="w-36 text-right pr-2 whitespace-nowrap">{appliance.name}</div>
-                      {#each hours as hour}
-                        <div class={`w-6 h-6 border border-white ${getCellColor(appliance.appliance_windows[0].bitmap_window, hour)}`}></div>
-                      {/each}
-                    </div>
-                  {/each}
-                </div>
+                <SchedulableLoadGrid appliances={data.appliances} hours={hours} getCellColor={getCellColor} />
               </div>
             </div>
             <div class="border-b-4 border-gray-200"></div>
