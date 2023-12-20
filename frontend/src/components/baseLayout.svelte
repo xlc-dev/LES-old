@@ -57,7 +57,7 @@
 {#if !stop}
   <Sidebar on:click={(e) => handleButtonClick(e.detail.action)} currentComponent={title} />
   <TitleBar {title} />
-  <main class="flex-1 bg-les-frame ml-64 p-4 min-h-screen" in:blur>
+  <main class="flex-1 bg-les-frame dark:bg-les-bg-dark ml-64 p-4 min-h-screen" in:blur>
     {#if $activatedHousehold !== null}
       <HomeView household = {$activatedHousehold} />
     {:else if selectedComponent !== null}
