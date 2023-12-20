@@ -119,32 +119,44 @@
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         ID
-        <button on:click={() => sortData('id')}>Sort</button>
+        <button on:click={() => sortData('id')}>
+          <img src="/filter.svg" alt="" class="h-3" />
+        </button>
       </th>
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Name
-        <button on:click={() => sortData('name')}>Sort</button>
+        <button on:click={() => sortData('name')}>
+          <img src="/filter.svg" alt="" class="h-3" />
+        </button>
       </th>
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Size
-        <button on:click={() => sortData('size')}>Sort</button>
+        <button on:click={() => sortData('size')}>
+          <img src="/filter.svg" alt="" class="h-3" />
+        </button>
       </th>
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Energy Usage
-        <button on:click={() => sortData('energy_usage')}>Sort</button>
+        <button on:click={() => sortData('energy_usage')}>
+          <img src="/filter.svg" alt="" class="h-3" />
+        </button>
       </th>
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Solar Panels
-        <button on:click={() => sortData('solar_panels')}>Sort</button>
+        <button on:click={() => sortData('solar_panels')}>
+          <img src="/filter.svg" alt="" class="h-3" />
+        </button>
       </th>
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Solar Yield Yearly
-        <button on:click={() => sortData('solar_yield_yearly')}>Sort</button>
+        <button on:click={() => sortData('solar_yield_yearly')}>
+          <img src="/filter.svg" alt="" class="h-3" />
+        </button>
       </th>
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
