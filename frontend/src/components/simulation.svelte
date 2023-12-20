@@ -19,7 +19,7 @@
       <button
         class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4"
         on:click={() => showHome(data)}>
-        <img src="/house.svg" class="h-6" alt="" />
+        <img src="/house.svg" class="h-24" alt="" />
         {data.name}
       </button>
     {/each}
