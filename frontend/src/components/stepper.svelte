@@ -3,7 +3,13 @@
   import { fade } from "svelte/transition";
   import { stepperData, twdata } from "../lib/stores";
 
-  import { SimulateService, type SimulationData } from "../lib/client";
+  import {
+    SimulateService,
+    type SimulationData,
+    TwinworldService,
+    CostmodelService,
+    AlgorithmService,
+  } from "../lib/client";
 
   let currentStep: number = 1;
 
@@ -19,6 +25,7 @@
     algorithm: 0,
   };
 
+  let submitted: boolean = false;
   let currentDescription: string = "";
 
   const updateDescription = (description: string) => {
@@ -57,26 +64,12 @@
     }
   };
 
-  const startSimulation = async () => {
-    await SimulateService.startApiSimulateStartPost({
-      algorithm_id: selectedIDs.algorithm,
-      twinworld_id: selectedIDs.twin_world,
-      costmodel_id: selectedIDs.cost_model,
-    }).then((res) => ($stepperData = res));
-  };
-
   const prevStep = () => {
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
     if (currentStep > 1) {
       currentStep -= 1;
       currentDescription = simulationData[keys[currentStep - 1]][0]?.description || "";
     }
-  };
-
-  const selectOption = (optionId: number, category: any, optionName: string) => {
-    selectedIDs[category] = optionId;
-    twdata.update((data) => ({ ...data, [category]: optionName }));
-    nextStep();
   };
 
   const isStepCompleted = (step: number): boolean => {
@@ -89,6 +82,70 @@
     currentStep = stepNumber;
     currentDescription =
       simulationData[Object.keys(simulationData)[currentStep - 1]][0]?.description || "";
+  };
+
+  const selectOption = (optionId: number, category: any, optionName: string) => {
+    selectedIDs[category] = optionId;
+    twdata.update((data) => ({ ...data, [category]: optionName }));
+    nextStep();
+  };
+
+  const deleteOption = async (optionId: number, category: any) => {
+    selectedIDs[category] = 0;
+    twdata.update((data) => ({ ...data, [category]: "-" }));
+    await deleteOptionBasedOnCategory(category, optionId);
+    simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+  };
+
+  const deleteOptionBasedOnCategory = async (category: keyof SimulationData, optionId: number) => {
+    switch (category) {
+      case "cost_model":
+        await CostmodelService.deleteCostmodelApiCostmodelIdDelete(optionId);
+        break;
+      case "twin_world":
+        await TwinworldService.deleteTwinworldApiTwinworldIdDelete(optionId);
+        break;
+      case "algorithm":
+        await AlgorithmService.deleteAlgorithmApiAlgorithmIdDelete(optionId);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const uploadCostModel = async (event) => {
+    const target = event.target;
+
+    const formData = {
+      name: target.name.value,
+      description: target.description.value,
+      price_network_buy_consumer: target.price_network_buy_consumer.value,
+      price_network_sell_consumer: target.price_network_sell_consumer.value,
+      fixed_division: target.fixed_division.value,
+      stock_time_delta: target.stock_time_delta.value,
+      algo_1: target.algo1.value,
+      algo_2: target.algo2.value,
+    };
+
+    try {
+      await CostmodelService.postCostmodelApiCostmodelPost(formData);
+      submitted = true;
+      simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const uploadTwinWorld = async () => {};
+
+  const uploadAlgorithm = async () => {};
+
+  const startSimulation = async () => {
+    await SimulateService.startApiSimulateStartPost({
+      algorithm_id: selectedIDs.algorithm,
+      twinworld_id: selectedIDs.twin_world,
+      costmodel_id: selectedIDs.cost_model,
+    }).then((res) => ($stepperData = res));
   };
 </script>
 
@@ -138,13 +195,32 @@
             <div class="border p-4">
               <ul class="flex flex-col gap-4 items-start">
                 {#each simulationData[key] as option (option.id)}
-                  <button
-                    on:click={() => selectOption(option.id, key, option.name)}
-                    on:focus={() => updateDescription(option.description)}
-                    on:mouseover={() => updateDescription(option.description)}
-                    class="cursor-pointer hover:text-les-blue">
-                    {option.name}
-                  </button>
+                  <div class="flex gap-2 items-center">
+                    <button
+                      on:click={() => selectOption(option.id, key, option.name)}
+                      on:focus={() => updateDescription(option.description)}
+                      on:mouseover={() => updateDescription(option.description)}
+                      class="cursor-pointer hover:text-les-blue relative flex gap-2 items-center transition-colors duration-200">
+                      {option.name}
+                    </button>
+                    {#if option.id !== 1 && option.id !== 2}
+                      <button on:click={() => deleteOption(option.id, key)}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          data-slot="icon"
+                          class="stroke-les-red hover:stroke-les-red-dark h-4 cursor-pointer">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                      </button>
+                    {/if}
+                  </div>
                 {/each}
               </ul>
             </div>
@@ -190,5 +266,127 @@
         <br />Algorithm: -
       {/if}
     </p>
+  </div>
+  <div class="mt-8 bg-white rounded-lg p-4 mb-8">
+    {#if submitted}
+      <p class="text-green-600 text-2xl text-center font-bold pt-4 pb-6">Successfully uploaded!</p>
+    {/if}
+    <p class="font-bold text-lg mb-4">
+      Upload Custom {Object.keys(simulationData)[currentStep - 1].charAt(0).toUpperCase() +
+        Object.keys(simulationData)[currentStep - 1].slice(1).replace("_", " ")}:
+    </p>
+    {#if currentStep === 1}
+      <form method="post" on:submit|preventDefault={uploadTwinWorld} class="flex flex-col gap-6">
+        <label for="name" class="font-bold pt-4">Name:</label>
+        <input
+          type="text"
+          name="name"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required />
+        <label for="description" class="font-bold">Description:</label>
+        <textarea
+          name="description"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required></textarea>
+        <button
+          type="submit"
+          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight">Submit</button>
+      </form>
+    {:else if currentStep === 2}
+      <form
+        method="post"
+        on:submit|preventDefault={uploadCostModel}
+        class="flex flex-col space-y-3">
+        <label for="name" class="font-bold pt-4">Name:</label>
+        <input
+          type="text"
+          name="name"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required />
+        <label for="description" class="font-bold">Description:</label>
+        <textarea
+          name="description"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required
+          rows="8"></textarea>
+        <div>
+          <label for="price_network_buy_consumer" class="font-bold"
+            >Price Network Buy Consumer</label>
+          <p class="text-sm text-gray-500">
+            This is the price for buying from the network as a consumer.
+          </p>
+        </div>
+        <input
+          step="any"
+          type="number"
+          name="price_network_buy_consumer"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required />
+        <div>
+          <label for="price_network_sell_consumer" class="font-bold"
+            >Price Network Sell Consumer</label>
+          <p class="text-sm text-gray-500">
+            This is the price for selling to the network as a consumer.
+          </p>
+        </div>
+        <input
+          step="any"
+          type="number"
+          name="price_network_sell_consumer"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required />
+        <div>
+          <label for="fixed_division" class="font-bold">Fixed Division</label>
+          <p class="text-sm text-gray-500">This is the fixed division for the cost model.</p>
+        </div>
+        <input
+          step="any"
+          type="number"
+          name="fixed_division"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
+        <div>
+          <label for="stock_time_delta" class="font-bold">Stock Time Delta</label>
+          <p class="text-sm text-gray-500">This is the stock time delta for the cost model.</p>
+        </div>
+        <input
+          type="number"
+          name="stock_time_delta"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
+        <div>
+          <label for="algo1" class="font-bold">Algorithm 1</label>
+          <p class="text-sm text-gray-500">This is the first algorithm for the cost model.</p>
+        </div>
+        <input
+          type="text"
+          name="algo1"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required />
+        <label for="algo2" class="font-bold">Algorithm 2</label>
+        <input
+          type="text"
+          name="algo2"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
+        <button
+          type="submit"
+          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight">Submit</button>
+      </form>
+    {:else if currentStep === 3}
+      <form method="post" on:submit|preventDefault={uploadAlgorithm} class="flex flex-col gap-6">
+        <label for="name" class="font-bold pt-4">Name:</label>
+        <input
+          type="text"
+          name="name"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required />
+        <label for="description" class="font-bold">Description:</label>
+        <textarea
+          name="description"
+          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          required></textarea>
+        <button
+          type="submit"
+          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight">Submit</button>
+      </form>
+    {/if}
   </div>
 </div>

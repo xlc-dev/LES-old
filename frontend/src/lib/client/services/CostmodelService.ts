@@ -60,4 +60,23 @@ export class CostmodelService {
       },
     });
   }
+
+  /**
+   * Delete Costmodel
+   * @param id
+   * @returns void
+   * @throws ApiError
+   */
+  public static deleteCostmodelApiCostmodelIdDelete(id: number): CancelablePromise<void> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/costmodel/{id}/",
+      path: {
+        id: id,
+      },
+      errors: {
+        422: `Validation Error`,
+      },
+    });
+  }
 }

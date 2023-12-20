@@ -7,6 +7,7 @@ export { CancelablePromise, CancelError } from "./core/CancelablePromise";
 export { OpenAPI } from "./core/OpenAPI";
 export type { OpenAPIConfig } from "./core/OpenAPI";
 
+export type { AlgorithmCreate } from "./models/AlgorithmCreate";
 export type { AlgorithmRead } from "./models/AlgorithmRead";
 export { ApplianceDays } from "./models/ApplianceDays";
 export type { ApplianceRead } from "./models/ApplianceRead";
@@ -22,6 +23,7 @@ export type { TwinWorldCreate } from "./models/TwinWorldCreate";
 export type { TwinWorldRead } from "./models/TwinWorldRead";
 export type { ValidationError } from "./models/ValidationError";
 
+export { AlgorithmService } from "./services/AlgorithmService";
 export { CostmodelService } from "./services/CostmodelService";
 export { SeedService } from "./services/SeedService";
 export { SimulateService } from "./services/SimulateService";
