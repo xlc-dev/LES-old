@@ -5,8 +5,15 @@
   import HomeView from "./homeView.svelte";
 
   let household: HouseholdRead;
+  let sizeFilter = '';
+  let solarPanelFilter = '';
 
   $: selectedHousehold = household;
+
+  $: filteredHouseholds = $stepperData.filter(h =>
+    (sizeFilter === '' || h.size === parseInt(sizeFilter, 10)) &&
+    (solarPanelFilter === '' || (solarPanelFilter === 'yes' && h.solar_panels > 0) || (solarPanelFilter === 'no' && h.solar_panels === 0))
+  );
 
   const showHome = (data: HouseholdRead) => {
     household = data;
@@ -15,14 +22,31 @@
   const hasSolarPanels = (household) => household.solar_panels > 0;
 </script>
 
+<div class="flex justify-between items-center rounded-lg bg-gray-100 p-2">
+  <div class="flex space-x-4">
+    <select bind:value={sizeFilter} class="px-3 py-2 border border-gray-300 rounded-md">
+      <option value="">Size</option>
+      {#each Array.from({ length: 10 }, (_, i) => i + 1) as size}
+        <option value={size}>{size}</option>
+      {/each}
+    </select>
+
+    <select bind:value={solarPanelFilter} class="px-3 py-2 border border-gray-300 rounded-md">
+      <option value="">Solar Panels</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+  </div>
+</div>
+
 {#if !selectedHousehold}
   <div class="grid grid-cols-5 gap-4">
-    {#each $stepperData as data}
+    {#each filteredHouseholds as data}
       <button
         class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4"
         on:click={() => showHome(data)}>
         <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-             width="120px" height="120px" viewBox="0 0 345.804 345.804" xml:space="preserve">
+               width="90px" height="90px" viewBox="0 0 345.804 345.804" xml:space="preserve">
           <g>
             <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle" font-size="35" fill="black">{data.size}</text>
             <text x="50%" y="80%" dominant-baseline="middle" text-anchor="middle" font-size="35" fill="black">{data.name}</text>
@@ -43,3 +67,19 @@
 {:else}
   <HomeView {household} />
 {/if}
+
+<style>
+  .filter-bar {
+    background-color: #f3f3f3;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    gap: 10px;
+  }
+
+  .filter-select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+</style>
