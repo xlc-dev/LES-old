@@ -39,8 +39,10 @@
   </div>
 </div>
 
+<br>
+
 {#if !selectedHousehold}
-  <div class="grid grid-cols-5 gap-4">
+  <div class="grid grid-cols-5 gap-4 flex justify-between items-center rounded-lg bg-gray-100 p-2">
     {#each filteredHouseholds as data}
       <button
         class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4"
