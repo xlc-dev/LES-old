@@ -76,7 +76,7 @@
         if (targetStep !== -1) {
           currentStep = targetStep + 1;
           currentDescription = simulationData[skippedID][0]?.description || "";
-          return; // Exit the function after skipping to the specific step
+          return;
         }
       }
     }

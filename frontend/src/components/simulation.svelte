@@ -47,7 +47,7 @@
       <button
         class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4"
         on:click={() => showHome(data)}>
-        <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+        <svg class="house-svg" fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                width="90px" height="90px" viewBox="0 0 345.804 345.804" xml:space="preserve">
           <g>
             <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle" font-size="35" fill="black">{data.size}</text>
@@ -83,5 +83,13 @@
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
+  }
+
+  .house-svg {
+    transition: all .3s cubic-bezier(.3, 0, 0, 1.3);
+  }
+
+  .house-svg:hover {
+    transform: scale(1.2);
   }
 </style>
