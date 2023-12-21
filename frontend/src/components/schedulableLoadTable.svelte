@@ -3,6 +3,7 @@
   import { slide } from 'svelte/transition';
   import {activatedHousehold, stepperData} from "../lib/stores";
   import SchedulableLoadGrid from './schedulableLoadGrid.svelte';
+  import SortIcon from './sortIcon.svelte';
 
   let expandedRow = null;
   let sortColumn = null;
@@ -41,7 +42,6 @@
     });
   }
 
-
   let showDropdown = null;
 
   function toggleDropdown(filterName) {
@@ -71,13 +71,18 @@
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
   function sortData(column) {
+    if (sortColumn === column) {
+      sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortColumn = column;
+      sortOrder = 'desc';
+    }
     sortColumn = column;
     filteredData = filteredData.slice().sort((a, b) => {
       if (a[column] < b[column]) return sortOrder === 'asc' ? -1 : 1;
       if (a[column] > b[column]) return sortOrder === 'asc' ? 1 : -1;
       return 0;
     });
-    sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
   }
 </script>
 
@@ -114,44 +119,57 @@
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         ID
-        <button on:click={() => sortData('id')}>
-          <img src="/filter.svg" alt="" class="h-3" />
-        </button>
+        <SortIcon
+          isSortedAsc={sortColumn === 'id' && sortOrder === 'asc'}
+          isSortedDesc={sortColumn === 'id' && sortOrder === 'desc'}
+          onSort={() => sortData('id')}
+        />
       </th>
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Name
-        <button on:click={() => sortData('name')}>
-          <img src="/filter.svg" alt="" class="h-3" />
-        </button>
+        <SortIcon
+          isSortedAsc={sortColumn === 'name' && sortOrder === 'asc'}
+          isSortedDesc={sortColumn === 'name' && sortOrder === 'desc'}
+          onSort={() => sortData('name')}
+        />
       </th>
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Size
-        <button on:click={() => sortData('size')}>
-          <img src="/filter.svg" alt="" class="h-3" />
-        </button>
+        <SortIcon
+          isSortedAsc={sortColumn === 'size' && sortOrder === 'asc'}
+          isSortedDesc={sortColumn === 'size' && sortOrder === 'desc'}
+          onSort={() => sortData('size')}
+        />
       </th>
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Energy Usage
-        <button on:click={() => sortData('energy_usage')}>
-          <img src="/filter.svg" alt="" class="h-3" />
-        </button>
+        <SortIcon
+          isSortedAsc={sortColumn === 'energy_usage' && sortOrder === 'asc'}
+          isSortedDesc={sortColumn === 'energy_usage' && sortOrder === 'desc'}
+          onSort={() => sortData('energy_usage')}
+        />
       </th>
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Solar Panels
-        <button on:click={() => sortData('solar_panels')}>
-          <img src="/filter.svg" alt="" class="h-3" />
-        </button>
+        <SortIcon
+          isSortedAsc={sortColumn === 'solar_panels' && sortOrder === 'asc'}
+          isSortedDesc={sortColumn === 'solar_panels' && sortOrder === 'desc'}
+          onSort={() => sortData('solar_panels')}
+        />
       </th>
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
         Solar Yield Yearly
-        <button on:click={() => sortData('solar_yield_yearly')}>
-          <img src="/filter.svg" alt="" class="h-3" />
-        </button>
+        <SortIcon
+          isSortedAsc={sortColumn === 'solar_yield_yearly' && sortOrder === 'asc'}
+          isSortedDesc={sortColumn === 'solar_yield_yearly' && sortOrder === 'desc'}
+          onSort={() => sortData('solar_yield_yearly')}
+
+        />
       </th>
       <th
         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">

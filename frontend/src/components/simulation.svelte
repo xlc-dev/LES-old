@@ -71,20 +71,6 @@
 {/if}
 
 <style>
-  .filter-bar {
-    background-color: #f3f3f3;
-    padding: 10px;
-    border-radius: 8px;
-    display: flex;
-    gap: 10px;
-  }
-
-  .filter-select {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
   .house-svg {
     transition: all .3s cubic-bezier(.3, 0, 0, 1.3);
   }
