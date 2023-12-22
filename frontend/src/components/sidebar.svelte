@@ -28,13 +28,6 @@
       <img src="/arrows.png" alt="" class="transform rotate-180" />
       <p class="text-les-frame">LES RESEARCH</p>
     </div>
-    <button on:click={toggleDarkMode}>
-      {#if isDarkMode}
-        <img src="/lightmode.svg" alt="" class="w-full p-4" />
-      {:else}
-        <img src="/darkmode.svg" alt="" class="w-full p-4" />
-      {/if}
-    </button>
     <div class="flex flex-col items-start justify-center gap-3 mt-4">
       <button
         class="flex items-center gap-3 hover:bg-les-bg-dark w-full p-4 transition-colors duration-200 {currentComponent ===
@@ -81,6 +74,16 @@
       <p class="text-gray-400">Cost Model: {$twdata.cost_model}</p>
       <p class="text-gray-400">Algorithm: {$twdata.algorithm}</p>
       <hr class="border-gray-800 my-4" />
+      <div class="flex items-center pb-4">
+        <label for="dark-mode-toggle" class="mr-2 text-les-frame">{isDarkMode ? 'Dark Mode' : 'Light Mode'}</label>
+        <input type="checkbox" id="dark-mode-toggle" class="hidden" checked={isDarkMode} on:change={toggleDarkMode} />
+        <label for="dark-mode-toggle" class="cursor-pointer">
+          <div class="relative">
+            <div class="block bg-gray-600 w-14 h-8 rounded-full"></div>
+            <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
+          </div>
+        </label>
+      </div>
     </div>
     <button
       class="flex items-center gap-3 hover:bg-les-bg-dark bg-les-red-dark w-full p-4 py-6 transition-colors duration-200"
@@ -90,3 +93,9 @@
     </button>
   </div>
 </div>
+
+<style>
+  #dark-mode-toggle:checked + label .dot {
+    transform: translateX(100%);
+  }
+</style>

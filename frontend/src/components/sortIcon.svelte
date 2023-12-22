@@ -15,11 +15,11 @@
 
 <style>
   .svg-icon {
-    width: 20px;
-    height: 20px;
+    width: 10px;
+    height: 10px;
   }
   .sorted {
-    color: blue;
+    color: #1565C0;
   }
   .not-sorted {
     color: black;
