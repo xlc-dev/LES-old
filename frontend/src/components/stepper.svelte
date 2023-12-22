@@ -347,7 +347,7 @@
         <div class="flex justify-between mt-8">
           {#if currentStep !== 1}
             <button
-              class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-les-bg-dark"
+              class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-dark-les-bg"
               on:click={prevStep}>Back</button>
           {/if}
           {#if selectedIDs.algorithm !== 0 && selectedIDs.twin_world !== 0 && selectedIDs.cost_model !== 0}
@@ -373,16 +373,16 @@
         <input
           type="text"
           name="name"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required />
         <label for="description" class="font-bold">Description:</label>
         <textarea
           name="description"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required></textarea>
         <button
           type="submit"
-          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+          class="py-3 bg-les-white rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
         >Submit</button>
       </form>
     {:else if currentStep === 2}
@@ -394,12 +394,12 @@
         <input
           type="text"
           name="name"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required />
         <label for="description" class="font-bold">Description:</label>
         <textarea
           name="description"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required
           rows="8"></textarea>
         <div>
@@ -413,7 +413,7 @@
           step="any"
           type="number"
           name="price_network_buy_consumer"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required />
         <div>
           <label for="price_network_sell_consumer" class="font-bold"
@@ -426,7 +426,7 @@
           step="any"
           type="number"
           name="price_network_sell_consumer"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required />
         <div>
           <label for="fixed_division" class="font-bold">Fixed Division</label>
@@ -436,7 +436,7 @@
           step="any"
           type="number"
           name="fixed_division"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
+          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
         <div>
           <label for="stock_time_delta" class="font-bold">Stock Time Delta</label>
           <p class="text-sm text-gray-500">This is the stock time delta for the cost model.</p>
@@ -444,7 +444,7 @@
         <input
           type="number"
           name="stock_time_delta"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
+          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
         <div>
           <label for="algo1" class="font-bold">Algorithm 1</label>
           <p class="text-sm text-gray-500">This is the first algorithm for the cost model.</p>
@@ -454,7 +454,7 @@
         <div use:initMonaco={{ initialCode: algo2Code, onChange: (code) => algo2Code = code }} class="editor-container"></div>
         <button
           type="submit"
-          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+          class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
         >Submit</button>
       </form>
     {:else if currentStep === 3}
@@ -463,16 +463,16 @@
         <input
           type="text"
           name="name"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required />
         <label for="description" class="font-bold">Description:</label>
         <textarea
           name="description"
-          class="bg-les-frame p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required></textarea>
         <button
           type="submit"
-          class="py-3 bg-les-bg-dark rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+          class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
         >Submit</button>
       </form>
     {/if}

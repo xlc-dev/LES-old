@@ -86,12 +86,12 @@
   }
 </script>
 
-<div class="flex justify-between items-center rounded-lg bg-gray-100 p-2">
+<div class="flex justify-between items-center rounded-lg bg-gray-100 p-2 dark:bg-dark-table-header">
   <div class="flex space-x-4">
-    <input type="text" class="px-3 py-2 border border-gray-300 rounded-md" placeholder="Search by ID or NAME" bind:value={searchQuery}>
+    <input type="text" class="px-3 py-2 border border-gray-300 rounded-md dark:bg-dark-table-row" placeholder="Search by ID or NAME" bind:value={searchQuery}>
     {#each Object.entries(filters) as [filterName, options]}
       <button class="relative" id={`${filterName}-dropdown`} on:click|stopPropagation={createHandleClickOutside(filterName)}>
-        <button class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" on:click={() => toggleDropdown(filterName)} on:keydown={(e) => e.key === 'Enter' && toggleDropdown(filterName)}>
+        <button class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white" on:click={() => toggleDropdown(filterName)} on:keydown={(e) => e.key === 'Enter' && toggleDropdown(filterName)}>
           {toReadableName(filterName)}
         </button>
         {#if showDropdown === filterName}
@@ -117,7 +117,7 @@
   <thead>
     <tr>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
         ID
         <SortIcon
           isSortedAsc={sortColumn === 'id' && sortOrder === 'asc'}
@@ -126,7 +126,7 @@
         />
       </th>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
         Name
         <SortIcon
           isSortedAsc={sortColumn === 'name' && sortOrder === 'asc'}
@@ -135,7 +135,7 @@
         />
       </th>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
         Size
         <SortIcon
           isSortedAsc={sortColumn === 'size' && sortOrder === 'asc'}
@@ -144,7 +144,7 @@
         />
       </th>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
         Energy Usage
         <SortIcon
           isSortedAsc={sortColumn === 'energy_usage' && sortOrder === 'asc'}
@@ -153,7 +153,7 @@
         />
       </th>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
         Solar Panels
         <SortIcon
           isSortedAsc={sortColumn === 'solar_panels' && sortOrder === 'asc'}
@@ -162,7 +162,7 @@
         />
       </th>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
         Solar Yield Yearly
         <SortIcon
           isSortedAsc={sortColumn === 'solar_yield_yearly' && sortOrder === 'asc'}
@@ -172,21 +172,21 @@
         />
       </th>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
         Appliances
       </th>
     </tr>
   </thead>
   <tbody>
     {#each filteredData as data}
-      <tr class="hover:!bg-les-frame bg-white cursor-pointer text-sm" on:click={() => toggleRow(data.id)}>
+      <tr class="hover:!bg-gray-100 bg-white cursor-pointer text-sm hover:dark:!bg-dark-table-header dark:bg-dark-table-row dark:text-white" on:click={() => toggleRow(data.id)}>
         <td class="px-5 py-5">
-          <button class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4" on:click={() => $activatedHousehold = data}>
+          <button class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4 dark:text-les-white" on:click={() => $activatedHousehold = data}>
             {data.id}
           </button>
         </td>
         <td class="px-5 py-5">
-          <button class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4" on:click={() => $activatedHousehold = data}>
+          <button class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4 dark:text-les-white" on:click={() => $activatedHousehold = data}>
             {data.name}
           </button>
         </td>
@@ -202,7 +202,7 @@
         <td class="px-5 py-5">
           {data.solar_yield_yearly}
         </td>
-        <td class={expandedRow === data.id ? 'px-5 py-5' : 'px-5 py-5 border-b border-gray-200'}>
+        <td class={expandedRow === data.id ? 'px-5 py-5' : 'px-5 py-5'}>
           {#each data.appliances as appliance}
           {appliance.name}
             <br>
@@ -210,14 +210,14 @@
         </td>
       </tr>
       {#if expandedRow === data.id}
-        <tr>
-          <td class="hover:!bg-les-frame bg-white cursor-pointer text-sm" colspan={numberOfColumns}>
+        <tr class="bg-white hover:bg-white text-sm dark:bg-dark-table-row" >
+          <td colspan={numberOfColumns}>
             <div transition:slide>
               <div class="p-4 flex justify-center">
                 <SchedulableLoadGrid appliances={data.appliances} hours={hours} />
               </div>
             </div>
-            <div class="border-b-4 border-gray-200"></div>
+            <div class="border-b-2 border-gray-200 dark:border-les-white"></div>
           </td>
         </tr>
       {/if}

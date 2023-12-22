@@ -7,12 +7,22 @@ export default {
       colors: {
         "les-blue": "#1565c0",
         "les-red": "#f23f44",
+        "les-white": "#ffffff",
         "les-red-dark": "#610000",
-        "les-bg": "#1e1e2d",
-        "les-bg-dark": "#12121B",
         "les-highlight": "#2a2a3d",
-        "les-frame": "#dadada",
-        "les-table-cell": "#373737"
+        "les-table-cell": "#373737",
+        "les-sort-inactive": "#838383",
+        "les-sort-active": "#313131",
+        "les-sidebar-item": "#12121b",
+
+        "light-les-bg": "#1e1e2d",
+        "light-les-frame": "#dadada",
+
+        "dark-les-bg": "#22222c",
+        "dark-les-frame": "#dadada",
+
+        "dark-table-header": "#12121b",
+        "dark-table-row": "#1a1a26",
       },
       transitionProperty: {
         width: "width",
