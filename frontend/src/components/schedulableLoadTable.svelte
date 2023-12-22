@@ -95,10 +95,10 @@
           {toReadableName(filterName)}
         </button>
         {#if showDropdown === filterName}
-          <div class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10" in:slide={{ duration: 500 }} out:slide={{ duration: 500 }}>
+          <div class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 dark:bg-dark-table-row" in:slide={{ duration: 500 }} out:slide={{ duration: 500 }}>
             <div class="py-1">
               {#each options as option}
-                <label class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <label class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-les-white">
                   <input type="checkbox" class="mr-2" bind:group={selectedFilters[filterName]} value={option} on:change={() => {}}>
                   {typeof option === 'object' ? `${option.min}-${option.max}` : option}
                 </label>
