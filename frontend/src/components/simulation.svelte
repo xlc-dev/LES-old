@@ -22,16 +22,16 @@
   const hasSolarPanels = (household) => household.solar_panels > 0;
 </script>
 
-<div class="flex justify-between items-center rounded-lg bg-gray-100 p-2">
+<div class="flex justify-between items-center rounded-lg bg-gray-100 p-2 dark:bg-dark-table-header">
   <div class="flex space-x-4">
-    <select bind:value={sizeFilter} class="px-3 py-2 border border-gray-300 rounded-md">
+    <select bind:value={sizeFilter} class="px-3 py-2 border border-gray-300 rounded-md dark:bg-dark-table-row dark:text-les-white">
       <option value="">Size</option>
       {#each Array.from({ length: 10 }, (_, i) => i + 1) as size}
         <option value={size}>{size}</option>
       {/each}
     </select>
 
-    <select bind:value={solarPanelFilter} class="px-3 py-2 border border-gray-300 rounded-md">
+    <select bind:value={solarPanelFilter} class="px-3 py-2 border border-gray-300 rounded-md dark:bg-dark-table-row dark:text-les-white">
       <option value="">Solar Panels</option>
       <option value="yes">Yes</option>
       <option value="no">No</option>
