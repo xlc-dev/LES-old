@@ -1,9 +1,10 @@
 from sqlmodel import SQLModel, Field
 
+
 class EnergyFlowBase(SQLModel):
-    timestamp: int = Field(nullable=False)
-    energy_used: int = Field(nullable=False)
-    solar_produced: int = Field(default=0, nullable=False)
+    timestamp: int = Field(nullable=False, index=True)
+    energy_used: float = Field(nullable=False)
+    solar_produced: float = Field(nullable=False)
 
 
 class EnergyFlow(EnergyFlowBase, table=True):
@@ -11,7 +12,7 @@ class EnergyFlow(EnergyFlowBase, table=True):
 
 
 class EnergyFlowRead(EnergyFlowBase):
-     id: int
+    pass
 
 
 class EnergyFlowCreate(EnergyFlowBase):

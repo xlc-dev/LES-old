@@ -18,6 +18,7 @@ from app.core.routers import (
     simulation_router,
     twinworld_router,
     costmodel_router,
+    energyflow_router,
 )
 
 
@@ -44,6 +45,10 @@ def create_app() -> FastAPI:
         {
             "name": "Costmodel",
             "description": "Costmodel API",
+        },
+        {
+            "name": "Energyflow",
+            "description": "Energyflow API",
         },
         {
             "name": "Seed",
@@ -124,6 +129,12 @@ def create_app() -> FastAPI:
         costmodel_router.router,
         prefix=f"{settings.api_prefix}/costmodel",
         tags=["Costmodel"],
+    )
+
+    app.include_router(
+        energyflow_router.router,
+        prefix=f"{settings.api_prefix}/energyflow",
+        tags=["Energyflow"],
     )
 
     if settings.development:

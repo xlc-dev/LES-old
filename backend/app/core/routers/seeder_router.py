@@ -13,6 +13,7 @@ from app.utils import (
     get_session,
     create_db_and_tables,
     delete_db_and_tables,
+    unix_to_timestamp,
 )
 
 from app.core.models import (
@@ -24,35 +25,59 @@ from app.core.models import (
     energyflow_model,
 )
 
-from app.core.models.appliance_model import ApplianceType, ApplianceDays
+from app.core.models.appliance_model import (
+    Appliance,
+    ApplianceType,
+    ApplianceDays,
+)
+
+from app.core.crud.energyflow_crud import energyflow_crud
 
 router = APIRouter()
 
+
 def create_energyflow():
-    energy_flow_hour = pandas.read_csv("../../../energyflow.csv", sep=";")
-
+    energy_flow_hour = pandas.read_csv("energyflow.csv", sep=";")
     hourly_data = []  # Create an empty list to store EnergyFlow objects
+    first_time = unix_to_timestamp(energy_flow_hour["timestamp"].iloc[0])
+    offset = round((round(first_time) - first_time) * 86400)
 
-    for index, row in energy_flow_hour.iterrows():
+    for _, row in energy_flow_hour.iterrows():
         # Assuming EnergyFlow is a class where you store your data
         energy_flow = energyflow_model.EnergyFlow(
-            timestamp=row['timestamp'],
-            energy_used=row['energy_used'],
-            solar_produced=row['solar_produced'],
+            timestamp=row["timestamp"] + offset,
+            energy_used=row["energy_used"],
+            solar_produced=row["solar_produced"],
         )
         hourly_data.append(energy_flow)  # Append each object to the list
 
     return hourly_data
 
 
-def add_appliance_to_session(session: Session, appliance):
+def add_appliance_to_session(session: Session, appliance: Appliance):
     "Abstraction for adding an appliance to a session"
-    if appliance is not None:
-        session.add(appliance)
-        session.flush()
-        for day in ApplianceDays:
-            timewindow = create_timewindow(day, appliance.id)
-            session.add(timewindow)
+    session.add(appliance)
+    session.flush()
+
+    for day in ApplianceDays:
+        timewindow = create_timewindow(day, appliance.id)
+        session.add(timewindow)
+
+    start_date, end_date = energyflow_crud.get_start_end_date(session=session)
+    start_date, end_date = math.floor(
+        start_date.timestamp / 86400
+    ), math.floor(end_date.timestamp / 86400)
+    days = round(end_date - start_date + 1)
+
+    for day_number in range(1, days + 1):
+        daily_planning = create_initial_daily_planning(
+            session, day_number, appliance.id
+        )
+        daily_no_energy_planning = create_initial_no_energy_daily_planning(
+            session, day_number, appliance.id
+        )
+        session.add(daily_planning)
+        session.add(daily_no_energy_planning)
 
 
 def create_timewindow(
@@ -73,7 +98,7 @@ def create_timewindow(
         # Set time window from 5-8 for the stove
         timewindow = appliance_model.ApplianceTimeWindow(
             day=day,
-            bitmap_window=0b11110000,
+            bitmap_window=0b000000000000000011110000,
             appliance_id=appliance_id,
         )
         return timewindow
@@ -112,6 +137,28 @@ def create_timewindow(
     )
 
     return timewindow
+
+
+def create_initial_daily_planning(
+    session: Session, day: int, appliance_id: int
+) -> appliance_model.ApplianceTimeDaily:
+    empty_day = appliance_model.ApplianceTimeDaily(
+        day=day,
+        bitmap_plan=0b000000000000000000000000,  # 24 bits for hour of day
+        appliance_id=appliance_id,
+    )
+    return empty_day
+
+
+def create_initial_no_energy_daily_planning(
+    session: Session, day: int, appliance_id: int
+) -> appliance_model.ApplianceTimeNoEnergyDaily:
+    empty_day = appliance_model.ApplianceTimeNoEnergyDaily(
+        day=day,
+        bitmap_plan=0b000000000000000000000000,  # 24 bits for hour of day
+        appliance_id=appliance_id,
+    )
+    return empty_day
 
 
 def create_appliance(
@@ -488,17 +535,21 @@ def seed(session: Session = Depends(get_session)) -> None:
             household.size, inv_norm, household.id
         )
         session.flush()
-
-        add_appliance_to_session(session, vehicle)
-        add_appliance_to_session(session, dishwasher)
-        add_appliance_to_session(session, stove)
-        add_appliance_to_session(session, washingmachine)
+        if vehicle is not None:
+            add_appliance_to_session(session, vehicle)
+        if dishwasher is not None:
+            add_appliance_to_session(session, dishwasher)
+        if stove is not None:
+            add_appliance_to_session(session, stove)
+        if washingmachine is not None:
+            add_appliance_to_session(session, washingmachine)
 
         if washingmachine is not None:
             tumbledryer = create_tumbledryer(
                 household.size, inv_norm, household.id
             )
-            add_appliance_to_session(session, tumbledryer)
+            if tumbledryer is not None:
+                add_appliance_to_session(session, tumbledryer)
 
     try:
         session.commit()

@@ -40,14 +40,14 @@ async def post_energyflow(
     form_data: energyflow_model.EnergyFlowCreate,
     session: Session = Depends(get_session),
 ) -> None:
-    check_energyflow = energyflow_crud.get_by_name(
-        session=session, name=form_data.name
+    check_energyflow = energyflow_crud.get_by_timestamp(
+        session=session, timestamp=form_data.timestamp
     )
 
     if check_energyflow:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"energyflow with name: {form_data.name} already exists.",
+            detail=f"energyflow with name: {form_data.timestamp} already exists.",  # noqa: E501
         )
 
     energyflow_crud.create(session=session, obj_in=form_data)
