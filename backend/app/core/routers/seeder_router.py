@@ -458,12 +458,15 @@ def seed(session: Session = Depends(get_session)) -> None:
         session.add(x)
 
     # TODO: add proper algorithms
-    algorithm_1 = algorithm_model.Algorithm(
-        name="Algorithm 1",
-        description="An algorithm that does something",
+    greedy = algorithm_model.Algorithm(
+        name="Greedy planning",
+        description="An initial planning that puts appliances in \
+            their local optimum through a greedy algorithm. \
+            Will not optimize further than one \
+            pass through all appliances.",
     )
 
-    session.add(algorithm_1)
+    session.add(greedy)
 
     algorithm_2 = algorithm_model.Algorithm(
         name="Algorithm 2",
