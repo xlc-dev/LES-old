@@ -10,6 +10,7 @@ from app.core.models.costmodel_model import CostModelRead
 from app.core.models.twinworld_model import TwinWorldRead
 from app.core.models.algorithm_model import AlgorithmRead
 from app.core.models.household_model import HouseholdRead
+from app.core.models.energyflow_model import EnergyFlowRead
 from app.core.models.appliance_model import (
     ApplianceTimeNoEnergyDaily,
     ApplianceTimeDailyRead,
@@ -136,6 +137,7 @@ async def plan(
         appliance_time_daily_crud.get_non_empty_timewindow(session=session)
         is None
     ):  # niet de goede verwijzing meer, moeten een andere checken
+        random.seed(27)
         energyflow_data = energyflow_crud.get_by_solar_produced(
             session=session
         )  # gets all the energy flow in (unix, energy used, solar produced)`
@@ -158,7 +160,7 @@ async def plan(
         for date in range(start_date, end_date + 86400, 86400):
             day_number_in_planning = (date - start_date) / 86400 + 1
             print(int(day_number_in_planning))
-            energyflow_day = [
+            energyflow_day: EnergyFlowRead = [
                 el
                 for el in energyflow_data
                 if (date <= el.timestamp and el.timestamp < date + 3600 * 24)
@@ -177,12 +179,12 @@ async def plan(
                 if household.solar_panels <= 0:
                     continue
 
-                for energyflow_day_information in energyflow_day:
-                    hour = unix_to_hour(energyflow_day_information.timestamp)
+                for energyflow_day_information_init in energyflow_day:
+                    hour = unix_to_hour(energyflow_day_information_init.timestamp)
                     potential_energy = get_potential_energy(
                         household,
-                        energyflow_day_information.energy_used,
-                        energyflow_day_information.solar_produced,
+                        energyflow_day_information_init.energy_used,
+                        energyflow_day_information_init.solar_produced,
                     )
                     household_energy[hour][household_idx] = potential_energy
                     total_available_energy += potential_energy
@@ -192,7 +194,7 @@ async def plan(
                     break
 
                 for appliance in household.appliances:
-                    usage = appliance.daily_usage
+                    usage = appliance.daily_usage                           # misschien niet nodig
                     appliance_bitmap_plan = (
                         appliance_time_daily_crud.get_appliance_time_daily(
                             session=session,
@@ -200,20 +202,22 @@ async def plan(
                             day=day_number_in_planning,
                         )
                     )
-                    if not appliance_bitmap_plan:
+                    if not appliance_bitmap_plan:                          # error testing
                         print(appliance.id, day_number_in_planning)
                     appliance_no_energy_bitmap_plan = appliance_time_no_energy_daily_crud.get_appliance_time_no_energy_daily(  # noqa: E501
                         session=session,
                         appliance_id=appliance.id,
                         day=day_number_in_planning,
                     )
-                    while usage > 0 and usage < random.random():
+                    while usage > (1 - random.random()):
                         plannedin = False
 
                         for energyflow_day_information in energyflow_day:
                             unix = energyflow_day_information.timestamp
                             hour = unix_to_hour(unix)
                             if plannedin is True:
+                                break
+                            if household_energy[hour][household_idx] < 0:
                                 continue
                             if (
                                 check_appliance_time(
@@ -226,8 +230,7 @@ async def plan(
                                 is False
                             ):
                                 continue
-                            if household_energy[hour][household_idx] < 0:
-                                continue
+
                             plan_with_energy(
                                 session, appliance, hour, appliance_bitmap_plan
                             )
@@ -271,9 +274,9 @@ async def plan(
                             plannedin = True
                             usage -= 1
 
-                        # if plannedin is False:
+                        if plannedin is False:
                         #     print("Not planned in", appliance, date)
-                        usage -= 1
+                            usage = 0
     initial_planning_energy = appliance_time_daily_crud.get_multi(
         session=session, limit=10
     )
