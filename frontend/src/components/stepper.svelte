@@ -70,7 +70,7 @@
 
 
   function addHousehold() {
-    customTwinWorldHouseholds.push({ ...newHousehold });
+    customTwinWorldHouseholds = [...customTwinWorldHouseholds, { ...newHousehold }];
     newHousehold = { name: '', size: 0, energy_usage: 0, solar_panels: 0, solar_yield_yearly: 0, appliances: [] };
   }
 
@@ -270,30 +270,12 @@
     }
   };
 
-  // const startSimulation = async () => {
-  //   await SimulateService.startApiSimulateStartPost({
-  //     algorithm_id: selectedIDs.algorithm,
-  //     twinworld_id: selectedIDs.twin_world,
-  //     costmodel_id: selectedIDs.cost_model,
-  //   }).then((res) => ($stepperData = res));
-  // };
-
   const startSimulation = async () => {
-    if (selectedIDs.twin_world === 0) {
-      console.error("No twin world selected");
-      return;
-    }
-
-    try {
-      await SimulateService.startApiSimulateStartPost({
-        algorithm_id: selectedIDs.algorithm,
-        twinworld_id: selectedIDs.twin_world,
-        costmodel_id: selectedIDs.cost_model,
-      });
-      // Handle successful simulation start...
-    } catch (error) {
-      console.error("Simulation start failed:", error);
-    }
+    await SimulateService.startApiSimulateStartPost({
+      algorithm_id: selectedIDs.algorithm,
+      twinworld_id: selectedIDs.twin_world,
+      costmodel_id: selectedIDs.cost_model,
+    }).then((res) => ($stepperData = res));
   };
 </script>
 
