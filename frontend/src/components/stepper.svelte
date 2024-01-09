@@ -38,6 +38,7 @@
   let selectedTwinWorld;
   let households = [];
   let newHousehold = { name: '', size: 0, energy_usage: 0, solar_panels: 0, solar_yield_yearly: 0, appliances: [] };
+  let customTwinWorldHouseholds = [];
 
   const updateDescription = (description: string) => {
     currentDescription = description;
@@ -67,10 +68,10 @@
     });
   });
 
-  async function addHousehold() {
-    await HouseholdService.createHousehold(selectedTwinWorld.id, newHousehold);
+
+  function addHousehold() {
+    customTwinWorldHouseholds.push({ ...newHousehold });
     newHousehold = { name: '', size: 0, energy_usage: 0, solar_panels: 0, solar_yield_yearly: 0, appliances: [] };
-    await fetchHouseholds();
   }
 
   async function fetchHouseholds() {
@@ -239,14 +240,16 @@
     const formData = {
       name: target.name.value,
       description: target.description.value,
+      households: customTwinWorldHouseholds
     };
 
     try {
       await TwinworldService.postTwinworldApiTwinworldPost(formData);
       submitted = true;
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+      customTwinWorldHouseholds = [];
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -267,12 +270,30 @@
     }
   };
 
+  // const startSimulation = async () => {
+  //   await SimulateService.startApiSimulateStartPost({
+  //     algorithm_id: selectedIDs.algorithm,
+  //     twinworld_id: selectedIDs.twin_world,
+  //     costmodel_id: selectedIDs.cost_model,
+  //   }).then((res) => ($stepperData = res));
+  // };
+
   const startSimulation = async () => {
-    await SimulateService.startApiSimulateStartPost({
-      algorithm_id: selectedIDs.algorithm,
-      twinworld_id: selectedIDs.twin_world,
-      costmodel_id: selectedIDs.cost_model,
-    }).then((res) => ($stepperData = res));
+    if (selectedIDs.twin_world === 0) {
+      console.error("No twin world selected");
+      return;
+    }
+
+    try {
+      await SimulateService.startApiSimulateStartPost({
+        algorithm_id: selectedIDs.algorithm,
+        twinworld_id: selectedIDs.twin_world,
+        costmodel_id: selectedIDs.cost_model,
+      });
+      // Handle successful simulation start...
+    } catch (error) {
+      console.error("Simulation start failed:", error);
+    }
   };
 </script>
 
@@ -417,27 +438,28 @@
             <input type="number" bind:value={newHousehold.energy_usage} placeholder="Energy usage">
             <input type="number" bind:value={newHousehold.solar_panels} placeholder="Solar panels">
             <input type="number" bind:value={newHousehold.solar_yield_yearly} placeholder="Solar yield yearly">
-            <button on:click={addHousehold}>Add Household</button>
+            <button type="button" on:click={addHousehold}>Add Household</button>
           </div>
 
-          <!-- Household List -->
-          {#each households as household}
-            <div>
-              <input type="text" bind:value={household.name}>
-              <input type="number" bind:value={household.size}>
-              <input type="number" bind:value={household.energy_usage}>
-              <input type="number" bind:value={household.solar_panels}>
-              <input type="number" bind:value={household.solar_yield_yearly}>
-<!--              <input type="number" bind:value={household.appliances}>-->
-              <button on:click={() => updateHousehold(household)}>Update</button>
-              <button on:click={() => deleteHousehold(household.id)}>Delete</button>
-            </div>
-          {/each}
+        <!-- Household List Table -->
+        {#if customTwinWorldHouseholds.length > 0}
+          <table>
+            <tr>
+              <th>Name</th>
+              <th>Size</th>
+              <!-- Other columns... -->
+            </tr>
+            {#each customTwinWorldHouseholds as household}
+              <tr>
+                <td>{household.name}</td>
+                <td>{household.size}</td>
+                <!-- Other columns... -->
+              </tr>
+            {/each}
+          </table>
+        {/if}
 
-        <button
-          type="submit"
-          class="py-3 bg-les-white rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
-        >Submit</button>
+        <button type="submit" class="py-3 bg-les-white rounded-lg text-white hover:bg-les-highlight transition-colors duration-200">Submit</button>
       </form>
     {:else if currentStep === 2}
       <form
