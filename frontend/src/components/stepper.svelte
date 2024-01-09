@@ -10,6 +10,7 @@
     TwinworldService,
     CostmodelService,
     AlgorithmService,
+    HouseholdService
   } from "../lib/client";
 
   let currentStep: number = 1;
@@ -33,6 +34,11 @@
   let submitted: boolean = false;
   let currentDescription: string = "";
 
+  let twinWorlds = [];
+  let selectedTwinWorld;
+  let households = [];
+  let newHousehold = { name: '', size: 0, energy_usage: 0, solar_panels: 0, solar_yield_yearly: 0, appliances: [] };
+
   const updateDescription = (description: string) => {
     currentDescription = description;
   };
@@ -40,6 +46,8 @@
   onMount(async () => {
     const data: SimulationData = await SimulateService.getDataApiSimulateLoadDataGet();
     simulationData = data;
+
+    twinWorlds = await TwinworldService.getTwinworldsApiTwinworldGet();
 
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
     currentDescription = simulationData[keys[currentStep - 1]][0]?.description || "";
@@ -58,6 +66,28 @@
       automaticLayout: true,
     });
   });
+
+  async function addHousehold() {
+    await HouseholdService.createHousehold(selectedTwinWorld.id, newHousehold);
+    newHousehold = { name: '', size: 0, energy_usage: 0, solar_panels: 0, solar_yield_yearly: 0, appliances: [] };
+    await fetchHouseholds();
+  }
+
+  async function fetchHouseholds() {
+    if (selectedTwinWorld) {
+      households = await HouseholdService.getHouseholds(selectedTwinWorld.id);
+    }
+  }
+
+  async function updateHousehold(household) {
+    await HouseholdService.updateHousehold(selectedTwinWorld.id, household.id, household);
+    await fetchHouseholds();
+  }
+
+  async function deleteHousehold(householdId) {
+    await HouseholdService.deleteHousehold(selectedTwinWorld.id, householdId);
+    await fetchHouseholds();
+  }
 
   const getAlgoCode = (editor) => {
     return editor.getValue();
@@ -380,6 +410,30 @@
           name="description"
           class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required></textarea>
+
+          <div>
+            <input type="text" bind:value={newHousehold.name} placeholder="Name">
+            <input type="number" bind:value={newHousehold.size} placeholder="Size">
+            <input type="number" bind:value={newHousehold.energy_usage} placeholder="Energy usage">
+            <input type="number" bind:value={newHousehold.solar_panels} placeholder="Solar panels">
+            <input type="number" bind:value={newHousehold.solar_yield_yearly} placeholder="Solar yield yearly">
+            <button on:click={addHousehold}>Add Household</button>
+          </div>
+
+          <!-- Household List -->
+          {#each households as household}
+            <div>
+              <input type="text" bind:value={household.name}>
+              <input type="number" bind:value={household.size}>
+              <input type="number" bind:value={household.energy_usage}>
+              <input type="number" bind:value={household.solar_panels}>
+              <input type="number" bind:value={household.solar_yield_yearly}>
+<!--              <input type="number" bind:value={household.appliances}>-->
+              <button on:click={() => updateHousehold(household)}>Update</button>
+              <button on:click={() => deleteHousehold(household.id)}>Delete</button>
+            </div>
+          {/each}
+
         <button
           type="submit"
           class="py-3 bg-les-white rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"

@@ -28,3 +28,4 @@ export { CostmodelService } from "./services/CostmodelService";
 export { SeedService } from "./services/SeedService";
 export { SimulateService } from "./services/SimulateService";
 export { TwinworldService } from "./services/TwinworldService";
+export { HouseholdService } from "./services/HouseholdService";
