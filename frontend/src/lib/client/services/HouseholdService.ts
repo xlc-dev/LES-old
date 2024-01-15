@@ -1,63 +1,129 @@
-import type { HouseholdRead } from "../models/HouseholdRead";
+/* generated using openapi-typescript-codegen -- do no edit */
+/* istanbul ignore file */
+/* tslint:disable */
+/* eslint-disable */
 import type { HouseholdCreate } from "../models/HouseholdCreate";
+import type { HouseholdRead } from "../models/HouseholdRead";
 import type { HouseholdUpdate } from "../models/HouseholdUpdate";
+
+import type { CancelablePromise } from "../core/CancelablePromise";
 import { OpenAPI } from "../core/OpenAPI";
 import { request as __request } from "../core/request";
 
 export class HouseholdService {
   /**
-   * Get Households for a specific Twin World
-   * @param twinWorldId The ID of the Twin World
-   * @returns HouseholdRead[] List of households
+   * Get Households
+   * @returns HouseholdRead Successful Response
+   * @throws ApiError
    */
-  public static async getHouseholds(twinWorldId: number): Promise<HouseholdRead[]> {
-    const result = await __request<{ body: HouseholdRead[] }>(OpenAPI, {
-      method: 'GET',
-      url: `/api/twinworld/${twinWorldId}/households/`,
+  public static getHouseholdsApiHouseholdGet(): CancelablePromise<Array<HouseholdRead>> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/household/",
     });
-    return result.body;
   }
 
   /**
-   * Create a new Household in a Twin World
-   * @param twinWorldId The ID of the Twin World
-   * @param data Household creation data
-   * @returns HouseholdRead The created household
+   * Post Household
+   * @param requestBody
+   * @returns any Successful Response
+   * @throws ApiError
    */
-  public static async createHousehold(twinWorldId: number, data: HouseholdCreate): Promise<HouseholdRead> {
-    const result = await __request<{ body: HouseholdRead }>(OpenAPI, {
-      method: 'POST',
-      url: `/api/twinworld/${twinWorldId}/households/`,
-      body: data,
+  public static postHouseholdApiHouseholdPost(
+    requestBody: HouseholdCreate
+  ): CancelablePromise<any> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/household/",
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: `Validation Error`,
+      },
     });
-    return result.body;
   }
 
   /**
-   * Update a Household in a Twin World
-   * @param twinWorldId The ID of the Twin World
-   * @param householdId The ID of the Household to update
-   * @param data Household update data
-   * @returns HouseholdRead The updated household
+   * Get Household
+   * @param id
+   * @returns HouseholdRead Successful Response
+   * @throws ApiError
    */
-  public static async updateHousehold(twinWorldId: number, householdId: number, data: HouseholdUpdate): Promise<HouseholdRead> {
-    const result = await __request<{ body: HouseholdRead }>(OpenAPI, {
-      method: 'PUT',
-      url: `/api/twinworld/${twinWorldId}/households/${householdId}`,
-      body: data,
+  public static getHouseholdApiHouseholdIdGet(id: number): CancelablePromise<HouseholdRead> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/household/{id}",
+      path: {
+        id: id,
+      },
+      errors: {
+        422: `Validation Error`,
+      },
     });
-    return result.body;
   }
 
   /**
-   * Delete a Household from a Twin World
-   * @param twinWorldId The ID of the Twin World
-   * @param householdId The ID of the Household to delete
+   * Update Household
+   * @param id
+   * @param requestBody
+   * @returns HouseholdUpdate Successful Response
+   * @throws ApiError
    */
-  public static async deleteHousehold(twinWorldId: number, householdId: number): Promise<void> {
-    await __request<{ body: void }>(OpenAPI, {
-      method: 'DELETE',
-      url: `/api/twinworld/${twinWorldId}/households/${householdId}`,
+  public static updateHouseholdApiHouseholdIdPatch(
+    id: number,
+    requestBody: HouseholdUpdate
+  ): CancelablePromise<HouseholdUpdate> {
+    return __request(OpenAPI, {
+      method: "PATCH",
+      url: "/api/household/{id}",
+      path: {
+        id: id,
+      },
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: `Validation Error`,
+      },
+    });
+  }
+
+  /**
+   * Delete Household
+   * @param id
+   * @returns void
+   * @throws ApiError
+   */
+  public static deleteHouseholdApiHouseholdIdDelete(id: number): CancelablePromise<void> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/household/{id}",
+      path: {
+        id: id,
+      },
+      errors: {
+        422: `Validation Error`,
+      },
+    });
+  }
+
+  /**
+   * Get Households By Twinworld
+   * @param twinworldId
+   * @returns HouseholdRead Successful Response
+   * @throws ApiError
+   */
+  public static getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
+    twinworldId: number
+  ): CancelablePromise<Array<HouseholdRead>> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/household/twinworld/{twinworld_id}",
+      path: {
+        twinworld_id: twinworldId,
+      },
+      errors: {
+        422: `Validation Error`,
+      },
     });
   }
 }

@@ -13,4 +13,5 @@ export type HouseholdRead = {
   solar_yield_yearly: number;
   id: number;
   appliances?: Array<ApplianceRead>;
+  twinworld_id: number;
 };

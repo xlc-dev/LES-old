@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ApplianceTimeWindowUpdate } from "./ApplianceTimeWindowUpdate";
 import type { ApplianceType } from "./ApplianceType";
 
 export type ApplianceUpdate = {
@@ -11,5 +10,4 @@ export type ApplianceUpdate = {
   power: number;
   duration: number;
   daily_usage: number;
-  appliance_windows?: Array<ApplianceTimeWindowUpdate>;
 };

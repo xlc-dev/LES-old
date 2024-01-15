@@ -8,4 +8,5 @@ import type { ApplianceDays } from "./ApplianceDays";
 export type ApplianceTimeWindowRead = {
   day: ApplianceDays;
   bitmap_window: number;
+  id: number;
 };

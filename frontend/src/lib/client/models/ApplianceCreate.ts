@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ApplianceTimeWindowCreate } from "./ApplianceTimeWindowCreate";
 import type { ApplianceType } from "./ApplianceType";
 
 export type ApplianceCreate = {
@@ -11,5 +10,5 @@ export type ApplianceCreate = {
   power: number;
   duration: number;
   daily_usage: number;
-  appliance_windows?: Array<ApplianceTimeWindowCreate>;
+  household_id: number;
 };

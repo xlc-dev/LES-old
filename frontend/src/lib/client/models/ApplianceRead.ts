@@ -11,5 +11,6 @@ export type ApplianceRead = {
   power: number;
   duration: number;
   daily_usage: number;
+  id: number;
   appliance_windows?: Array<ApplianceTimeWindowRead>;
 };
