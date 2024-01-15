@@ -166,6 +166,8 @@ class ApplianceTimeWindowUpdate(ApplianceTimeWindowBase):
 class ApplianceRead(ApplianceBase):
     id: int
     appliance_windows: list[ApplianceTimeWindowRead] = []
+    # appliance_time_daily: list[ApplianceTimeDaily] = []
+    # appliance_time_no_energy_daily: list[ApplianceTimeNoEnergyDaily] = []
 
 
 class ApplianceCreate(ApplianceBase):
