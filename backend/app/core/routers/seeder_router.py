@@ -78,6 +78,7 @@ def add_appliance_to_session(session: Session, appliance: Appliance):
         )
         session.add(daily_planning)
         session.add(daily_no_energy_planning)
+        session.flush()
 
 
 def create_timewindow(
@@ -457,7 +458,6 @@ def seed(session: Session = Depends(get_session)) -> None:
     for x in energyflow:
         session.add(x)
 
-    # TODO: add proper algorithms
     greedy = algorithm_model.Algorithm(
         name="Greedy planning",
         description="An initial planning that puts appliances in \
@@ -468,12 +468,15 @@ def seed(session: Session = Depends(get_session)) -> None:
 
     session.add(greedy)
 
-    algorithm_2 = algorithm_model.Algorithm(
-        name="Algorithm 2",
-        description="An algorithm that does something else",
+    simulated_annealing = algorithm_model.Algorithm(
+        name="Simulated_annealing",
+        description="An algorithm that improves on a given algorithm \
+            by randomly changing the time of planned in appliances. \
+                The conditions for what changes becomes stricter over \
+                time, resulting in a further optimized solution.",
     )
 
-    session.add(algorithm_2)
+    session.add(simulated_annealing)
 
     buy_consumer = 0.4
     sell_consumer = 0.1
@@ -492,7 +495,7 @@ def seed(session: Session = Depends(get_session)) -> None:
 
     costmodel_temo = costmodel_model.CostModel(
         name="TEMO",
-        description=f"A price model based on the TEMO model. The price for buying from the utility is {buy_consumer} and the price for selling is {sell_consumer}. The price is determined by a formula that compares the energy need to the various prices available, and returns internal buying and selling prices.",  # noqa: E501
+        description="A price model based on the TEMO model. The price is determined by a formula that compares the energy needed to the various prices available, and returns an internal buying and selling prices",  # noqa: E501
         price_network_buy_consumer=buy_consumer,
         price_network_sell_consumer=sell_consumer,
         algo_1="algo1",
@@ -502,14 +505,14 @@ def seed(session: Session = Depends(get_session)) -> None:
 
     twinworld_1 = twinworld_model.TwinWorld(
         name="TwinWorld Large",
-        description="A larger twin world depicting a typical neighborhood and its energy usage and appliances",  # noqa: E501
+        description="A larger twin world consisting of roughly 75 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
     )
 
     session.add(twinworld_1)
 
     twinworld_2 = twinworld_model.TwinWorld(
         name="TwinWorld Small",
-        description="A smaller twin world depicting a typical neighborhood and its energy usage and appliances",  # noqa: E501
+        description="A smaller twin world consisting of roughly 25 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
     )
 
     session.add(twinworld_2)
