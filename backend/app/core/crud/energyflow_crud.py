@@ -22,6 +22,9 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
             .order_by(desc(EnergyFlow.solar_produced))  # type: ignore
         ).all()
 
+    def get_by_solar_produced_sim(self, *, session: Session):
+        return session.exec(select(EnergyFlow)).all()
+
     def get_start_end_date(self, *, session: Session):
         min_timestamp_query = select(EnergyFlow).filter(
             EnergyFlow.timestamp  # type: ignore
