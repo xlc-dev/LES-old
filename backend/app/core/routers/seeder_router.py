@@ -1,11 +1,27 @@
-import random
-import math
-from typing import Optional, Dict
+"""Seeder to seed the database with initial data.
 
-from scipy.stats import norm
+This seeder is a special router. It is only available in development mode.
+It will delete all current data in the database to replace with new seed data.
+
+The seed data contains the following:
+    - Households
+    - Appliances
+    - TimeWindows
+    - TwinWorlds
+    - CostModels
+    - Algorithms
+"""
+
+import random
+
+from typing import Optional, Dict
+from math import ceil
+
 from fastapi import APIRouter, Depends, status
 
 from sqlmodel import Session
+
+from scipy.stats import norm
 
 from app.utils import (
     Logger,
@@ -22,6 +38,7 @@ from app.core.models import (
     algorithm_model,
 )
 
+# Easier to use the type this way instead of writing: appliance_model.ApplianceDays for example.  # noqa: E501
 from app.core.models.appliance_model import ApplianceType, ApplianceDays
 
 router = APIRouter()
@@ -364,9 +381,8 @@ def create_household(
     solar_panels = 0
     if random.random() < 0.38:
         inv_norm_solar = norm.ppf(random.random(), loc=1, scale=0.1)
-        solar_panels = math.ceil(3 + 2 * household_size * inv_norm_solar)
+        solar_panels = ceil(3 + 2 * household_size * inv_norm_solar)
 
-    # TODO: transform
     solar_yield = solar_panels * 340
 
     household = household_model.Household(
@@ -383,12 +399,11 @@ def create_household(
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model="None")
 def seed(session: Session = Depends(get_session)) -> None:
-    "Seeds the database with initial data for the twinworld"
+    "Seeds the database with initial data for the twinworld. Deletes all previous in the database before seeding."  # noqa: E501
     delete_db_and_tables()
     create_db_and_tables()
     random.seed()
 
-    # TODO: add proper algorithms
     algorithm_1 = algorithm_model.Algorithm(
         name="Algorithm 1",
         description="An algorithm that does something",
