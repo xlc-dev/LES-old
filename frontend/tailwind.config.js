@@ -1,6 +1,8 @@
+const plugin = require("tailwindcss/plugin");
+
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class',
+  darkMode: "class",
   content: ["./src/**/*.svelte", "./index.html"],
   theme: {
     extend: {
@@ -29,5 +31,16 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function ({ addBase, theme }) {
+      addBase({
+        "input[type='checkbox'], input[type='radio']": {
+          cursor: "pointer",
+          width: theme("width.4"),
+          height: theme("height.4"),
+          accentColor: theme("colors.les-highlight"),
+        },
+      });
+    }),
+  ],
 };
