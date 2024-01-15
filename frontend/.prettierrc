@@ -1,19 +1,12 @@
 {
-  "singleQuote": false,
   "useTabs": false,
-  "semi": true,
   "tabWidth": 2,
-  "trailingComma": "all",
-  "arrowParens": "always",
-  "printWidth": 100,
-  "bracketSpacing": true,
+  "singleQuote": false,
+  "semi": true,
+  "trailingComma": "es5",
+  "bracketSameLine": true,
+  "printWidth": 99,
   "endOfLine": "lf",
-  "overrides": [
-    {
-      "files": "*.html",
-      "options": {
-        "parser": "angular"
-      }
-    }
-  ]
+  "plugins": ["prettier-plugin-svelte"],
+  "overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
 }

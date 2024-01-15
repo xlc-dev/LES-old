@@ -1,22 +1,27 @@
+"""Entrypoint for the application.
+This is the file that needs to be run to start the application.
+
+This file does the following:
+    - Create the app factory
+    - Print all available API routes
+    - Run the app through Uvicorn
+
+example: `python run.py`
+"""
+
 from os import system
 
 from uvicorn import run
 
 from app.app import create_app
-import app.config as config
+import app.config as config  # `as` is needed for printing the docstring
 
 # App factory
 app = create_app()
 
 # Make ANSI get processed everywhere properly
+# to get pretty colors in the terminal
 system("")
-
-
-def get_all_urls():
-    url_list = [
-        {"path": route.path, "name": route.name} for route in app.routes
-    ]
-    return url_list
 
 
 if __name__ == "__main__":
@@ -30,7 +35,7 @@ if __name__ == "__main__":
             + "MAKE SURE THIS IS \033[1;31mNOT\033[0m IN PRODUCTION"
         )
 
-    urls = get_all_urls()
+    urls = [{"path": route.path, "name": route.name} for route in app.routes]
 
     print("\nAll routes:\n")
 

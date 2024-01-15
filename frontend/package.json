@@ -1,40 +1,39 @@
 {
-  "name": "frontend",
-  "version": "0.0.0",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve --host 0.0.0.0",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "format": "prettier --write .",
-    "check": "prettier --check ."
-  },
+  "name": "svelte",
   "private": true,
-  "dependencies": {
-    "@angular/animations": "^17.0.6",
-    "@angular/common": "^17.0.6",
-    "@angular/compiler": "^17.0.6",
-    "@angular/core": "^17.0.6",
-    "@angular/forms": "^17.0.6",
-    "@angular/platform-browser": "^17.0.6",
-    "@angular/platform-browser-dynamic": "^17.0.6",
-    "@angular/router": "^17.0.6",
-    "rxjs": "~7.8.1",
-    "tslib": "^2.6.2",
-    "zone.js": "~0.14.2"
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npm-run-all -p dev:*",
+    "check": "npm-run-all -p check:*",
+    "build": "run-s build:*",
+    "dev:vite": "vite",
+    "dev:css": "tailwindcss -o public/index.css -w -m",
+    "build:css": "tailwindcss -o public/index.css -m",
+    "build:vite": "vite build",
+    "check:svelte": "svelte-check --tsconfig ./tsconfig.json",
+    "check:prettier": "prettier --check .",
+    "preview": "vite preview",
+    "format": "prettier --write .",
+    "generate-client": "openapi --indent 2 --input http://localhost:8000/openapi.json --output ./src/lib/client"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^17.0.6",
-    "@angular/cli": "^17.0.6",
-    "@angular/compiler-cli": "^17.0.6",
-    "@types/jasmine": "~5.1.4",
-    "jasmine-core": "~5.1.1",
-    "karma": "~6.4.2",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.1",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.1",
+    "@tsconfig/svelte": "^5.0.2",
+    "npm-run-all": "^4.1.5",
+    "openapi-typescript-codegen": "^0.25.0",
     "prettier": "^3.1.1",
-    "typescript": "~5.2.2"
+    "prettier-plugin-svelte": "^3.1.2",
+    "svelte": "^4.2.8",
+    "svelte-check": "^3.6.2",
+    "tailwindcss": "^3.3.6",
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.1",
+    "monaco-editor": "^0.45.0",
+    "svelte-chartjs": "^3.1.2"
   }
 }

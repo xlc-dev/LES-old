@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional, Any
+from typing import TYPE_CHECKING, Any
 from enum import Enum
 
 from sqlmodel import SQLModel, Field, Relationship
@@ -35,9 +35,9 @@ class ApplianceDays(str, Enum):
 
 class ApplianceBase(SQLModel):
     name: ApplianceType = Field(index=True, nullable=False)
-    power: float = Field(nullable=False)  # in Kwh
-    duration: int = Field(nullable=False)  # in hours
-    daily_usage: float = Field(nullable=False)  # in hours
+    power: float = Field(nullable=False, ge=0)  # in Kwh
+    duration: int = Field(nullable=False, ge=0)  # in hours
+    daily_usage: float = Field(nullable=False, ge=0)  # in hours
 
 
 class Appliance(ApplianceBase, table=True):
@@ -47,7 +47,8 @@ class Appliance(ApplianceBase, table=True):
     household_id: int = Field(foreign_key="household.id")
 
     appliance_windows: list["ApplianceTimeWindow"] = Relationship(
-        back_populates="appliance"
+        back_populates="appliance",
+        sa_relationship_kwargs={"cascade": "delete"},
     )
 
     appliance_time_daily: list["ApplianceTimeDaily"] = Relationship(
@@ -79,7 +80,7 @@ class ApplianceTimeDailyBase(SQLModel):
     day: int = Field(
         nullable=False, ge=1
     )  # Number day of reviewed dataset, example=1
-    bitmap_plan: Optional[int] = Field(nullable=True)  # 24 bit bitmap
+    bitmap_plan: int = Field(nullable=False)  # 24 bit bitmap
 
     @field_validator("bitmap_plan")
     @classmethod
@@ -105,7 +106,7 @@ class ApplianceTimeNoEnergyDailyBase(SQLModel):
     day: int = Field(
         nullable=False, ge=1
     )  # Number day of reviewed dataset, example=1
-    bitmap_plan: Optional[int] = Field(nullable=True)  # 24 bit bitmap
+    bitmap_plan: int = Field(nullable=False)  # 24 bit bitmap
 
     @field_validator("bitmap_plan")
     @classmethod
@@ -152,11 +153,11 @@ class ApplianceTimeNoEnergyDailyUpdate(ApplianceTimeNoEnergyDailyBase):
 
 
 class ApplianceTimeWindowRead(ApplianceTimeWindowBase):
-    pass
+    id: int
 
 
 class ApplianceTimeWindowCreate(ApplianceTimeWindowBase):
-    pass
+    appliance_id: int
 
 
 class ApplianceTimeWindowUpdate(ApplianceTimeWindowBase):
@@ -171,7 +172,15 @@ class ApplianceRead(ApplianceBase):
 
 
 class ApplianceCreate(ApplianceBase):
-    pass
+    household_id: int
+
+    @field_validator("household_id")
+    @classmethod
+    def ensure_household_id(cls, v: Any):
+        if v:
+            if v < 1:
+                raise ValueError("household_id must be greater than 0")
+            return v
 
 
 class ApplianceUpdate(ApplianceBase):

@@ -1,11 +1,26 @@
-from fastapi import APIRouter, Depends, HTTPException, Body, status
+"""This router, just like the seed_router, is a special router.
+
+Here are all the simulation endpoints to run the simulation.
+
+The general idea is that the frontend would call the /load-data endpoint to get
+all the possible options for the simulation. Then once the user has selected
+the options through the stepper, the frontend would call the /start endpoint to
+start the simulation.
+
+Once the simulation is done because the algorithm isn't finding any more
+improvements, or the user has stopped the simulation, the frontend would call
+the /stop endpoint to get the results of the simulation. Where you could
+download the results as a CSV file, and see the results in a graph.
+"""
+
+from fastapi import APIRouter, Depends, Body, status
 
 from sqlmodel import Session, SQLModel
 
 import random
 from math import exp
 
-from app.utils import get_session
+from app.utils import Logger, get_session
 
 from app.core.models.costmodel_model import CostModelRead
 from app.core.models.twinworld_model import TwinWorldRead
@@ -53,6 +68,7 @@ class ApplianceTime(SQLModel):
 
 @router.get("/load-data", response_model=SimulationData)
 async def get_data(*, session: Session = Depends(get_session)):
+    "Get all possible options for the simulation"
     twinworlds = twinworld_crud.get_multi(session=session)
     costmodels = costmodel_crud.get_multi(session=session)
     algorithms = algorithm_crud.get_multi(session=session)
@@ -70,10 +86,11 @@ async def start(
     costmodel_id: int = Body(...),
     session: Session = Depends(get_session),
 ):
+    "Start the simulation with the given parameters from /get-data"
     twinworld = twinworld_crud.get(session=session, id=twinworld_id)
 
     if not twinworld:
-        raise HTTPException(
+        Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"No twinworld found with id: {twinworld_id}",
         )
@@ -81,7 +98,7 @@ async def start(
     costmodel = costmodel_crud.get(session=session, id=costmodel_id)
 
     if not costmodel:
-        raise HTTPException(
+        Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"No costmodel found with id: {costmodel_id}",
         )
@@ -89,7 +106,7 @@ async def start(
     algorithm = algorithm_crud.get(session=session, id=algorithm_id)
 
     if not algorithm:
-        raise HTTPException(
+        Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"No algorithm found with id: {algorithm_id}",
         )
@@ -99,7 +116,7 @@ async def start(
     )
 
     if not results:
-        raise HTTPException(
+        Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"No results found for twinworld with id: {twinworld_id}",
         )

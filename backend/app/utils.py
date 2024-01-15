@@ -1,6 +1,12 @@
+"""All global utility functions.
+
+This module contains all the global utility functions
+that are used throughout the application.
+"""
+
 import logging
 import traceback
-from typing import Generator
+from typing import Generator, NoReturn
 
 from fastapi import HTTPException, Response
 
@@ -18,7 +24,7 @@ def unix_to_timestamp(unix: int) -> float:
 
 
 def set_sec_headers(*, response: Response):
-    "Set security headers headers of the response"
+    "Set security headers in the response"
 
     response.headers[
         "Strict-Transport-Security"
@@ -93,9 +99,7 @@ class Logger(logging.Formatter):
         logging.error(value)
 
     @staticmethod
-    def exception(
-        *, status_code: int, detail: str, headers=None
-    ) -> HTTPException:
+    def exception(*, status_code: int, detail: str, headers=None) -> NoReturn:
         logging.error(detail + "\n" + traceback.format_exc())
         raise HTTPException(
             status_code=status_code, detail=detail, headers=headers

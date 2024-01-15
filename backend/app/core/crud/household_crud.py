@@ -26,6 +26,10 @@ class CRUDHousehold(CRUDBase[Household, HouseholdCreate, HouseholdUpdate]):
 
     def count_households(self, *, session: Session):
         return session.query(Household).count()
+    def get_by_name(self, *, session: Session, name: str):
+        return session.exec(
+            select(Household).where(Household.name == name)
+        ).first()
 
 
 household_crud = CRUDHousehold(Household)
