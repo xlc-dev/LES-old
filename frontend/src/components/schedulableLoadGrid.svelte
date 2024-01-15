@@ -1,30 +1,37 @@
 <script lang="ts">
-    export let appliances;
-    export let hours;
+  import type { ApplianceRead } from "../lib/client";
 
-    const numberOfColumns = 7;
+  export let appliances: ApplianceRead[];
+  export let hours: number[];
 
-    function getCellColor(bitmap, hour) {
-      const bitmapString = bitmap.toString(2).padStart(24, '0');
-      return bitmapString[hour] === '1' ? 'bg-blue-600' : 'bg-gray-700';
-    }
+  const getCellColor = (bitmap: number, hour: number) => {
+    const bitmapString = bitmap.toString(2).padStart(24, "0");
+    return bitmapString[hour] === "1" ? "bg-blue-600" : "bg-gray-700";
+  };
 </script>
 
 <div class="flex flex-col items-center">
-    <div class="flex w-full justify-start">
-        <div class="w-36 text-right pr-2 font-bold dark:text-les-white">Appliances:</div>
-        <div class="flex">
-            {#each hours as hour}
-                <div class="w-6 h-6 text-center dark:text-les-white">{hour}</div>
-            {/each}
-        </div>
+  <div class="flex w-full justify-start">
+    <div class="w-36 text-right pr-2 font-bold dark:text-les-white">Appliances:</div>
+    <div class="flex">
+      {#each hours as hour}
+        <div class="w-6 h-6 text-center dark:text-les-white">{hour}</div>
+      {/each}
     </div>
-    {#each appliances as appliance}
-        <div class="flex items-center">
-            <div class="w-36 text-right pr-2 whitespace-nowrap dark:text-les-white">{appliance.name}</div>
-            {#each hours as hour}
-                <div class={`w-6 h-6 border border-white ${getCellColor(appliance.appliance_windows[0].bitmap_window, hour)}`}></div>
-            {/each}
+  </div>
+  {#each appliances as appliance}
+    <div class="flex items-center">
+      <div class="w-36 text-right pr-2 whitespace-nowrap dark:text-les-white">
+        {appliance.name}
+      </div>
+      {#each hours as hour}
+        <div
+          class={`w-6 h-6 border border-white ${getCellColor(
+            appliance.appliance_windows[0].bitmap_window,
+            hour
+          )}`}>
         </div>
-    {/each}
+      {/each}
+    </div>
+  {/each}
 </div>
