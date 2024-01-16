@@ -12,13 +12,12 @@ improvements, or the user has stopped the simulation, the frontend would call
 the /stop endpoint to get the results of the simulation. Where you could
 download the results as a CSV file, and see the results in a graph.
 """
+import random
+from math import exp
 
 from fastapi import APIRouter, Depends, Body, status
 
 from sqlmodel import Session, SQLModel
-
-import random
-from math import exp
 
 from app.utils import Logger, get_session
 
