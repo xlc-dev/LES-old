@@ -19,6 +19,7 @@ from app.core.routers import (
     simulation_router,
     twinworld_router,
     costmodel_router,
+    energyflow_router,
     algorithm_router,
     household_router,
     appliance_router,
@@ -74,6 +75,10 @@ These endpoints need to be called in a specific order:
         {
             "name": "TwinWorld",
             "description": "CRUD operations for the TwinWorld model",
+        },
+        {
+            "name": "Energyflow",
+            "description": "CRUD operations for the Energyflow model",
         },
         {
             "name": "Simulate",
@@ -181,6 +186,12 @@ These endpoints need to be called in a specific order:
         appliance_router.router,
         prefix=f"{settings.api_prefix}/appliance",
         tags=["Appliance"],
+    )
+
+    app.include_router(
+        energyflow_router.router,
+        prefix=f"{settings.api_prefix}/energyflow",
+        tags=["Energyflow"],
     )
 
     if settings.development:

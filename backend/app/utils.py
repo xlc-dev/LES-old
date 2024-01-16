@@ -15,6 +15,14 @@ from sqlmodel import SQLModel, Session
 from app.config import engine
 
 
+def timestamp_to_unix(timestamp: float) -> int:
+    return round((timestamp - 25569) * 86400)
+
+
+def unix_to_timestamp(unix: int) -> float:
+    return unix / 86400 + 25569
+
+
 def set_sec_headers(*, response: Response):
     "Set security headers in the response"
 

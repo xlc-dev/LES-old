@@ -13,9 +13,10 @@ The seed data contains the following:
 """
 
 import random
+import pandas
 
 from typing import Optional, Dict
-from math import ceil
+from math import floor, ceil
 
 from fastapi import APIRouter, Depends, status
 
@@ -28,6 +29,7 @@ from app.utils import (
     get_session,
     create_db_and_tables,
     delete_db_and_tables,
+    unix_to_timestamp,
 )
 
 from app.core.models import (
@@ -36,22 +38,64 @@ from app.core.models import (
     household_model,
     twinworld_model,
     algorithm_model,
+    energyflow_model,
 )
 
 # Easier to use the type this way instead of writing: appliance_model.ApplianceDays for example.  # noqa: E501
-from app.core.models.appliance_model import ApplianceType, ApplianceDays
+from app.core.models.appliance_model import (
+    Appliance,
+    ApplianceType,
+    ApplianceDays,
+)
+
+from app.core.crud.energyflow_crud import energyflow_crud
 
 router = APIRouter()
 
 
-def add_appliance_to_session(session: Session, appliance):
+def create_energyflow():
+    energy_flow_hour = pandas.read_csv("energyflow.csv", sep=";")
+    hourly_data = []  # Create an empty list to store EnergyFlow objects
+    first_time = unix_to_timestamp(energy_flow_hour["timestamp"].iloc[0])
+    offset = round((round(first_time) - first_time) * 86400)
+
+    for _, row in energy_flow_hour.iterrows():
+        # Assuming EnergyFlow is a class where you store your data
+        energy_flow = energyflow_model.EnergyFlow(
+            timestamp=row["timestamp"] + offset,
+            energy_used=row["energy_used"],
+            solar_produced=row["solar_produced"],
+        )
+        hourly_data.append(energy_flow)  # Append each object to the list
+
+    return hourly_data
+
+
+def add_appliance_to_session(session: Session, appliance: Appliance):
     "Abstraction for adding an appliance to a session"
-    if appliance is not None:
-        session.add(appliance)
+    session.add(appliance)
+    session.flush()
+
+    for day in ApplianceDays:
+        timewindow = create_timewindow(day, appliance.id)
+        session.add(timewindow)
+
+    start_date, end_date = energyflow_crud.get_start_end_date(session=session)
+    start_date, end_date = floor(start_date.timestamp / 86400), floor(
+        end_date.timestamp / 86400
+    )
+    days = round(end_date - start_date + 1)
+
+    for day_number in range(1, days + 1):
+        daily_planning = create_initial_daily_planning(
+            session, day_number, appliance.id
+        )
+        daily_no_energy_planning = create_initial_no_energy_daily_planning(
+            session, day_number, appliance.id
+        )
+        session.add(daily_planning)
+        session.add(daily_no_energy_planning)
         session.flush()
-        for day in ApplianceDays:
-            timewindow = create_timewindow(day, appliance.id)
-            session.add(timewindow)
 
 
 def create_timewindow(
@@ -72,7 +116,7 @@ def create_timewindow(
         # Set time window from 5-8 for the stove
         timewindow = appliance_model.ApplianceTimeWindow(
             day=day,
-            bitmap_window=0b11110000,
+            bitmap_window=0b000000000000000011110000,
             appliance_id=appliance_id,
         )
         return timewindow
@@ -111,6 +155,28 @@ def create_timewindow(
     )
 
     return timewindow
+
+
+def create_initial_daily_planning(
+    session: Session, day: int, appliance_id: int
+) -> appliance_model.ApplianceTimeDaily:
+    empty_day = appliance_model.ApplianceTimeDaily(
+        day=day,
+        bitmap_plan=0b000000000000000000000000,  # 24 bits for hour of day
+        appliance_id=appliance_id,
+    )
+    return empty_day
+
+
+def create_initial_no_energy_daily_planning(
+    session: Session, day: int, appliance_id: int
+) -> appliance_model.ApplianceTimeNoEnergyDaily:
+    empty_day = appliance_model.ApplianceTimeNoEnergyDaily(
+        day=day,
+        bitmap_plan=0b000000000000000000000000,  # 24 bits for hour of day
+        appliance_id=appliance_id,
+    )
+    return empty_day
 
 
 def create_appliance(
@@ -404,19 +470,29 @@ def seed(session: Session = Depends(get_session)) -> None:
     create_db_and_tables()
     random.seed()
 
-    algorithm_1 = algorithm_model.Algorithm(
-        name="Algorithm 1",
-        description="An algorithm that does something",
+    energyflow = create_energyflow()
+    for x in energyflow:
+        session.add(x)
+
+    greedy = algorithm_model.Algorithm(
+        name="Greedy planning",
+        description="An initial planning that puts appliances in \
+            their local optimum through a greedy algorithm. \
+            Will not optimize further than one \
+            pass through all appliances.",
     )
 
-    session.add(algorithm_1)
+    session.add(greedy)
 
-    algorithm_2 = algorithm_model.Algorithm(
-        name="Algorithm 2",
-        description="An algorithm that does something else",
+    simulated_annealing = algorithm_model.Algorithm(
+        name="Simulated_annealing",
+        description="An algorithm that improves on a given algorithm \
+            by randomly changing the time of planned in appliances. \
+                The conditions for what changes becomes stricter over \
+                time, resulting in a further optimized solution.",
     )
 
-    session.add(algorithm_2)
+    session.add(simulated_annealing)
 
     buy_consumer = 0.4
     sell_consumer = 0.1
@@ -435,7 +511,7 @@ def seed(session: Session = Depends(get_session)) -> None:
 
     costmodel_temo = costmodel_model.CostModel(
         name="TEMO",
-        description=f"A price model based on the TEMO model. The price for buying from the utility is {buy_consumer} and the price for selling is {sell_consumer}. The price is determined by a formula that compares the energy need to the various prices available, and returns internal buying and selling prices.",  # noqa: E501
+        description="A price model based on the TEMO model. The price is determined by a formula that compares the energy needed to the various prices available, and returns an internal buying and selling prices",  # noqa: E501
         price_network_buy_consumer=buy_consumer,
         price_network_sell_consumer=sell_consumer,
         algo_1="algo1",
@@ -445,14 +521,14 @@ def seed(session: Session = Depends(get_session)) -> None:
 
     twinworld_1 = twinworld_model.TwinWorld(
         name="TwinWorld Large",
-        description="A larger twin world depicting a typical neighborhood and its energy usage and appliances",  # noqa: E501
+        description="A larger twin world consisting of roughly 75 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
     )
 
     session.add(twinworld_1)
 
     twinworld_2 = twinworld_model.TwinWorld(
         name="TwinWorld Small",
-        description="A smaller twin world depicting a typical neighborhood and its energy usage and appliances",  # noqa: E501
+        description="A smaller twin world consisting of roughly 25 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
     )
 
     session.add(twinworld_2)
@@ -481,17 +557,21 @@ def seed(session: Session = Depends(get_session)) -> None:
             household.size, inv_norm, household.id
         )
         session.flush()
-
-        add_appliance_to_session(session, vehicle)
-        add_appliance_to_session(session, dishwasher)
-        add_appliance_to_session(session, stove)
-        add_appliance_to_session(session, washingmachine)
+        if vehicle is not None:
+            add_appliance_to_session(session, vehicle)
+        if dishwasher is not None:
+            add_appliance_to_session(session, dishwasher)
+        if stove is not None:
+            add_appliance_to_session(session, stove)
+        if washingmachine is not None:
+            add_appliance_to_session(session, washingmachine)
 
         if washingmachine is not None:
             tumbledryer = create_tumbledryer(
                 household.size, inv_norm, household.id
             )
-            add_appliance_to_session(session, tumbledryer)
+            if tumbledryer is not None:
+                add_appliance_to_session(session, tumbledryer)
 
     try:
         session.commit()
