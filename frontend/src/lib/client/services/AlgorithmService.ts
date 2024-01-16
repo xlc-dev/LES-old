@@ -51,7 +51,7 @@ export class AlgorithmService {
   public static getAlgorithmApiAlgorithmIdGet(id: number): CancelablePromise<AlgorithmRead> {
     return __request(OpenAPI, {
       method: "GET",
-      url: "/api/algorithm/{id}/",
+      url: "/api/algorithm/{id}",
       path: {
         id: id,
       },
@@ -70,7 +70,7 @@ export class AlgorithmService {
   public static deleteAlgorithmApiAlgorithmIdDelete(id: number): CancelablePromise<void> {
     return __request(OpenAPI, {
       method: "DELETE",
-      url: "/api/algorithm/{id}/",
+      url: "/api/algorithm/{id}",
       path: {
         id: id,
       },

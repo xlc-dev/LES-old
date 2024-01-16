@@ -51,7 +51,7 @@ export class TwinworldService {
   public static getTwinworldApiTwinworldIdGet(id: number): CancelablePromise<TwinWorldRead> {
     return __request(OpenAPI, {
       method: "GET",
-      url: "/api/twinworld/{id}/",
+      url: "/api/twinworld/{id}",
       path: {
         id: id,
       },
@@ -70,7 +70,7 @@ export class TwinworldService {
   public static deleteTwinworldApiTwinworldIdDelete(id: number): CancelablePromise<void> {
     return __request(OpenAPI, {
       method: "DELETE",
-      url: "/api/twinworld/{id}/",
+      url: "/api/twinworld/{id}",
       path: {
         id: id,
       },

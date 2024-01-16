@@ -51,7 +51,7 @@ export class CostmodelService {
   public static getCostmodelApiCostmodelIdGet(id: number): CancelablePromise<CostModelRead> {
     return __request(OpenAPI, {
       method: "GET",
-      url: "/api/costmodel/{id}/",
+      url: "/api/costmodel/{id}",
       path: {
         id: id,
       },
@@ -70,7 +70,7 @@ export class CostmodelService {
   public static deleteCostmodelApiCostmodelIdDelete(id: number): CancelablePromise<void> {
     return __request(OpenAPI, {
       method: "DELETE",
-      url: "/api/costmodel/{id}/",
+      url: "/api/costmodel/{id}",
       path: {
         id: id,
       },
