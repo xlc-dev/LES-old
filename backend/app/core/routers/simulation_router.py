@@ -172,7 +172,9 @@ async def plan_simulated_annealing(
         )
         start_date, end_date = start_date.timestamp, end_date.timestamp
         days_in_planning = (end_date - start_date) // 86400
-        results = [[0.0 for x in range(4)] for y in range(days_in_planning+1)]
+        results = [
+            [0.0 for x in range(4)] for y in range(days_in_planning + 1)
+        ]
         # Plan: for the loop
         # First we do one day at a time, chronologically
         # This day needs to be initialized with the right helper variables
@@ -576,7 +578,9 @@ async def plan(
         )
         start_date, end_date = start_date.timestamp, end_date.timestamp
         days_in_planning = (end_date - start_date) // 86400
-        results = [[0.0 for x in range(4)] for y in range(days_in_planning+1)]
+        results = [
+            [0.0 for x in range(4)] for y in range(days_in_planning + 1)
+        ]
 
         # Plan: for the loop
         # First we do one day at a time, chronologically

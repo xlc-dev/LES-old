@@ -16,7 +16,7 @@ import random
 import pandas
 
 from typing import Optional, Dict
-from math import ceil
+from math import floor, ceil
 
 from fastapi import APIRouter, Depends, status
 
@@ -81,9 +81,9 @@ def add_appliance_to_session(session: Session, appliance: Appliance):
         session.add(timewindow)
 
     start_date, end_date = energyflow_crud.get_start_end_date(session=session)
-    start_date, end_date = math.floor(
-        start_date.timestamp / 86400
-    ), math.floor(end_date.timestamp / 86400)
+    start_date, end_date = floor(start_date.timestamp / 86400), floor(
+        end_date.timestamp / 86400
+    )
     days = round(end_date - start_date + 1)
 
     for day_number in range(1, days + 1):

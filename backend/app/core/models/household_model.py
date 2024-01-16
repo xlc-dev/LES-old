@@ -35,14 +35,6 @@ class HouseholdBase(SQLModel):
                 raise ValueError("size must be between 1 and 5")
             return v
 
-    @field_validator("solar_panels")
-    @classmethod
-    def ensure_solra(cls, v: int):
-        if v:
-            if v < 0 or v > 50:
-                raise ValueError("solar_panels must be between 0 and 50")
-            return v
-
 
 class Household(HouseholdBase, table=True):
     id: int = Field(primary_key=True)
@@ -50,13 +42,17 @@ class Household(HouseholdBase, table=True):
     twinworld_id: int = Field(foreign_key="twinworld.id", ge=1)
     twinworld: "TwinWorld" = Relationship(back_populates="household")
 
-    appliances: list["Appliance"] = Relationship(back_populates="household")
     household_energy_usage: list["HouseholdEnergyUsage"] = Relationship(
         back_populates="household"
     )
     household_energy_available: list[
         "HouseholdEnergyAvailable"
     ] = Relationship(back_populates="household")
+
+    appliances: list["Appliance"] = Relationship(
+        back_populates="household",
+        sa_relationship_kwargs={"cascade": "delete"},
+    )
 
 
 class HouseholdEnergyUsageBase(SQLModel):
@@ -89,10 +85,6 @@ class HouseholdEnergyAvailable(HouseholdEnergyUsageBase, table=True):
         back_populates="household_energy_available"
     )
     household_id: int = Field(foreign_key="household.id")
-    appliances: list["Appliance"] = Relationship(
-        back_populates="household",
-        sa_relationship_kwargs={"cascade": "delete"},
-    )
 
 
 class HouseholdRead(HouseholdBase):
