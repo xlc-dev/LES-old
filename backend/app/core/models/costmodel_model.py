@@ -1,3 +1,9 @@
+"""This file contains the model for the Algorithm table.
+
+The CostModel table is used to store all the CostModels that are available
+to use in the simulation. The CostModels are used to find the best....
+"""
+
 from typing import Optional
 
 from sqlmodel import SQLModel, Field

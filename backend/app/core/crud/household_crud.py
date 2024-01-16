@@ -14,5 +14,10 @@ class CRUDHousehold(CRUDBase[Household, HouseholdCreate, HouseholdUpdate]):
             select(Household).where(Household.twinworld_id == id)
         ).all()
 
+    def get_by_name(self, *, session: Session, name: str):
+        return session.exec(
+            select(Household).where(Household.name == name)
+        ).first()
+
 
 household_crud = CRUDHousehold(Household)

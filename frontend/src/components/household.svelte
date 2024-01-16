@@ -1,0 +1,104 @@
+<script lang="ts">
+  import type { HouseholdRead } from "../lib/client";
+
+  export let household: HouseholdRead;
+</script>
+
+<h1 class="font-bold text-4xl pb-4 flex items-center gap-4 dark:text-les-white">
+  <img src="/house.svg" alt="" class="h-24" />{household.name} Data
+</h1>
+
+<div class="flex flex-col gap-12 justify-between">
+  <table class="min-w-full leading-normal rounded-lg overflow-hidden">
+    <thead>
+      <tr class="text-xs text-left uppercase tracking-wider">
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Name</th>
+
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Size</th>
+
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Energy Usage</th>
+
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Solar Panels</th>
+
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Solar Yield Yearly</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr class="text-xs text-left uppercase tracking-wider">
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.name}</td>
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.size}</td>
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.energy_usage}</td>
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.solar_panels}</td>
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.solar_yield_yearly}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="min-w-full leading-normal rounded-lg overflow-hidden">
+    <thead>
+      <tr class="text-xs text-left uppercase tracking-wider">
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Name</th>
+
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Power</th>
+
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Duration</th>
+
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Daily Usage</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {#each household.appliances as appliance}
+        <tr class="text-xs text-left uppercase tracking-wider">
+          <td
+            class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+            >{appliance.name}</td>
+          <td
+            class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+            >{appliance.power}</td>
+          <td
+            class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+            >{appliance.duration}</td>
+          <td
+            class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+            >{appliance.daily_usage}</td>
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+</div>
+
+<hr class="my-8 border-black dark:border-les-white" />
+
+<div>
+  <h2 class="font-bold text-4xl dark:text-les-white">SL View</h2>
+</div>

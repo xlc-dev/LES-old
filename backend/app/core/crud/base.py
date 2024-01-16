@@ -10,29 +10,56 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=SQLModel)
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
-    def __init__(self, model: Type[ModelType]):
-        """CRUD object with default methods to Create, Read, Update, Delete
+    """CRUD object with default methods to Create, Read, Update, Delete
 
-        :param ModelType:
-            A SQLModel class
-        :param CreateSchemaType:
-            A SQLModel schema class for creating objects
-        :param UpdateSchemaType:
-            A SQLModel schema class for updating objects
-        """
+    :param ModelType:
+        A SQLModel class
+    :param CreateSchemaType:
+        A SQLModel schema class for creating objects
+    :param UpdateSchemaType:
+        A SQLModel schema class for updating objects
+    """
+
+    def __init__(self, model: Type[ModelType]):
         self.model = model
 
     def get(self, *, session: Session, id: int) -> Optional[ModelType]:
+        """Get a single object by id
+
+        :param session:
+            A SQLModel session
+        :param id:
+            The id to get
+        """
+
         return session.get(self.model, id)
 
     def get_multi(
         self, *, session: Session, skip: int = 0, limit: int = 5000
     ) -> Sequence[ModelType]:
+        """Get multiple objects
+
+        :param session:
+            A SQLModel session
+        :param skip:
+            The number of objects to skip
+        :param limit:
+            The number of objects to limit to
+        """
+
         return session.exec(select(self.model).offset(skip).limit(limit)).all()
 
     def create(
         self, *, session: Session, obj_in: CreateSchemaType
     ) -> ModelType:
+        """Create a single object
+
+        :param session:
+            A SQLModel session
+        :param obj_in:
+            The new database object with values
+        """
+
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.model(**obj_in_data)  # type: ignore
 
@@ -49,6 +76,16 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_obj: ModelType,
         obj_in: UpdateSchemaType | dict[str, Any]
     ) -> ModelType:
+        """Update a single object
+
+        :param session:
+            A SQLModel session
+        :param db_obj:
+            The database object to update
+        :param obj_in:
+            The new database object with updated values
+        """
+
         obj_data = jsonable_encoder(db_obj)
 
         if isinstance(obj_in, dict):
@@ -66,6 +103,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj
 
     def remove(self, *, session: Session, id: int) -> None:
+        """Delete a single object
+
+        :param session:
+            A SQLModel session
+        :param id:
+            The id to delete
+        """
         obj = session.get(self.model, id)
 
         session.delete(obj)

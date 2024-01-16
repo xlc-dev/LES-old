@@ -27,12 +27,13 @@ from sqlmodel import create_engine
 
 
 class Settings(BaseSettings):
+    "Class for the configuration options of the application"
     port: int = 8000
     development: bool = False
     uvcorn_colors: bool = True
     workers: int = 2
 
-    project_name: str = "LES"
+    project_name: str = "Local Energy System Simulator"
     server_host: str = "0.0.0.0"
     api_prefix: str = "/api"
     openapi_url: str = "/openapi.json"
@@ -49,6 +50,7 @@ class Settings(BaseSettings):
 
 settings = Settings()  # type: ignore
 
+# Create the database engine, if you want postgresql, change the database_url
 connect_args = {"check_same_thread": False}
 engine = create_engine(
     settings.database_url, echo=settings.db_echo, connect_args=connect_args
