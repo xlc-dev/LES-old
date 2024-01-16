@@ -1,4 +1,10 @@
 <script lang="ts">
+  /*
+  The baseLayout component handles the actions that form the application's navigational flow.
+  It also imports individual components so that they can be used throughout the application.
+  Finally, it also ensures that some components, such as the sidebar, persist in multiple views.
+  */
+
   import { blur } from "svelte/transition";
 
   import { activatedHousehold } from "../lib/stores";

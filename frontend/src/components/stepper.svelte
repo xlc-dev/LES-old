@@ -1,4 +1,12 @@
 <script lang="ts">
+  /*
+  The stepper component contains the first views the researcher is presented with.
+  The stepper can be seen as a setup wizard for a single session of using the application
+  and consists of three steps which the researcher goes through to prepare the environment
+  in which research is conducted. A pre-built twin world, cost model, and algorithm must be
+  selected or created as custom options in order for the environment to be created.
+  */
+  
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
 

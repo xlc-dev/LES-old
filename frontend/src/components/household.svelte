@@ -1,4 +1,11 @@
 <script lang="ts">
+  /*
+  The household component contains the view that is displayed when an individual household
+  is clicked in the schedulable load table or in the simulation view. It contains additional
+  data about the selected household and its' appliances, which is regularly updated and
+  translated into a part of the visualisations in the dashboard component.
+  */
+
   import type { HouseholdRead } from "../lib/client";
 
   export let household: HouseholdRead;

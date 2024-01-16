@@ -1,4 +1,12 @@
 <script lang="ts">
+  /*
+  The simulation component contains the simulation view in which all the households that
+  are a part of the current session, based on the current twin world, cost model, and
+  algorithm that were selected in the stepper and filters for showing only specific
+  households are displayed. When an individual household is clicked, its' corresponding
+  household view is displayed.
+  */
+
   import type { HouseholdRead } from "../lib/client";
   import { stepperData } from "../lib/stores";
 
