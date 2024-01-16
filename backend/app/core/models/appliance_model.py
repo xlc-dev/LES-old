@@ -129,7 +129,7 @@ class ApplianceTimeNoEnergyDaily(ApplianceTimeNoEnergyDailyBase, table=True):
 
 
 class ApplianceTimeDailyRead(ApplianceTimeDailyBase):
-    pass
+    id: int
 
 
 class ApplianceTimeDailyCreate(ApplianceTimeDailyBase):

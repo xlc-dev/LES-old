@@ -77,12 +77,12 @@ These endpoints need to be called in a specific order:
             "description": "CRUD operations for the TwinWorld model",
         },
         {
-            "name": "Simulate",
-            "description": "Simulate the twinworld. Here are the main endpoints for the simulation.",  # noqa: E501
+            "name": "Energyflow",
+            "description": "CRUD operations for the Energyflow model",
         },
         {
-            "name": "Energyflow",
-            "description": "Energyflow API",
+            "name": "Simulate",
+            "description": "Simulate the twinworld. Here are the main endpoints for the simulation.",  # noqa: E501
         },
         {
             "name": "Seed",
