@@ -44,10 +44,12 @@
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
+  // Displays a dropdown menu of a filter when its' corresponding button is clicked
   const toggleDropdown = (filterName: string) => {
     showDropdown = showDropdown === filterName ? null : filterName;
   };
 
+  // Retracts the displayed dropdown menu when an area outside of the dropdown menu has been clicked
   const createHandleClickOutside = (filterName: string) => {
     return (event: any) => {
       if (!event.target.closest(`#${filterName}-dropdown`)) {
@@ -56,14 +58,17 @@
     };
   };
 
+  // Modifies the name of a filter so that it's written in camel case
   const toReadableName = (camelCase: string) => {
     return camelCase.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
   };
 
+  // Expands a card of a household in the schedulable load table when its' row has been clicked
   const toggleRow = (id: number) => {
     expandedRow = expandedRow === id ? null : id;
   };
 
+  // Sorts certain columns of the schedulable load table by ascending or descending based on how often a sort button has been clicked
   const sortData = (column: string) => {
     if (sortColumn === column) {
       sortOrder = sortOrder === "asc" ? "desc" : "asc";
@@ -79,6 +84,7 @@
     });
   };
 
+  // Contains all the code that must be run during the initialisation of the schedulableLoadTable component
   onMount(() => {
     document.addEventListener("click", (event: any) => {
       for (const filterName in filters) {

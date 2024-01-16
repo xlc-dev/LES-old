@@ -23,6 +23,7 @@
 
   let unsubscribe: () => void;
 
+  // Navigates to a different view based on the button that was clicked
   const handleButtonClick = (action: string) => {
     if (unsubscribe) unsubscribe();
 

@@ -16,16 +16,19 @@
 
   let isDarkMode = false;
 
+  // Registers and handles button clicks by dispatching the corresponding event
   const handleButtonClick = (action: string) => {
     dispatch("click", { action });
     currentComponent = action;
   };
 
+  // Triggers the function that turns dark mode on or off
   const toggleDarkMode = () => {
     isDarkMode = !isDarkMode;
     updateDarkMode();
   };
 
+  // Turns dark mode on or off
   const updateDarkMode = () => {
     // Save the dark mode setting to local storage
     localStorage.setItem("darkMode", isDarkMode.toString());
@@ -37,6 +40,7 @@
     }
   };
 
+  // Contains all the code that must be run during the initialisation of the sidebar component
   onMount(() => {
     const savedDarkMode = localStorage.getItem("darkMode");
     isDarkMode = savedDarkMode === "true";

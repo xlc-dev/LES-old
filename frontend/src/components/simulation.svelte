@@ -17,10 +17,12 @@
   let solarPanelFilter = "";
   let searchQuery = "";
 
+  // Loads the view for a specific household if it has been clicked in the simulation view
   const showHome = (data: HouseholdRead) => {
     household = data;
   };
 
+  // Determines whether or not a household in the simulation view has solar panels
   const hasSolarPanels = (household) => household.solar_panels > 0;
 
   $: selectedHousehold = household;

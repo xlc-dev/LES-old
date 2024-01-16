@@ -14,6 +14,7 @@
   export let appliances: ApplianceRead[];
   export let hours: number[];
 
+  // Determines the color of a box in a schedulable load grid raster based on a bitmap value
   const getCellColor = (bitmap: number, hour: number) => {
     const bitmapString = bitmap.toString(2).padStart(24, "0");
     return bitmapString[hour] === "1" ? "bg-blue-600" : "bg-gray-700";
