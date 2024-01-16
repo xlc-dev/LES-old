@@ -1,3 +1,9 @@
+"""This file contains the model for the Algorithm table.
+
+The Algorithm table is used to store all the algorithms that are available
+to use in the simulation. The algorithms are used to find the best....
+"""
+
 from sqlmodel import SQLModel, Field
 
 

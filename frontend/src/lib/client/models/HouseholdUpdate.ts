@@ -3,15 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ApplianceRead } from "./ApplianceRead";
-
-export type HouseholdRead = {
+export type HouseholdUpdate = {
   name: string;
   size?: number;
   energy_usage: number;
   solar_panels?: number;
   solar_yield_yearly: number;
-  id: number;
-  appliances?: Array<ApplianceRead>;
-  twinworld_id: number;
 };

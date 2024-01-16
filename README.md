@@ -2,8 +2,11 @@
 
 ## Requirements
 
-- Any moderately modern verison of Node and NPM
+- Any moderately modern version of Node and NPM
 - Python 3.11+
+
+On windows, in order to get all the packages for the backend to compile, you also have to install
+[Microsoft build tools](https://visualstudio.microsoft.com/downloads/?q=build+tools) and select the build tools option in the Visual Studio installer.
 
 ## Installation
 
@@ -36,7 +39,9 @@ pip install pip-tools && pip install -r requirements.txt && pip install -r requi
 
 ### Frontend
 
-`cd` to the frontend folder, and run `npm i`.
+`cd` to the frontend folder, and run `npm i --legacy-peer-deps`.
+
+The `--legacy-peer-deps` is a workaround to get `svelte-chartjs` working with the latest version of `svelte`.
 
 ## Development
 

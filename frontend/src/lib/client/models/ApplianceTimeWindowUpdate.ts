@@ -5,8 +5,7 @@
 
 import type { ApplianceDays } from "./ApplianceDays";
 
-export type ApplianceTimeWindowRead = {
+export type ApplianceTimeWindowUpdate = {
   day: ApplianceDays;
   bitmap_window: number;
-  id: number;
 };
