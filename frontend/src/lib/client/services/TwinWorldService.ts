@@ -4,12 +4,10 @@
 /* eslint-disable */
 import type { TwinWorldCreate } from "../models/TwinWorldCreate";
 import type { TwinWorldRead } from "../models/TwinWorldRead";
-
 import type { CancelablePromise } from "../core/CancelablePromise";
 import { OpenAPI } from "../core/OpenAPI";
 import { request as __request } from "../core/request";
-
-export class TwinworldService {
+export class TwinWorldService {
   /**
    * Get Twinworlds
    * @returns TwinWorldRead Successful Response
@@ -21,7 +19,6 @@ export class TwinworldService {
       url: "/api/twinworld/",
     });
   }
-
   /**
    * Post Twinworld
    * @param requestBody
@@ -41,7 +38,6 @@ export class TwinworldService {
       },
     });
   }
-
   /**
    * Get Twinworld
    * @param id
@@ -60,7 +56,6 @@ export class TwinworldService {
       },
     });
   }
-
   /**
    * Delete Twinworld
    * @param id

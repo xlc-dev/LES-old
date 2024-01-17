@@ -2,9 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { ApplianceType } from "./ApplianceType";
-
 export type ApplianceCreate = {
   name: ApplianceType;
   power: number;
