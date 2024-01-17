@@ -540,7 +540,7 @@
     }).then((res) => ($stepperData = res));
   };
 
-  // Contains all the code that must be run during the initialisation of the stepper component
+  // Initializes the simulation data, the twin world, the simulation data's object keys, and the Monaco editors
   onMount(async () => {
     const data: SimulationData = await SimulateService.getDataApiSimulateLoadDataGet();
     simulationData = data;

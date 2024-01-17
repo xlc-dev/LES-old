@@ -84,7 +84,7 @@
     });
   };
 
-  // Contains all the code that must be run during the initialisation of the schedulableLoadTable component
+  // Initializes the event listener that handles button clicks of filters in the schedulable load table
   onMount(() => {
     document.addEventListener("click", (event: any) => {
       for (const filterName in filters) {
@@ -96,6 +96,7 @@
     });
   });
 
+  // Applies the filter logic on the schedulable load table
   $: {
     let data = get(stepperData);
     filteredData = data.filter((item) => {

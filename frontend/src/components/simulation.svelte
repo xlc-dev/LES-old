@@ -25,8 +25,10 @@
   // Determines whether or not a household in the simulation view has solar panels
   const hasSolarPanels = (household) => household.solar_panels > 0;
 
+  // Sets the selected household as the household that is used when displaying the individual househould view
   $: selectedHousehold = household;
 
+  // Contains the logic of the filters in the simulation view
   $: filteredHouseholds = $stepperData.filter(
     (h) =>
       (sizeFilter === "" || h.size === parseInt(sizeFilter, 10)) &&
