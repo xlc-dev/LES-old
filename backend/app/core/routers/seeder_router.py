@@ -480,31 +480,33 @@ def seed(session: Session = Depends(get_session)) -> None:
             their local optimum through a greedy algorithm. \
             Will not optimize further than one \
             pass through all appliances.",
+        algorithm="greedy()",
     )
 
     session.add(greedy)
 
     simulated_annealing = algorithm_model.Algorithm(
-        name="Simulated_annealing",
+        name="Simulated Annealing",
         description="An algorithm that improves on a given algorithm \
             by randomly changing the time of planned in appliances. \
                 The conditions for what changes becomes stricter over \
                 time, resulting in a further optimized solution.",
+        algorithm="simmulated_annealing()",
     )
 
     session.add(simulated_annealing)
 
     buy_consumer = 0.4
     sell_consumer = 0.1
-    fixed_division = 0.5
+    fixed_price_ratio = 0.5
 
     costmodel_fixed = costmodel_model.CostModel(
         name="Fixed Price",
-        description=f"A fixed price for buying and selling energy. The price for buying from the utility is {buy_consumer} and the price for selling is {sell_consumer}. The price is determined by {buy_consumer * fixed_division + (1 - fixed_division) * sell_consumer}. A higher fixed devisision means a higher trading price.",  # noqa: E501
+        description=f"A fixed price for buying and selling energy. The price for buying from the utility is {buy_consumer} and the price for selling is {sell_consumer}. The price is determined by {buy_consumer * fixed_price_ratio + (1 - fixed_price_ratio) * sell_consumer}. A higher fixed devisision means a higher trading price.",  # noqa: E501
         price_network_buy_consumer=buy_consumer,
         price_network_sell_consumer=sell_consumer,
-        fixed_division=fixed_division,
-        algo_1="algo1",
+        fixed_price_ratio=fixed_price_ratio,
+        costmodel_algorithm=" ",
     )
 
     session.add(costmodel_fixed)
@@ -514,7 +516,7 @@ def seed(session: Session = Depends(get_session)) -> None:
         description="A price model based on the TEMO model. The price is determined by a formula that compares the energy needed to the various prices available, and returns an internal buying and selling prices",  # noqa: E501
         price_network_buy_consumer=buy_consumer,
         price_network_sell_consumer=sell_consumer,
-        algo_1="algo1",
+        costmodel_algorithm=" ",
     )
 
     session.add(costmodel_temo)
