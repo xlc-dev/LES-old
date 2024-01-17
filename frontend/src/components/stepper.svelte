@@ -9,16 +9,16 @@
   import {
     SimulateService,
     type SimulationData,
-    TwinworldService,
-    CostmodelService,
+    TwinWorldService,
+    CostModelService,
     AlgorithmService,
     HouseholdService,
     type ApplianceCreate,
     type HouseholdCreate,
     ApplianceType,
     ApplianceService,
-    type HouseholdRead,
-    type ApplianceRead,
+    type HouseholdRead_Output,
+    type ApplianceRead_Output,
     type ApplianceTimeWindowCreate,
     ApplianceDays,
     type ApplianceTimeWindowRead,
@@ -86,16 +86,16 @@
     appliance_id: 0,
   };
 
-  let algo1Editor: monaco.editor.IStandaloneCodeEditor;
-  let algo2Editor: monaco.editor.IStandaloneCodeEditor;
-  let algo1Code = "";
-  let algo2Code = "";
+  let costmodelEditor: monaco.editor.IStandaloneCodeEditor;
+  let algorithmEditor: monaco.editor.IStandaloneCodeEditor;
+  let costmodelCode = "";
+  let algorithmCode = "import pandas\nimport numpy\nimport scipy\nimport math\nimport random\n\ndef run():\n    pass\n";
 
   let checkboxStates = Array(24).fill(false);
   let currentStep: number = 1;
 
   let currentDescription: string = "";
-  let currentAppliances: ApplianceRead[] = null;
+  let currentAppliances: ApplianceRead_Output[] = null;
 
   let applianceToAdd: number = 0;
   let timewindowToAdd: number = 0;
@@ -106,6 +106,7 @@
   let householdError: string = "";
   let applianceError: string = "";
   let timewindowError: string = "";
+  let algorithmError: string = "";
 
   let applianceCheck: Array<{
     householdName: string;
@@ -113,14 +114,14 @@
     missingDay: ApplianceDays;
   }> = [];
 
-  let editingHousehold: HouseholdRead = null;
+  let editingHousehold: HouseholdRead_Output = null;
   let editingApplianceTimeWindow: ApplianceTimeWindowRead = null;
 
   const updateDescription = (description: string) => {
     currentDescription = description;
   };
 
-  const startEditingHousehold = (household: HouseholdRead) => {
+  const startEditingHousehold = (household: HouseholdRead_Output) => {
     editingHousehold = household;
   };
 
@@ -207,10 +208,10 @@
   const deleteOptionBasedOnCategory = async (category: keyof SimulationData, optionId: number) => {
     switch (category) {
       case "cost_model":
-        await CostmodelService.deleteCostmodelApiCostmodelIdDelete(optionId);
+        await CostModelService.deleteCostmodelApiCostmodelIdDelete(optionId);
         break;
       case "twin_world":
-        await TwinworldService.deleteTwinworldApiTwinworldIdDelete(optionId);
+        await TwinWorldService.deleteTwinworldApiTwinworldIdDelete(optionId);
         break;
       case "algorithm":
         await AlgorithmService.deleteAlgorithmApiAlgorithmIdDelete(optionId);
@@ -297,7 +298,7 @@
     try {
       await ApplianceService.deleteApplianceTimewindowApiAppliancetimewindowIdDelete(id);
       twinworldHouseholds = twinworldHouseholds.map((household) => {
-        household.appliances = household.appliances.map((appliance: ApplianceRead) => {
+        household.appliances = household.appliances.map((appliance: ApplianceRead_Output) => {
           // Check if the current appliance has an appliance_windows array
           if (appliance.appliance_windows) {
             // Filter out the specific appliance_time_window based on its ID
@@ -349,7 +350,7 @@
 
       twinworldHouseholds = twinworldHouseholds.map((household) => {
         household.appliances = household.appliances.filter(
-          (appliance: ApplianceRead) => appliance.id !== id
+          (appliance: ApplianceRead_Output) => appliance.id !== id
         );
         return household; // return so svelte can update the array
       });
@@ -411,14 +412,12 @@
       description: target.description.value,
       price_network_buy_consumer: target.price_network_buy_consumer.value,
       price_network_sell_consumer: target.price_network_sell_consumer.value,
-      fixed_division: target.fixed_division.value,
-      stock_time_delta: target.stock_time_delta.value,
-      algo_1: algo1Code,
-      algo_2: algo2Code,
+      fixed_price_ratio: target.fixed_price_ratio.value,
+      costmodel_algorithm: costmodelCode,
     };
 
     try {
-      await CostmodelService.postCostmodelApiCostmodelPost(formData);
+      await CostModelService.postCostmodelApiCostmodelPost(formData);
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
     } catch (error) {
       console.log(error);
@@ -435,7 +434,7 @@
     };
 
     try {
-      await TwinworldService.postTwinworldApiTwinworldPost(formData);
+      await TwinWorldService.postTwinworldApiTwinworldPost(formData);
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
       twinworldHouseholds = [];
     } catch (error) {
@@ -449,13 +448,15 @@
     const formData = {
       name: target.name.value,
       description: target.description.value,
+      algorithm: algorithmCode,
     };
 
     try {
       await AlgorithmService.postAlgorithmApiAlgorithmPost(formData);
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
-    } catch (error) {
-      console.log(error);
+      algorithmError = "";
+    } catch (err) {
+      algorithmError = err.message;
     }
   };
 
@@ -463,7 +464,7 @@
     applianceCheck = [];
     const hasApplianceWithoutEveryDay = twinworldHouseholds
       .map((household) =>
-        household.appliances.map((appliance: ApplianceRead) => {
+        household.appliances.map((appliance: ApplianceRead_Output) => {
           // Check if the current appliance has an appliance_windows array
           if (appliance.appliance_windows) {
             const missingDays = Object.values(ApplianceDays).filter(
@@ -507,19 +508,19 @@
     const data: SimulationData = await SimulateService.getDataApiSimulateLoadDataGet();
     simulationData = data;
 
-    twinWorlds = await TwinworldService.getTwinworldsApiTwinworldGet();
+    twinWorlds = await TwinWorldService.getTwinworldsApiTwinworldGet();
 
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
     currentDescription = simulationData[keys[currentStep - 1]][0]?.description || "";
 
-    algo1Editor = monaco.editor.create(document.getElementById("algo1-editor"), {
+    costmodelEditor = monaco.editor.create(document.getElementById("algo1-editor"), {
       value: "",
       language: "python",
       lineNumbers: "on",
       automaticLayout: true,
     });
 
-    algo2Editor = monaco.editor.create(document.getElementById("algo2-editor"), {
+    algorithmEditor = monaco.editor.create(document.getElementById("algo2-editor"), {
       value: "",
       language: "python",
       lineNumbers: "on",
@@ -1180,14 +1181,23 @@
         method="post"
         on:submit|preventDefault={uploadCostModel}
         class="flex flex-col space-y-3">
-        <label for="name" class="font-bold pt-4">Name:</label>
+
+        <div>
+          <label for="name" class="font-bold pt-4">Name:</label>
+          <p class="text-sm text-gray-500">Name of the costmodel</p>
+        </div>
+
         <input
           type="text"
           name="name"
           class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required />
 
-        <label for="description" class="font-bold">Description:</label>
+        <div>
+          <label for="description" class="font-bold">Description:</label>
+          <p class="text-sm text-gray-500">Description of the costmodel</p>
+        </div>
+
         <textarea
           name="description"
           class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1196,9 +1206,9 @@
 
         <div>
           <label for="price_network_buy_consumer" class="font-bold"
-            >Price Network Buy Consumer</label>
+            >Price Network Buy Consumer:</label>
           <p class="text-sm text-gray-500">
-            This is the price for buying from the network as a consumer.
+            The price for buying energy from the energy provider
           </p>
         </div>
 
@@ -1210,9 +1220,9 @@
           required />
         <div>
           <label for="price_network_sell_consumer" class="font-bold"
-            >Price Network Sell Consumer</label>
+            >Price Network Sell Consumer:</label>
           <p class="text-sm text-gray-500">
-            This is the price for selling to the network as a consumer.
+            The price for selling energy back to the energy provider
           </p>
         </div>
 
@@ -1223,38 +1233,33 @@
           class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required />
         <div>
-          <label for="fixed_division" class="font-bold">Fixed Division</label>
-          <p class="text-sm text-gray-500">This is the fixed division for the cost model.</p>
+          <label for="fixed_price_ratio" class="font-bold">Fixed Price Ratio:</label>
+          <p class="text-sm text-gray-500">Determines the internal price for selling and buying energy. A higher ratio means that the price will tend towards the buying price</p>
         </div>
 
         <input
           step="any"
           type="number"
-          name="fixed_division"
+          name="fixed_price_ratio"
           class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
-        <div>
-          <label for="stock_time_delta" class="font-bold">Stock Time Delta</label>
-          <p class="text-sm text-gray-500">This is the stock time delta for the cost model.</p>
-        </div>
 
-        <input
-          type="number"
-          name="stock_time_delta"
-          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
         <div>
-          <label for="algo1" class="font-bold">Algorithm 1</label>
-          <p class="text-sm text-gray-500">This is the first algorithm for the cost model.</p>
+          <label for="costmodel_algorithm" class="font-bold">Costmodel Algorithm:</label>
+          <p class="text-sm text-gray-500">A custom formula used to determine the internal buying and selling price. See documentation for details</p>
         </div>
 
         <div
-          use:initMonaco={{ initialCode: algo1Code, onChange: (code) => (algo1Code = code) }}
+          use:initMonaco={{
+            initialCode: costmodelCode,
+            onChange: (code) => (costmodelCode = code),
+          }}
           class="h-48 border-2 border-gray-400 aria-selected:border-gray-600 rounded-lg">
         </div>
-        <label for="algo2" class="font-bold">Algorithm 2</label>
-        <div
-          use:initMonaco={{ initialCode: algo2Code, onChange: (code) => (algo2Code = code) }}
-          class="h-48 border-2 border-gray-400 aria-selected:border-gray-600 rounded-lg">
-        </div>
+
+        {#if algorithmError}
+          <p class="text-les-red">{algorithmError}</p>
+        {/if}
+
         <button
           type="submit"
           class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
@@ -1262,18 +1267,39 @@
       </form>
     {:else if currentStep === 3}
       <form method="post" on:submit|preventDefault={uploadAlgorithm} class="flex flex-col gap-6">
-        <label for="name" class="font-bold pt-4">Name:</label>
+        <div>
+          <label for="name" class="font-bold pt-4">Name:</label>
+          <p class="text-sm text-gray-500">Name for the new algorithm</p>
+        </div>
+
         <input
           type="text"
           name="name"
           class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required />
 
-        <label for="description" class="font-bold">Description:</label>
+        <div>
+          <label for="description" class="font-bold">Description:</label>
+          <p class="text-sm text-gray-500">Description for the new algorithm</p>
+        </div>
+
         <textarea
           name="description"
           class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
           required></textarea>
+
+        <div>
+          <label for="algorithm" class="font-bold">Algorithm:</label>
+          <p class="text-sm text-gray-500">A custom algorithm used to determine when an appliance will be planned in. See documentation for details</p>
+        </div>
+
+        <div
+          use:initMonaco={{
+            initialCode: algorithmCode,
+            onChange: (code) => (algorithmCode = code),
+          }}
+          class="h-48 border-2 border-gray-400 aria-selected:border-gray-600 rounded-lg">
+        </div>
 
         <button
           type="submit"
