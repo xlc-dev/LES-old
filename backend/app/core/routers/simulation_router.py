@@ -123,24 +123,6 @@ async def start(
     return results
 
 
-@router.post("/reset", response_model="None")
-async def reset(*, session: Session = Depends(get_session)) -> None:
-    initial_planning_energy = appliance_time_daily_crud.get_multi(
-        session=session, limit=10**9
-    )
-    initial_planning_no_energy = appliance_time_no_energy_daily_crud.get_multi(
-        session=session, limit=10**9
-    )
-    for appliance_energy in initial_planning_energy:
-        appliance_time_daily_crud.remove(
-            session=session, id=appliance_energy.id
-        )
-    for appliance_no_energy in initial_planning_no_energy:
-        appliance_time_no_energy_daily_crud.remove(
-            session=session, id=appliance_no_energy.id
-        )
-
-
 @router.post("/stop")
 async def stop(*, session: Session = Depends(get_session)):
     return {"message": "Simulation ended"}
@@ -150,395 +132,393 @@ async def stop(*, session: Session = Depends(get_session)):
 async def plan_simulated_annealing(
     *, planning: list[HouseholdRead], session: Session = Depends(get_session)
 ):
-    # Needed for simulated annealing, Hardcoded
     max_temperature = 10000
     solar_panels_factor = 25
 
-    if (
-        appliance_time_daily_crud.get_non_empty_timewindow(session=session)
-        is None
-    ):
-        random.seed(27)
-        energyflow_data = energyflow_crud.get_by_solar_produced(
-            session=session
-        )  # gets all the energy flow in (unix, energy used, solar produced)
-        energyflow_data_sim = energyflow_crud.get_by_solar_produced_sim(
-            session=session
-        )  # gets all the energy flow in (unix, energy used, solar produced)
-        amount_of_households = len(planning)
-        start_date, end_date = energyflow_crud.get_start_end_date(
-            session=session
-        )
-        start_date, end_date = start_date.timestamp, end_date.timestamp
-        days_in_planning = (end_date - start_date) // 86400
-        results = [
-            [0.0 for x in range(4)] for y in range(days_in_planning + 1)
+    energyflow_data = energyflow_crud.get_by_solar_produced(session=session)
+    energyflow_data_sim = energyflow_crud.get_by_solar_produced_sim(session=session)
+    amount_of_households = len(planning)
+    start_date, end_date = energyflow_crud.get_start_end_date(session=session)
+    start_date, end_date = start_date.timestamp, end_date.timestamp
+    days_in_planning = (end_date - start_date) // 86400
+
+    # Precompute energyflow_day for each day outside the loop
+    energyflow_day_per_day = {}
+    for date in range(start_date, end_date, 86400):
+        energyflow_day = [
+            el
+            for el in energyflow_data
+            if (date <= el.timestamp and el.timestamp < date + 3600 * 24)
         ]
-        # Plan: for the loop
-        # First we do one day at a time, chronologically
-        # This day needs to be initialized with the right helper variables
+        energyflow_day_per_day[date] = energyflow_day
 
-        # Then we plan all of the devices one household at a time
-        # Ordering is done by most solar panels first
-        # with the result of each house useing their own energy first
-        # Only later on it's allowed to use energy from other houses
+    results = [[0.0 for _ in range(4)] for _ in range(days_in_planning + 1)]
 
-        for date in range(start_date, end_date, 86400):
-            day_number_in_planning = (date - start_date) // 86400 + 1
-            print(int(day_number_in_planning))
-            energyflow_day = [
-                el
-                for el in energyflow_data
-                if (date <= el.timestamp and el.timestamp < date + 3600 * 24)
-            ]  # only check the current day for energy flow
+    # Plan: for the loop
+    # First we do one day at a time, chronologically
+    # This day needs to be initialized with the right helper variables
 
-            household_energy = [
-                [0.0 for x in range(amount_of_households)] for y in range(24)
-            ]  # the available excess energy to be used for scheduling loads
-            total_available_energy = 0.0
+    # Then we plan all of the devices one household at a time
+    # Ordering is done by most solar panels first
+    # with the result of each house useing their own energy first
+    # Only later on it's allowed to use energy from other houses
 
-            for household_idx, household in enumerate(planning, start=0):
-                if household.solar_panels <= 0:
-                    continue
-                for energyflow_day_information_init in energyflow_day:
-                    hour = unix_to_hour(
-                        energyflow_day_information_init.timestamp
-                    )
-                    potential_energy = get_potential_energy(
-                        household,
-                        energyflow_day_information_init.energy_used,
-                        energyflow_day_information_init.solar_produced,
-                    )
-                    household_energy[hour][household_idx] = potential_energy
-                    total_available_energy += potential_energy
+    for date in range(start_date, end_date, 86400):
+        day_number_in_planning = (date - start_date) // 86400 + 1
+        print(int(day_number_in_planning))
+        energyflow_day = [
+            el
+            for el in energyflow_data
+            if (date <= el.timestamp and el.timestamp < date + 3600 * 24)
+        ]  # only check the current day for energy flow
 
-            for household_idx, household in enumerate(planning, start=0):
-                if total_available_energy <= 0:
-                    break
+        household_energy = [
+            [0.0 for x in range(amount_of_households)] for y in range(24)
+        ]  # the available excess energy to be used for scheduling loads
+        total_available_energy = 0.0
 
-                for appliance in household.appliances:
-                    usage = appliance.daily_usage  # misschien niet nodig
-                    appliance_bitmap_plan = (
-                        appliance_time_daily_crud.get_appliance_time_daily(
-                            session=session,
-                            appliance_id=appliance.id,
-                            day=day_number_in_planning,
-                        )
-                    )
-                    if not appliance_bitmap_plan:  # error testing
-                        print(appliance.id, day_number_in_planning)
-                    appliance_no_energy_bitmap_plan = appliance_time_no_energy_daily_crud.get_appliance_time_no_energy_daily(  # noqa: E501
+        for household_idx, household in enumerate(planning, start=0):
+            if household.solar_panels <= 0:
+                continue
+            for energyflow_day_information_init in energyflow_day:
+                hour = unix_to_hour(
+                    energyflow_day_information_init.timestamp
+                )
+                potential_energy = get_potential_energy(
+                    household,
+                    energyflow_day_information_init.energy_used,
+                    energyflow_day_information_init.solar_produced,
+                )
+                household_energy[hour][household_idx] = potential_energy
+                total_available_energy += potential_energy
+
+        for household_idx, household in enumerate(planning, start=0):
+            if total_available_energy <= 0:
+                break
+
+            for appliance in household.appliances:
+                usage = appliance.daily_usage  # misschien niet nodig
+                appliance_bitmap_plan = (
+                    appliance_time_daily_crud.get_appliance_time_daily(
                         session=session,
                         appliance_id=appliance.id,
                         day=day_number_in_planning,
                     )
-                    if not appliance_no_energy_bitmap_plan:  # error testing
-                        print(appliance.id, day_number_in_planning)
-                    while usage > (1 - random.random()):
-                        plannedin = False
+                )
+                if not appliance_bitmap_plan:  # error testing
+                    print(appliance.id, day_number_in_planning)
+                appliance_no_energy_bitmap_plan = appliance_time_no_energy_daily_crud.get_appliance_time_no_energy_daily(  # noqa: E501
+                    session=session,
+                    appliance_id=appliance.id,
+                    day=day_number_in_planning,
+                )
+                if not appliance_no_energy_bitmap_plan:  # error testing
+                    print(appliance.id, day_number_in_planning)
+                while usage > (1 - random.random()):
+                    plannedin = False
 
-                        for energyflow_day_information in energyflow_day:
-                            unix = energyflow_day_information.timestamp
-                            hour = unix_to_hour(unix)
-                            if plannedin is True:
-                                break
-                            if household_energy[hour][household_idx] < 0:
-                                continue
-                            if (
-                                check_appliance_time(
-                                    appliance,
-                                    unix,
-                                    appliance_bitmap_plan,
-                                    appliance_no_energy_bitmap_plan,
-                                    True,
-                                )
-                                is False
-                            ):
-                                continue
-
-                            plan_with_energy(
-                                session, appliance, hour, appliance_bitmap_plan
-                            )
-                            for i in range(appliance.duration):
-                                energy_used = min(
-                                    household_energy[hour][household_idx],
-                                    appliance.power / appliance.duration,
-                                )
-                                total_available_energy -= energy_used
-                                household_energy[hour][
-                                    household_idx
-                                ] -= energy_used
-                            plannedin = True
-                            usage -= 1
-                            break
-
+                    for energyflow_day_information in energyflow_day:
+                        unix = energyflow_day_information.timestamp
+                        hour = unix_to_hour(unix)
                         if plannedin is True:
+                            break
+                        if household_energy[hour][household_idx] < 0:
+                            continue
+                        if (
+                            check_appliance_time(
+                                appliance,
+                                unix,
+                                appliance_bitmap_plan,
+                                appliance_no_energy_bitmap_plan,
+                                True,
+                            )
+                            is False
+                        ):
                             continue
 
-                        for i in range(24):
-                            if plannedin is True:
-                                break
-                            currenttime = date + 3600 * i
-                            if (
-                                check_appliance_time(
-                                    appliance,
-                                    currenttime,
-                                    appliance_bitmap_plan,
-                                    appliance_no_energy_bitmap_plan,
-                                    False,
-                                )
-                                is False
-                            ):
-                                continue
-                            plan_no_energy(
-                                session,
+                        plan_with_energy(
+                            session, appliance, hour, appliance_bitmap_plan
+                        )
+                        for i in range(appliance.duration):
+                            energy_used = min(
+                                household_energy[hour][household_idx],
+                                appliance.power / appliance.duration,
+                            )
+                            total_available_energy -= energy_used
+                            household_energy[hour][
+                                household_idx
+                            ] -= energy_used
+                        plannedin = True
+                        usage -= 1
+                        break
+
+                    if plannedin is True:
+                        continue
+
+                    for i in range(24):
+                        if plannedin is True:
+                            break
+                        currenttime = date + 3600 * i
+                        if (
+                            check_appliance_time(
                                 appliance,
                                 currenttime,
+                                appliance_bitmap_plan,
                                 appliance_no_energy_bitmap_plan,
+                                False,
                             )
-                            plannedin = True
-                            usage -= 1
-
-                        if plannedin is False:
-                            #     print("Not planned in", appliance, date)
-                            usage = 0
-            current_used = [0.0 for x in range(24)]
-            current_used_new = [0.0 for x in range(24)]
-            solar_produced = [0.0 for x in range(24)]
-            current_available = [0.0 for x in range(24)]
-            total_panels = 0
-
-            energyflow_day_sim: list[EnergyFlowRead] = [
-                el
-                for el in energyflow_data_sim
-                if (date <= el.timestamp and el.timestamp < date + 3600 * 24)
-            ]  # only check the current day for energy flow
-
-            for household in planning:
-                total_panels += household.solar_panels
-                for appliance in household.appliances:
-                    appliance_bitmap_plan = (
-                        appliance_time_daily_crud.get_appliance_time_daily(
-                            session=session,
-                            appliance_id=appliance.id,
-                            day=day_number_in_planning,
-                        )
-                    )
-                    if appliance_bitmap_plan is None:
-                        continue
-                    bitmap = "{0:24b}".format(
-                        int(appliance_bitmap_plan.bitmap_plan)
-                    )
-                    for hour in range(24):
-                        if bitmap[hour] == "1":
-                            current_used[hour] += (
-                                appliance.power / appliance.duration
-                            )
-            for hour in range(24):
-                solar_produced[hour] = (
-                    energyflow_day_sim[hour].solar_produced
-                    * total_panels
-                    / solar_panels_factor
-                )
-                current_available[hour] = (
-                    solar_produced[hour] - current_used[hour]
-                )
-            temp_result = [0.0 for x in range(4)]
-            (
-                temp_result[0],
-                temp_result[1],
-                temp_result[2],
-                temp_result[3],
-            ) = energy_efficiency_day(
-                session,
-                energyflow_day_sim,
-                planning,
-                day_number_in_planning,
-                date,
-            )
-            for iter in range(4):
-                if temp_result[iter] > results[day_number_in_planning][iter]:
-                    results[day_number_in_planning][0] = temp_result[iter]
-
-            if sum(current_used) <= 0:
-                print("nothing planned in")
-                continue
-
-            for temperature in range(max_temperature):
-                if all(value <= 0 for value in current_available):
-                    break
-                effective_temperature = 1 - (temperature / max_temperature)
-                household_random = random.randint(0, amount_of_households)
-                for household_idx, household in enumerate(planning, start=0):
-                    if household_idx == household_random:
-                        if len(household.appliances) == 0:
-                            continue
-                        elif len(household.appliances) == 1:
-                            appliance_random = 0
-                        else:
-                            appliance_random = random.randint(
-                                0, len(household.appliances) - 1
-                            )
-                        for appliance_idx, appliance in enumerate(
-                            household.appliances, start=0
+                            is False
                         ):
-                            if appliance_idx == appliance_random:
-                                appliance_new_starttime = (
-                                    date + random.randint(0, 23) * 3600
-                                )
-                                has_energy = random.choice([True, False])
-                                gets_energy = random.choice([True, False])
-                                if has_energy or gets_energy:
-                                    appliance_bitmap_plan = appliance_time_daily_crud.get_appliance_time_daily(  # noqa: E501
-                                        session=session,
-                                        appliance_id=appliance.id,
-                                        day=day_number_in_planning,
-                                    )
-                                    if appliance_bitmap_plan is None:
-                                        continue
-                                    if (
-                                        appliance_bitmap_plan.bitmap_plan
-                                        is None
-                                    ):
-                                        continue
-                                if has_energy is False or gets_energy is False:
-                                    appliance_bitmap_plan_no_energy = appliance_time_no_energy_daily_crud.get_appliance_time_no_energy_daily(  # noqa: E501
-                                        session=session,
-                                        appliance_id=appliance.id,
-                                        day=day_number_in_planning,
-                                    )
-                                    if appliance_bitmap_plan_no_energy is None:
-                                        continue
-                                    if (
-                                        appliance_bitmap_plan_no_energy.bitmap_plan  # noqa: E501
-                                        is None
-                                    ):
-                                        continue
+                            continue
+                        plan_no_energy(
+                            session,
+                            appliance,
+                            currenttime,
+                            appliance_no_energy_bitmap_plan,
+                        )
+                        plannedin = True
+                        usage -= 1
 
-                                if has_energy:
-                                    appliance_frequency = (
-                                        bin(
-                                            appliance_bitmap_plan.bitmap_plan
-                                        ).count("1")
-                                        // appliance.duration
-                                    )
-                                else:
-                                    appliance_frequency = (
-                                        bin(
-                                            appliance_bitmap_plan_no_energy.bitmap_plan  # noqa: E501
-                                        ).count("1")
-                                        // appliance.duration
-                                    )
-                                # print(appliance_frequency)
-                                if appliance_frequency == 0:
-                                    continue
-                                appliance_old = random.randint(
-                                    0, appliance_frequency - 1
-                                )
-                                if has_energy:
-                                    bitmap = "{0:24b}".format(
-                                        appliance_bitmap_plan.bitmap_plan
-                                    )
-                                else:
-                                    bitmap = "{0:24b}".format(
-                                        appliance_bitmap_plan_no_energy.bitmap_plan  # noqa: E501
-                                    )
-                                ones_in_bitmap = 0
+                    if plannedin is False:
+                        #     print("Not planned in", appliance, date)
+                        usage = 0
+        current_used = [0.0 for x in range(24)]
+        current_used_new = [0.0 for x in range(24)]
+        solar_produced = [0.0 for x in range(24)]
+        current_available = [0.0 for x in range(24)]
+        total_panels = 0
 
-                                for position in range(24):
-                                    if bitmap[position] == "1":
-                                        ones_in_bitmap += 1
-                                        if (
-                                            ones_in_bitmap
-                                            == appliance_old
-                                            * appliance.duration
-                                            + 1
-                                        ):
-                                            appliance_old_starttime = position
+        energyflow_day_sim: list[EnergyFlowRead] = [
+            el
+            for el in energyflow_data_sim
+            if (date <= el.timestamp and el.timestamp < date + 3600 * 24)
+        ]  # only check the current day for energy flow
 
-                                if (
-                                    check_appliance_time(
-                                        appliance,
-                                        appliance_new_starttime,
-                                        appliance_bitmap_plan,
-                                        appliance_no_energy_bitmap_plan,
-                                        gets_energy,
-                                    )
-                                    is False
-                                ):
-                                    continue
-
-                                current_used_new = current_used.copy()
-
-                                for duration in range(appliance.duration):
-                                    if has_energy:
-                                        if (
-                                            appliance_old_starttime + duration
-                                            < 24
-                                        ):
-                                            current_used_new[
-                                                appliance_old_starttime
-                                                + duration
-                                            ] -= (
-                                                appliance.power
-                                                / appliance.duration
-                                            )
-                                    if gets_energy:
-                                        if (
-                                            appliance_new_starttime + duration
-                                            < 24
-                                        ):
-                                            current_used_new[
-                                                appliance_new_starttime
-                                                + duration
-                                            ] += (
-                                                appliance.power
-                                                / appliance.duration
-                                            )
-
-                                improvement = 0.0
-                                for hour in range(24):
-                                    improvement += min(
-                                        solar_produced[hour],
-                                        current_used_new[hour],
-                                    ) - min(
-                                        solar_produced[hour],
-                                        current_used[hour],
-                                    )
-
-                                if (
-                                    improvement > 0
-                                    or exp(
-                                        3 * improvement / effective_temperature
-                                    )
-                                    < random.random()
-                                ):
-                                    update_energy(
-                                        session,
-                                        appliance,
-                                        appliance_old_starttime,
-                                        has_energy,
-                                        appliance_new_starttime,
-                                        gets_energy,
-                                        appliance_bitmap_plan,
-                                        appliance_bitmap_plan_no_energy,
-                                    )
-                                    # print("Geupdate")
-            (
-                temp_result[0],
-                temp_result[1],
-                temp_result[2],
-                temp_result[3],
-            ) = energy_efficiency_day(
-                session,
-                energyflow_day_sim,
-                planning,
-                day_number_in_planning,
-                date,
+        for household in planning:
+            total_panels += household.solar_panels
+            for appliance in household.appliances:
+                appliance_bitmap_plan = (
+                    appliance_time_daily_crud.get_appliance_time_daily(
+                        session=session,
+                        appliance_id=appliance.id,
+                        day=day_number_in_planning,
+                    )
+                )
+                if appliance_bitmap_plan is None:
+                    continue
+                bitmap = "{0:24b}".format(
+                    int(appliance_bitmap_plan.bitmap_plan)
+                )
+                for hour in range(24):
+                    if bitmap[hour] == "1":
+                        current_used[hour] += (
+                            appliance.power / appliance.duration
+                        )
+        for hour in range(24):
+            solar_produced[hour] = (
+                energyflow_day_sim[hour].solar_produced
+                * total_panels
+                / solar_panels_factor
             )
-            for iter in range(4):
-                if temp_result[iter] > results[day_number_in_planning][iter]:
-                    results[day_number_in_planning][iter] = temp_result[iter]
+            current_available[hour] = (
+                solar_produced[hour] - current_used[hour]
+            )
+        temp_result = [0.0 for x in range(4)]
+        (
+            temp_result[0],
+            temp_result[1],
+            temp_result[2],
+            temp_result[3],
+        ) = energy_efficiency_day(
+            session,
+            energyflow_day_sim,
+            planning,
+            day_number_in_planning,
+            date,
+        )
+        for iter in range(4):
+            if temp_result[iter] > results[day_number_in_planning][iter]:
+                results[day_number_in_planning][0] = temp_result[iter]
+
+        if sum(current_used) <= 0:
+            print("nothing planned in")
+            continue
+
+        for temperature in range(max_temperature):
+            if all(value <= 0 for value in current_available):
+                break
+            effective_temperature = 1 - (temperature / max_temperature)
+            household_random = random.randint(0, amount_of_households)
+            for household_idx, household in enumerate(planning, start=0):
+                if household_idx == household_random:
+                    if len(household.appliances) == 0:
+                        continue
+                    elif len(household.appliances) == 1:
+                        appliance_random = 0
+                    else:
+                        appliance_random = random.randint(
+                            0, len(household.appliances) - 1
+                        )
+                    for appliance_idx, appliance in enumerate(
+                        household.appliances, start=0
+                    ):
+                        if appliance_idx == appliance_random:
+                            appliance_new_starttime = (
+                                date + random.randint(0, 23) * 3600
+                            )
+                            has_energy = random.choice([True, False])
+                            gets_energy = random.choice([True, False])
+                            if has_energy or gets_energy:
+                                appliance_bitmap_plan = appliance_time_daily_crud.get_appliance_time_daily(  # noqa: E501
+                                    session=session,
+                                    appliance_id=appliance.id,
+                                    day=day_number_in_planning,
+                                )
+                                if appliance_bitmap_plan is None:
+                                    continue
+                                if (
+                                    appliance_bitmap_plan.bitmap_plan
+                                    is None
+                                ):
+                                    continue
+                            if has_energy is False or gets_energy is False:
+                                appliance_bitmap_plan_no_energy = appliance_time_no_energy_daily_crud.get_appliance_time_no_energy_daily(  # noqa: E501
+                                    session=session,
+                                    appliance_id=appliance.id,
+                                    day=day_number_in_planning,
+                                )
+                                if appliance_bitmap_plan_no_energy is None:
+                                    continue
+                                if (
+                                    appliance_bitmap_plan_no_energy.bitmap_plan  # noqa: E501
+                                    is None
+                                ):
+                                    continue
+
+                            if has_energy:
+                                appliance_frequency = (
+                                    bin(
+                                        appliance_bitmap_plan.bitmap_plan
+                                    ).count("1")
+                                    // appliance.duration
+                                )
+                            else:
+                                appliance_frequency = (
+                                    bin(
+                                        appliance_bitmap_plan_no_energy.bitmap_plan  # noqa: E501
+                                    ).count("1")
+                                    // appliance.duration
+                                )
+                            # print(appliance_frequency)
+                            if appliance_frequency == 0:
+                                continue
+                            appliance_old = random.randint(
+                                0, appliance_frequency - 1
+                            )
+                            if has_energy:
+                                bitmap = "{0:24b}".format(
+                                    appliance_bitmap_plan.bitmap_plan
+                                )
+                            else:
+                                bitmap = "{0:24b}".format(
+                                    appliance_bitmap_plan_no_energy.bitmap_plan  # noqa: E501
+                                )
+                            ones_in_bitmap = 0
+
+                            for position in range(24):
+                                if bitmap[position] == "1":
+                                    ones_in_bitmap += 1
+                                    if (
+                                        ones_in_bitmap
+                                        == appliance_old
+                                        * appliance.duration
+                                        + 1
+                                    ):
+                                        appliance_old_starttime = position
+
+                            if (
+                                check_appliance_time(
+                                    appliance,
+                                    appliance_new_starttime,
+                                    appliance_bitmap_plan,
+                                    appliance_no_energy_bitmap_plan,
+                                    gets_energy,
+                                )
+                                is False
+                            ):
+                                continue
+
+                            current_used_new = current_used.copy()
+
+                            for duration in range(appliance.duration):
+                                if has_energy:
+                                    if (
+                                        appliance_old_starttime + duration
+                                        < 24
+                                    ):
+                                        current_used_new[
+                                            appliance_old_starttime
+                                            + duration
+                                        ] -= (
+                                            appliance.power
+                                            / appliance.duration
+                                        )
+                                if gets_energy:
+                                    if (
+                                        appliance_new_starttime + duration
+                                        < 24
+                                    ):
+                                        current_used_new[
+                                            appliance_new_starttime
+                                            + duration
+                                        ] += (
+                                            appliance.power
+                                            / appliance.duration
+                                        )
+
+                            improvement = 0.0
+                            for hour in range(24):
+                                improvement += min(
+                                    solar_produced[hour],
+                                    current_used_new[hour],
+                                ) - min(
+                                    solar_produced[hour],
+                                    current_used[hour],
+                                )
+
+                            if (
+                                improvement > 0
+                                or exp(
+                                    3 * improvement / effective_temperature
+                                )
+                                < random.random()
+                            ):
+                                update_energy(
+                                    session,
+                                    appliance,
+                                    appliance_old_starttime,
+                                    has_energy,
+                                    appliance_new_starttime,
+                                    gets_energy,
+                                    appliance_bitmap_plan,
+                                    appliance_bitmap_plan_no_energy,
+                                )
+                                # print("Geupdate")
+        (
+            temp_result[0],
+            temp_result[1],
+            temp_result[2],
+            temp_result[3],
+        ) = energy_efficiency_day(
+            session,
+            energyflow_day_sim,
+            planning,
+            day_number_in_planning,
+            date,
+        )
+        for iter in range(4):
+            if temp_result[iter] > results[day_number_in_planning][iter]:
+                results[day_number_in_planning][iter] = temp_result[iter]
 
     initial_planning_energy = appliance_time_daily_crud.get_multi(
         session=session, limit=10
