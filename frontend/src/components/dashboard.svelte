@@ -6,9 +6,12 @@
   visualisations of the live data that the application collects and generates.
   */
 
-  import { Chart } from "svelte-chartjs";
+  import { onMount, onDestroy } from 'svelte';
+  import Chart from 'chart.js/auto';
+  import { writable } from 'svelte/store';
 
-  import "chart.js/auto";
+  let chartContainer;
+  let chart;
 
   let data = {
     labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
@@ -44,6 +47,23 @@
       },
     },
   };
+
+
+  onMount(() => {
+    if (chartContainer) {
+      chart = new Chart(chartContainer.getContext('2d'), {
+        type: 'bar',
+        data: data,
+        options: options,
+      });
+    }
+  });
+
+  onDestroy(() => {
+    if (chart) {
+      chart.destroy();
+    }
+  });
 </script>
 
-<Chart type="bar" {data} {options} />
+<canvas bind:this={chartContainer}></canvas>

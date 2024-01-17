@@ -7,9 +7,12 @@
   and download this data before a new session is started.
   */
 
-  import { ApplianceDays, ApplianceType } from "../lib/client";
-  import { Chart } from "svelte-chartjs";
-  import "chart.js/auto";
+  import { onMount, onDestroy } from 'svelte';
+  import Chart from 'chart.js/auto';
+  import { writable } from 'svelte/store';
+
+  let chartContainer;
+  let chart;
 
   let data = {
     labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
@@ -46,6 +49,23 @@
     },
   };
 
+
+  onMount(() => {
+    if (chartContainer) {
+      chart = new Chart(chartContainer.getContext('2d'), {
+        type: 'bar',
+        data: data,
+        options: options,
+      });
+    }
+  });
+
+  onDestroy(() => {
+    if (chart) {
+      chart.destroy();
+    }
+  });
+
   function refreshPage() {
     location.reload();
   }
@@ -56,12 +76,7 @@
 
 <div class="max-w-3xl mx-auto pt-8">
   <div class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow">
-    <Chart type="bar" {data} {options} />
-    <div class="buttons">
-      <button on:click={refreshPage}>Refresh Page</button>
-      <button on:click={doNothing}>Do Nothing</button>
-    </div>
-    <Chart type="bar" {data} {options} />
+    <canvas bind:this={chartContainer}></canvas>
     <div class="buttons">
       <button on:click={refreshPage}>Refresh Page</button>
       <button on:click={doNothing}>Do Nothing</button>
