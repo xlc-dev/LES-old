@@ -10,6 +10,7 @@ from sqlmodel import SQLModel, Field
 class AlgorithmBase(SQLModel):
     name: str = Field(index=True, unique=True, nullable=False)
     description: str = Field(nullable=False)
+    algorithm: str = Field(nullable=False)
 
 
 class Algorithm(AlgorithmBase, table=True):
