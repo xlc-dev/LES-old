@@ -10,15 +10,15 @@ if TYPE_CHECKING:
 
 class TwinWorldBase(SQLModel):
     name: str = Field(index=True, unique=True, nullable=False)
-    description: str = Field(nullable=False, min_length=1, max_length=200)
+    description: str = Field(nullable=False, min_length=1, max_length=500)
 
     @field_validator("description")
     @classmethod
     def ensure_description(cls, v: str):
         if v:
-            if len(v) < 1 or len(v) > 200:
+            if len(v) < 1 or len(v) > 500:
                 raise ValueError(
-                    "description must be between 1 and 200 characters"
+                    "description must be between 1 and 300 characters"
                 )
             return v
 
