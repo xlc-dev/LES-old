@@ -692,10 +692,14 @@
   </div>
 
   {#if isStepZero}
+    <div class="max-w-3xl mx-auto pt-8">
+      <div class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
     <div class="step-zero">
-      <h2>Title for Step 0</h2>
-      <p>Some descriptive text for Step 0.</p>
-      <button on:click={nextStep}>Proceed to Step 1</button>
+      <h2>Local Energy System Research Application</h2>
+      <p>Welcome to the LES Research application! In this application you can lorem ipsum.</p>
+      <button on:click={nextStep}>Get started</button>
+    </div>
+      </div>
     </div>
   {:else}
     {#each Object.keys(simulationData) as key, index (key)}
