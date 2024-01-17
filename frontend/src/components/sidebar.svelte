@@ -40,7 +40,7 @@
     }
   };
 
-  // Contains all the code that must be run during the initialisation of the sidebar component
+  // Initializes the dark mode state at the start of a session based on the last saved state of a previous session
   onMount(() => {
     const savedDarkMode = localStorage.getItem("darkMode");
     isDarkMode = savedDarkMode === "true";
