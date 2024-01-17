@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { ApplianceRead } from "../lib/client";
+  import type { ApplianceRead_Output } from "../lib/client";
 
-  export let appliances: ApplianceRead[];
+  export let appliances: ApplianceRead_Output[];
   export let hours: number[];
 
   const getCellColor = (bitmap: number, hour: number) => {

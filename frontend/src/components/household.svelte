@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { HouseholdRead } from "../lib/client";
+  import type { HouseholdRead_Output } from "../lib/client";
 
-  export let household: HouseholdRead;
+  export let household: HouseholdRead_Output;
 </script>
 
 <h1 class="font-bold text-4xl pb-4 flex items-center gap-4 dark:text-les-white">

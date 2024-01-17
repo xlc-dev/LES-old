@@ -1,15 +1,16 @@
 <script lang="ts">
-  import type { HouseholdRead } from "../lib/client";
   import { stepperData } from "../lib/stores";
+
+  import type { HouseholdRead_Output } from "../lib/client";
 
   import Household from "./household.svelte";
 
-  let household: HouseholdRead;
+  let household: HouseholdRead_Output;
   let sizeFilter = "";
   let solarPanelFilter = "";
   let searchQuery = "";
 
-  const showHome = (data: HouseholdRead) => {
+  const showHome = (data: HouseholdRead_Output) => {
     household = data;
   };
 
