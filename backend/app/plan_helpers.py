@@ -1,7 +1,9 @@
+from calendar import day_name
 from math import floor
+
 from sqlmodel import Session
 
-from calendar import day_name
+from app.utils import unix_to_hour
 
 from app.core.models.household_model import HouseholdRead
 from app.core.models.energyflow_model import EnergyFlowRead
@@ -259,16 +261,8 @@ def check_appliance_time(
     return True
 
 
-def unix_to_hour(unix: int) -> int:
-    return unix // 3600 % 24
-
-
 def cost_static() -> float:
     return 0.25
-
-
-def cost_variable_household(date: int, household: HouseholdRead):
-    return
 
 
 def energy_efficiency_day(
