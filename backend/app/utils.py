@@ -16,10 +16,17 @@ from app.config import engine
 
 
 def timestamp_to_unix(timestamp: float) -> int:
+    "Convert excel timestamp to unix timestamp"
     return round((timestamp - 25569) * 86400)
 
 
+def unix_to_hour(unix: int) -> int:
+    "Convert unix timestamp to hour"
+    return unix // 3600 % 24
+
+
 def unix_to_timestamp(unix: int) -> float:
+    "Convert unix timestamp to excel timestamp"
     return unix / 86400 + 25569
 
 
@@ -57,7 +64,16 @@ def get_session() -> Generator:
 
 
 class Logger(logging.Formatter):
-    "Logging class to format logs with color"
+    """Custom logger class that formats the log messages with colors.
+
+    This class inherits from logging.Formatter and overrides the
+    format method to add colors to the log messages. It also
+    provides static methods to log messages with different
+    log levels.
+
+    It also provides a static method to raise an HTTPException
+    from FastAPI and log the exception with the traceback.
+    """
 
     grey = "\x1b[38;20m"
     yellow = "\x1b[33;20m"
