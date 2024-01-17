@@ -52,7 +52,7 @@
 
   // Sets the selected household as the household that is used when displaying the individual househould view
   $: selectedHousehold = household;
-  
+
   // Contains the logic of the filters in the simulation view
   $: filteredHouseholds = $stepperData.filter((h) => {
     const matchesSearch = !searchQuery || h.name.toLowerCase().includes(searchQuery.toLowerCase());

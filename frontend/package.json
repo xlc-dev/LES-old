@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "chart.js": "^4.4.1",
+    "date-picker-svelte": "^2.10.1",
     "monaco-editor": "^0.45.0"
   }
 }

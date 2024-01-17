@@ -7,8 +7,30 @@
   */
 
   import type { HouseholdRead } from "../lib/client";
+  import SchedulableLoadGrid from "./schedulableLoadGrid.svelte";
+  import { DatePicker } from "date-picker-svelte";
 
   export let household: HouseholdRead;
+  let selectedDate = new Date();
+  let currentDate = new Date();
+
+
+  // Checks if the selected date is in the past
+  const isPastDate = (date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  };
+
+  // Fetches data for the selected date
+  // This function needs to be supplemented with logic that fetches the required data
+  const fetchDataForDate = async (date) => {
+  };
+
+  // Updates the displayed data when a new data has been selected
+  $: if (isPastDate(selectedDate)) {
+    fetchDataForDate(selectedDate);
+  }
 </script>
 
 <h1 class="font-bold text-4xl pb-4 flex items-center gap-4 dark:text-les-white">
@@ -107,5 +129,11 @@
 <hr class="my-8 border-black dark:border-les-white" />
 
 <div>
-  <h2 class="font-bold text-4xl dark:text-les-white">SL View</h2>
+  <h2 class="font-bold text-4xl dark:text-les-white">Schedulable Load Grid</h2>
+  <DatePicker bind:value={selectedDate} />
+  {#if isPastDate(selectedDate)}
+    <SchedulableLoadGrid appliances={household.appliances} hours={Array.from({ length: 24 }, (_, i) => i)} />
+  {:else}
+    <p>Select a date to view the corresponding schedulable load grid raster.</p>
+  {/if}
 </div>
