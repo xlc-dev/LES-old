@@ -1,4 +1,12 @@
 <script lang="ts">
+  /*
+  The simulation component contains the simulation view in which all the households that
+  are a part of the current session, based on the current twin world, cost model, and
+  algorithm that were selected in the stepper and filters for showing only specific
+  households are displayed. When an individual household is clicked, its' corresponding
+  household view is displayed.
+  */
+
   import type { HouseholdRead } from "../lib/client";
   import { stepperData } from "../lib/stores";
 
@@ -9,14 +17,18 @@
   let solarPanelFilter = "";
   let searchQuery = "";
 
+  // Loads the view for a specific household if it has been clicked in the simulation view
   const showHome = (data: HouseholdRead) => {
     household = data;
   };
 
+  // Determines whether or not a household in the simulation view has solar panels
   const hasSolarPanels = (household) => household.solar_panels > 0;
 
+  // Sets the selected household as the household that is used when displaying the individual househould view
   $: selectedHousehold = household;
 
+  // Contains the logic of the filters in the simulation view
   $: filteredHouseholds = $stepperData.filter(
     (h) =>
       (sizeFilter === "" || h.size === parseInt(sizeFilter, 10)) &&

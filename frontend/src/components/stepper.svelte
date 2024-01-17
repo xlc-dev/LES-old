@@ -1,4 +1,12 @@
 <script lang="ts">
+  /*
+  The stepper component contains the first views the researcher is presented with.
+  The stepper can be seen as a setup wizard for a single session of using the application
+  and consists of three steps which the researcher goes through to prepare the environment
+  in which research is conducted. A pre-built twin world, cost model, and algorithm must be
+  selected or created as custom options in order for the environment to be created.
+  */
+
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
 
@@ -116,18 +124,22 @@
   let editingHousehold: HouseholdRead = null;
   let editingApplianceTimeWindow: ApplianceTimeWindowRead = null;
 
+  // Updates the value of the description frame, based on the hovered option in the options frame
   const updateDescription = (description: string) => {
     currentDescription = description;
   };
 
+  // Loads elements for editing a household in a created twin world
   const startEditingHousehold = (household: HouseholdRead) => {
     editingHousehold = household;
   };
 
+  // Loads elements for editing time slots for a created household
   const startEditingTimewindow = (timewindow: ApplianceTimeWindowRead) => {
     editingApplianceTimeWindow = timewindow;
   };
 
+  // Automatically scrolls the screen to the next appliance element when adding appliances for a created household
   const scrollToApplianceLocation = () => {
     const applianceLocation = document.getElementById("applianceLocation");
     if (applianceLocation) {
@@ -135,6 +147,7 @@
     }
   };
 
+  // Automatically scrolls the screen to the next time slot element when adding time slots for a created household
   const scrollToTimewindowLocation = () => {
     const applianceLocation = document.getElementById("timewindowLocation");
     if (applianceLocation) {
@@ -142,12 +155,14 @@
     }
   };
 
+  // Applies the selected time ranges and converts them to usable bitmap values
   const updateBitmapWindow = () => {
     newTimeWindow.bitmap_window = checkboxStates.reduce((acc, state: any, index) => {
       return acc | (state << index);
     }, 0);
   };
 
+  // Updates the state of the stepper by loading the view of the next step in the stepper
   const nextStep = async () => {
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
 
@@ -172,6 +187,7 @@
     }
   };
 
+  // Updates the state of the stepper by loading the view of the previous step in the stepper
   const prevStep = () => {
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
     if (currentStep > 1) {
@@ -180,23 +196,27 @@
     }
   };
 
+  // Checks if a step is completed by determining whether all required actions within the step are run and no errors occur
   const isStepCompleted = (step: number): boolean => {
     const keys = Object.keys(selectedIDs) as (keyof typeof selectedIDs)[];
     const currentStepKey = keys[step - 1];
     return selectedIDs[currentStepKey] !== 0;
   };
 
+  // Updates the state of the stepper by loading the view of a specifically selected step in the stepper
   const goToStep = (stepNumber: number) => {
     currentStep = stepNumber;
     currentDescription =
       simulationData[Object.keys(simulationData)[currentStep - 1]][0]?.description || "";
   };
 
+  // Handles a button click when an option in the options frame has been selected
   const selectOption = (optionId: number, category: any, optionName: string) => {
     selectedIDs[category] = optionId;
     twdata.update((data) => ({ ...data, [category]: optionName }));
   };
 
+  // Removes an option in the options frame that has been created by the researcher
   const deleteOption = async (optionId: number, category: any) => {
     selectedIDs[category] = 0;
     twdata.update((data) => ({ ...data, [category]: "-" }));
@@ -204,6 +224,7 @@
     simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
   };
 
+  // Removes an option in the options frame that has been created by the researcher based on a category
   const deleteOptionBasedOnCategory = async (category: keyof SimulationData, optionId: number) => {
     switch (category) {
       case "cost_model":
@@ -220,6 +241,7 @@
     }
   };
 
+  // Initializes the Monaco editor for the custom algorithms in the cost model step of the stepper
   const initMonaco = (node: HTMLElement, { initialCode, onChange }) => {
     const editor = monaco.editor.create(node, {
       value: initialCode,
@@ -228,6 +250,7 @@
       automaticLayout: true,
     });
 
+    // Updates the state of the Monaco editor when changes in the provided code are detected
     const handleEditorChange = () => {
       const newValue = editor.getValue();
       if (validatePythonSyntax(newValue)) {
@@ -261,12 +284,14 @@
     };
   };
 
+  // Validates whether the provided code in the Monaco editor is valid Python code based on a regex function
   const validatePythonSyntax = (code: string) => {
     const pythonPattern =
       /(?:def|class)\s+\w+\s*\(.*\)\s*:\s*|import\s+\w+|from\s+\w+\s+import\s+\w+/;
     return pythonPattern.test(code);
   };
 
+  // Assigns time slots and appliances to a created schedulable load
   const addTimewindow = async () => {
     if (checkboxStates.every((state) => state === false)) {
       timewindowError = "Please select at least one hour";
@@ -293,6 +318,7 @@
       });
   };
 
+  // Removes a created schedulable load
   const deleteTimewindow = async (id: number) => {
     try {
       await ApplianceService.deleteApplianceTimewindowApiAppliancetimewindowIdDelete(id);
@@ -314,6 +340,7 @@
     }
   };
 
+  // Discards elements of time slots that were being edited for a created household
   const stopEditingTimewindow = async () => {
     try {
       await ApplianceService.updateApplianceTimewindowApiApplianceTimewindowIdPatch(
@@ -326,6 +353,7 @@
     }
   };
 
+  // Adds an appliance to a created household
   const addAppliance = async () => {
     newAppliance.household_id = applianceToAdd;
     await ApplianceService.postApplianceApiAppliancePost(newAppliance)
@@ -343,6 +371,7 @@
       });
   };
 
+  // Removes an appliance from a created household
   const deleteAppliance = async (id: number) => {
     try {
       await ApplianceService.deleteApplianceApiApplianceIdDelete(id);
@@ -358,6 +387,7 @@
     }
   };
 
+  // Adds a household to a created twin world
   const addHousehold = async () => {
     newHousehold.twinworld_id = selectedIDs.twin_world;
     await HouseholdService.postHouseholdApiHouseholdPost(newHousehold)
@@ -374,6 +404,7 @@
       });
   };
 
+  // Removes a household from a created twin world
   const deleteHousehold = async (id: number) => {
     await HouseholdService.deleteHouseholdApiHouseholdIdDelete(id)
       .then(() => {
@@ -384,6 +415,7 @@
       });
   };
 
+  // Discards elements of a household that was being edited for a created twin world
   const stopEditingHousehold = async () => {
     try {
       await HouseholdService.updateHouseholdApiHouseholdIdPatch(
@@ -396,6 +428,7 @@
     }
   };
 
+  // Gets all households for the selected twin world
   const fetchHouseholds = async () => {
     twinworldHouseholds =
       await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
@@ -403,6 +436,7 @@
       );
   };
 
+  // // Sends a post request containing the form data of a created cost model and add it to the array of selectable options
   const uploadCostModel = async (event: any) => {
     const target = event.target;
 
@@ -425,6 +459,7 @@
     }
   };
 
+  // Sends a post request to save a created twin world and add it to the array of selectable options
   const uploadTwinWorld = async (event: any) => {
     const target = event.target;
 
@@ -443,6 +478,7 @@
     }
   };
 
+  // Sends a post request to save a created algorithm and add it to the array of selectable options
   const uploadAlgorithm = async (event: any) => {
     const target = event.target;
 
@@ -459,6 +495,7 @@
     }
   };
 
+  // Processes all the selected options that were selected in the stepper and starts a simulation if the data is valid
   const startSimulation = async () => {
     applianceCheck = [];
     const hasApplianceWithoutEveryDay = twinworldHouseholds
@@ -503,6 +540,7 @@
     }).then((res) => ($stepperData = res));
   };
 
+  // Initializes the simulation data, the twin world, the simulation data's object keys, and the Monaco editors
   onMount(async () => {
     const data: SimulationData = await SimulateService.getDataApiSimulateLoadDataGet();
     simulationData = data;
@@ -527,14 +565,17 @@
     });
   });
 
+  // If a twin world's values have changed, the array of households is fetched again
   $: selectedIDs.twin_world && fetchHouseholds();
 
+  // If an appliance has been added to a created twin world the window scrolls to a section in which a new appliance can be added
   $: if (applianceToAdd > 0) {
     setTimeout(() => {
       scrollToApplianceLocation();
     }, 100);
   }
 
+  // Adds the created appliances for a specific created household
   $: if (timewindowToAdd > 0) {
     // Find the household with the matching id in twinworldHouseholds array
     const matchingHousehold = twinworldHouseholds.find(

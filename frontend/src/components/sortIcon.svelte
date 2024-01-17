@@ -1,4 +1,9 @@
 <script lang="ts">
+  /*
+  The sortIcon component contains the SVG paths of the specific shapes that are used for the
+  sorting buttons in the filter bars of the schedulable load table and the simulation view.
+  */
+
   export let isSortedAsc = false;
   export let isSortedDesc = false;
   export let onSort;

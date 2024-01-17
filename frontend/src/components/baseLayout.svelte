@@ -1,4 +1,10 @@
 <script lang="ts">
+  /*
+  The baseLayout component handles the actions that form the application's navigational flow.
+  It also imports individual components so that they can be used throughout the application.
+  Finally, it also ensures that some components, such as the sidebar, persist in multiple views.
+  */
+
   import { blur } from "svelte/transition";
 
   import { activatedHousehold } from "../lib/stores";
@@ -17,6 +23,7 @@
 
   let unsubscribe: () => void;
 
+  // Navigates to a different view based on the button that was clicked
   const handleButtonClick = (action: string) => {
     if (unsubscribe) unsubscribe();
 
@@ -41,6 +48,7 @@
     }
   };
 
+  // Changes the name of the title bar based on the currently selected household
   $: if ($activatedHousehold != null) {
     unsubscribe = activatedHousehold.subscribe((e) => {
       title = e.name;
