@@ -48,6 +48,7 @@
     }
   };
 
+  // Changes the name of the title bar based on the currently selected household
   $: if ($activatedHousehold != null) {
     unsubscribe = activatedHousehold.subscribe((e) => {
       title = e.name;

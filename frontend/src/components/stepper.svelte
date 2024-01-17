@@ -565,14 +565,17 @@
     });
   });
 
+  // If a twin world's values have changed, the array of households is fetched again
   $: selectedIDs.twin_world && fetchHouseholds();
 
+  // If an appliance has been added to a created twin world the window scrolls to a section in which a new appliance can be added
   $: if (applianceToAdd > 0) {
     setTimeout(() => {
       scrollToApplianceLocation();
     }, 100);
   }
 
+  // Adds the created appliances for a specific created household
   $: if (timewindowToAdd > 0) {
     // Find the household with the matching id in twinworldHouseholds array
     const matchingHousehold = twinworldHouseholds.find(
