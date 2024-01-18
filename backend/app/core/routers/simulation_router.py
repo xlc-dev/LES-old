@@ -135,25 +135,21 @@ async def plan_simulated_annealing(
     max_temperature = 10000
     solar_panels_factor = 25
 
-    energyflow_data = energyflow_crud.get_by_solar_produced(session=session)
-    energyflow_data_sim = energyflow_crud.get_by_solar_produced_sim(session=session)
+    energyflow_data = energyflow_crud.get_by_solar_produced(
+        session=session
+    )  # gets all the energy flow in (unix, energy used, solar produced)
+    energyflow_data_sim = energyflow_crud.get_by_solar_produced_sim(
+        session=session
+    )  # gets all the energy flow in (unix, energy used, solar produced)
     amount_of_households = len(planning)
-    start_date, end_date = energyflow_crud.get_start_end_date(session=session)
+    start_date, end_date = energyflow_crud.get_start_end_date(
+        session=session
+    )
     start_date, end_date = start_date.timestamp, end_date.timestamp
     days_in_planning = (end_date - start_date) // 86400
-
-    # Precompute energyflow_day for each day outside the loop
-    energyflow_day_per_day = {}
-    for date in range(start_date, end_date, 86400):
-        energyflow_day = [
-            el
-            for el in energyflow_data
-            if (date <= el.timestamp and el.timestamp < date + 3600 * 24)
-        ]
-        energyflow_day_per_day[date] = energyflow_day
-
-    results = [[0.0 for _ in range(4)] for _ in range(days_in_planning + 1)]
-
+    results = [
+        [0.0 for x in range(4)] for y in range(days_in_planning + 1)
+    ]
     # Plan: for the loop
     # First we do one day at a time, chronologically
     # This day needs to be initialized with the right helper variables

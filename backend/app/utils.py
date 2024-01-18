@@ -15,6 +15,9 @@ from sqlmodel import SQLModel, Session
 from app.config import engine
 
 
+SECONDS_IN_DAY = 86400
+
+
 def timestamp_to_unix(timestamp: float) -> int:
     "Convert excel timestamp to unix timestamp"
     return round((timestamp - 25569) * 86400)
