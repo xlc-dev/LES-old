@@ -7,9 +7,10 @@
   household and can be expanded to view its' schedulable load grid raster.
   */
 
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { get } from "svelte/store";
   import { slide } from "svelte/transition";
+  import { DatePicker } from "date-picker-svelte";
 
   import { activatedHousehold, stepperData } from "../lib/stores";
 
@@ -41,6 +42,8 @@
   let searchQuery = "";
   let showDropdown = null;
   let filteredData = [];
+  let showDatePicker = false;
+  let selectedDate = new Date();
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
@@ -49,6 +52,15 @@
     showDropdown = showDropdown === filterName ? null : filterName;
   };
 
+  function toggleDatePicker() {
+    showDatePicker = !showDatePicker;
+  }
+
+  function handleDateChange(newDate) {
+    selectedDate = newDate;
+    showDatePicker = false;
+  }
+
   // Retracts the displayed dropdown menu when an area outside of the dropdown menu has been clicked
   const createHandleClickOutside = (filterName: string) => {
     return (event: any) => {
@@ -56,6 +68,12 @@
         showDropdown = null;
       }
     };
+  };
+
+  const handleClickOutside = event => {
+    if (!event.target.closest('.date-picker-container')) {
+      showDatePicker = false;
+    }
   };
 
   // Modifies the name of a filter so that it's written in camel case
@@ -86,6 +104,7 @@
 
   // Initializes the event listener that handles button clicks of filters in the schedulable load table
   onMount(() => {
+    window.addEventListener('click', handleClickOutside);
     document.addEventListener("click", (event: any) => {
       for (const filterName in filters) {
         const filterDropdown = document.getElementById(`${filterName}-dropdown`);
@@ -94,6 +113,10 @@
         }
       }
     });
+  });
+
+  onDestroy(() => {
+    window.removeEventListener('click', handleClickOutside);
   });
 
   // Applies the filter logic on the schedulable load table
@@ -179,6 +202,14 @@
         {/if}
       </button>
     {/each}
+    <div class="date-picker-container relative" on:click|stopPropagation>
+      <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" on:click={toggleDatePicker}>Select Date</button>
+      {#if showDatePicker}
+        <div class="date-picker-popup absolute z-10 mt-2 bg-white border border-gray-300 rounded shadow-lg p-4">
+          <DatePicker bind:value={selectedDate} on:change={handleDateChange} />
+        </div>
+      {/if}
+    </div>
   </div>
 </div>
 
