@@ -90,11 +90,7 @@ def add_appliance_to_session(session: Session, appliance: Appliance):
         daily_planning = create_initial_daily_planning(
             session, day_number, appliance.id
         )
-        daily_no_energy_planning = create_initial_no_energy_daily_planning(
-            session, day_number, appliance.id
-        )
         session.add(daily_planning)
-        session.add(daily_no_energy_planning)
         session.flush()
 
 
@@ -162,18 +158,8 @@ def create_initial_daily_planning(
 ) -> appliance_model.ApplianceTimeDaily:
     empty_day = appliance_model.ApplianceTimeDaily(
         day=day,
-        bitmap_plan=0b000000000000000000000000,  # 24 bits for hour of day
-        appliance_id=appliance_id,
-    )
-    return empty_day
-
-
-def create_initial_no_energy_daily_planning(
-    session: Session, day: int, appliance_id: int
-) -> appliance_model.ApplianceTimeNoEnergyDaily:
-    empty_day = appliance_model.ApplianceTimeNoEnergyDaily(
-        day=day,
-        bitmap_plan=0b000000000000000000000000,  # 24 bits for hour of day
+        bitmap_plan_energy=0,
+        bitmap_plan_no_energy=0,
         appliance_id=appliance_id,
     )
     return empty_day
