@@ -4,8 +4,9 @@
 /* eslint-disable */
 import type { ApplianceTimeDailyRead } from "./ApplianceTimeDailyRead";
 export type SelectedModelsOutput = {
+  // schedulable load grid colours
   timedaily: Array<ApplianceTimeDailyRead>;
-  // schedulable load grid kleuren
+
+  // results: arrays in array. Each contains 4 numbers. Use this for the 4 graphs.
   results: Array<Array<number>>;
-  // results: arrays in array. Elk heeft 4 getallen. Gebruiken voor de 4 grafieken
 };
