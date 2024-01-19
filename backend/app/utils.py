@@ -16,11 +16,12 @@ from app.config import engine
 
 
 SECONDS_IN_DAY = 86400
+HOURS_IN_WEEK = 168
 
 
 def timestamp_to_unix(timestamp: float) -> int:
     "Convert excel timestamp to unix timestamp"
-    return round((timestamp - 25569) * 86400)
+    return round((timestamp - 25569) * SECONDS_IN_DAY)
 
 
 def unix_to_hour(unix: int) -> int:
@@ -30,7 +31,7 @@ def unix_to_hour(unix: int) -> int:
 
 def unix_to_timestamp(unix: int) -> float:
     "Convert unix timestamp to excel timestamp"
-    return unix / 86400 + 25569
+    return unix / SECONDS_IN_DAY + 25569
 
 
 def set_sec_headers(*, response: Response):
