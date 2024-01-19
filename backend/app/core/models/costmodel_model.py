@@ -15,7 +15,7 @@ class CostModelBase(SQLModel):
     price_network_buy_consumer: float = Field(nullable=False)
     price_network_sell_consumer: float = Field(nullable=False)
     fixed_price_ratio: Optional[float] = Field(nullable=True)
-    costmodel_algorithm: str = Field(nullable=False)
+    algorithm: str = Field(nullable=False)
 
 
 class CostModel(CostModelBase, table=True):
