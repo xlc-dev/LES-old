@@ -12,7 +12,7 @@ from sqlmodel import SQLModel, Field
 class AlgorithmBase(SQLModel):
     name: str = Field(index=True, unique=True, nullable=False)
     description: str = Field(nullable=False)
-    max_temperature: int = Field(nullable=False)
+    max_temperature: Optional[int] = Field(nullable=True)
     algorithm: str = Field(nullable=False)
 
 
