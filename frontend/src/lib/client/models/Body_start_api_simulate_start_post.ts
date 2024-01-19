@@ -7,4 +7,3 @@ export type Body_start_api_simulate_start_post = {
   twinworld_id: number;
   costmodel_id: number;
 };
-

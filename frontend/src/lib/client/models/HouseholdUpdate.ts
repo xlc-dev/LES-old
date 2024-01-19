@@ -9,4 +9,3 @@ export type HouseholdUpdate = {
   solar_panels?: number;
   solar_yield_yearly: number;
 };
-

@@ -8,4 +8,3 @@ export type TwinWorldCreate = {
   solar_panels_factor: number;
   energy_usage_factor: number;
 };
-

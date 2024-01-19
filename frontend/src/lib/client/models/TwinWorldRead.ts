@@ -9,4 +9,3 @@ export type TwinWorldRead = {
   energy_usage_factor: number;
   id: number;
 };
-

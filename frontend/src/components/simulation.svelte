@@ -54,10 +54,13 @@
   $: selectedHousehold = household;
 
   // Contains the logic of the filters in the simulation view
-  $: filteredHouseholds = $stepperData.filter((h) => {
+  $: filteredHouseholds = $stepperData.households.filter((h) => {
     const matchesSearch = !searchQuery || h.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesSize = selectedFilters.size.length === 0 || selectedFilters.size.includes(h.size);
-    const matchesSolarPanels = selectedFilters.solarPanels.length === 0 || (selectedFilters.solarPanels.includes("Yes") && hasSolarPanels(h)) || (selectedFilters.solarPanels.includes("No") && !hasSolarPanels(h));
+    const matchesSolarPanels =
+      selectedFilters.solarPanels.length === 0 ||
+      (selectedFilters.solarPanels.includes("Yes") && hasSolarPanels(h)) ||
+      (selectedFilters.solarPanels.includes("No") && !hasSolarPanels(h));
     return matchesSearch && matchesSize && matchesSolarPanels;
   });
 
@@ -74,7 +77,8 @@
 </script>
 
 {#if !selectedHousehold}
-  <div class="flex justify-between items-center rounded-lg bg-gray-100 p-2 dark:bg-dark-table-header mb-4">
+  <div
+    class="flex justify-between items-center rounded-lg bg-gray-100 p-2 dark:bg-dark-table-header mb-4">
     <div class="flex space-x-4">
       <input
         type="text"
@@ -83,7 +87,10 @@
         bind:value={searchQuery} />
 
       {#each Object.entries(filters) as [filterName, options]}
-        <div class="relative" id={`${filterName}-dropdown`} on:click|stopPropagation={createHandleClickOutside(filterName)}>
+        <button
+          class="relative"
+          id={`${filterName}-dropdown`}
+          on:click|stopPropagation={createHandleClickOutside(filterName)}>
           <button
             class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white"
             on:click={() => toggleDropdown(filterName)}>
@@ -110,7 +117,7 @@
               </div>
             </div>
           {/if}
-        </div>
+        </button>
       {/each}
     </div>
   </div>

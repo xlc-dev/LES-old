@@ -10,4 +10,3 @@ export type HouseholdCreate = {
   solar_yield_yearly: number;
   twinworld_id: number;
 };
-

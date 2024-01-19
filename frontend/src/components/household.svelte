@@ -13,7 +13,6 @@
   let selectedDate = new Date();
   let currentDate = new Date();
 
-
   // Checks if the selected date is in the past
   const isPastDate = (date) => {
     const today = new Date();
@@ -23,8 +22,7 @@
 
   // Fetches data for the selected date
   // This function needs to be supplemented with logic that fetches the required data
-  const fetchDataForDate = async (date) => {
-  };
+  const fetchDataForDate = async (date) => {};
 
   // Updates the displayed data when a new data has been selected
   $: if (isPastDate(selectedDate)) {
@@ -39,97 +37,97 @@
 <div class="flex flex-col gap-12 justify-between">
   <table class="min-w-full leading-normal rounded-lg overflow-hidden">
     <thead>
-    <tr class="text-xs text-left uppercase tracking-wider">
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Name
-      </th>
+      <tr class="text-xs text-left uppercase tracking-wider">
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Name
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Size
-      </th>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Size
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Energy Usage
-      </th>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Energy Usage
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Solar Panels
-      </th>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Solar Panels
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Solar Yield Yearly
-      </th>
-    </tr>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Solar Yield Yearly
+        </th>
+      </tr>
     </thead>
 
     <tbody>
-    <tr class="text-xs text-left uppercase tracking-wider">
-      <td
-        class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >{household.name}</td>
-      <td
-        class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >{household.size}</td>
-      <td
-        class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >{household.energy_usage}</td>
-      <td
-        class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >{household.solar_panels}</td>
-      <td
-        class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >{household.solar_yield_yearly}</td>
-    </tr>
+      <tr class="text-xs text-left uppercase tracking-wider">
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.name}</td>
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.size}</td>
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.energy_usage}</td>
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.solar_panels}</td>
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.solar_yield_yearly}</td>
+      </tr>
     </tbody>
   </table>
 
   <table class="min-w-full leading-normal rounded-lg overflow-hidden">
     <thead>
-    <tr class="text-xs text-left uppercase tracking-wider">
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Name
-      </th>
+      <tr class="text-xs text-left uppercase tracking-wider">
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Name
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Power
-      </th>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Power
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Duration
-      </th>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Duration
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Daily Usage
-      </th>
-    </tr>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Daily Usage
+        </th>
+      </tr>
     </thead>
 
     <tbody>
-    {#each household.appliances as appliance}
-      <tr class="text-xs text-left uppercase tracking-wider">
-        <td
-          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-        >{appliance.name}</td>
-        <td
-          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-        >{appliance.power}</td>
-        <td
-          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-        >{appliance.duration}</td>
-        <td
-          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-        >{appliance.daily_usage}</td>
-      </tr>
-    {/each}
+      {#each household.appliances as appliance}
+        <tr class="text-xs text-left uppercase tracking-wider">
+          <td
+            class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+            >{appliance.name}</td>
+          <td
+            class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+            >{appliance.power}</td>
+          <td
+            class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+            >{appliance.duration}</td>
+          <td
+            class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+            >{appliance.daily_usage}</td>
+        </tr>
+      {/each}
     </tbody>
   </table>
 </div>
@@ -140,7 +138,9 @@
   <h2 class="font-bold text-4xl dark:text-les-white">Schedulable Load Grid</h2>
   <DatePicker bind:value={selectedDate} />
   {#if isPastDate(selectedDate)}
-    <SchedulableLoadGrid appliances={household.appliances} hours={Array.from({ length: 24 }, (_, i) => i)} />
+    <SchedulableLoadGrid
+      appliances={household.appliances}
+      hours={Array.from({ length: 24 }, (_, i) => i)} />
   {:else}
     <p>Select a date to view the corresponding schedulable load grid raster.</p>
   {/if}

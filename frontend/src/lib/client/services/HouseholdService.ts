@@ -2,12 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { HouseholdCreate } from '../models/HouseholdCreate';
-import type { HouseholdRead_Output } from '../models/HouseholdRead_Output';
-import type { HouseholdUpdate } from '../models/HouseholdUpdate';
-import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { HouseholdCreate } from "../models/HouseholdCreate";
+import type { HouseholdRead_Output } from "../models/HouseholdRead_Output";
+import type { HouseholdUpdate } from "../models/HouseholdUpdate";
+import type { CancelablePromise } from "../core/CancelablePromise";
+import { OpenAPI } from "../core/OpenAPI";
+import { request as __request } from "../core/request";
 export class HouseholdService {
   /**
    * Get Households
@@ -16,8 +16,8 @@ export class HouseholdService {
    */
   public static getHouseholdsApiHouseholdGet(): CancelablePromise<Array<HouseholdRead_Output>> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/household/',
+      method: "GET",
+      url: "/api/household/",
     });
   }
   /**
@@ -27,13 +27,13 @@ export class HouseholdService {
    * @throws ApiError
    */
   public static postHouseholdApiHouseholdPost(
-    requestBody: HouseholdCreate,
+    requestBody: HouseholdCreate
   ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: 'POST',
-      url: '/api/household/',
+      method: "POST",
+      url: "/api/household/",
       body: requestBody,
-      mediaType: 'application/json',
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
@@ -46,13 +46,13 @@ export class HouseholdService {
    * @throws ApiError
    */
   public static getHouseholdApiHouseholdIdGet(
-    id: number,
+    id: number
   ): CancelablePromise<HouseholdRead_Output> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/household/{id}',
+      method: "GET",
+      url: "/api/household/{id}",
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         422: `Validation Error`,
@@ -68,16 +68,16 @@ export class HouseholdService {
    */
   public static updateHouseholdApiHouseholdIdPatch(
     id: number,
-    requestBody: HouseholdUpdate,
+    requestBody: HouseholdUpdate
   ): CancelablePromise<HouseholdUpdate> {
     return __request(OpenAPI, {
-      method: 'PATCH',
-      url: '/api/household/{id}',
+      method: "PATCH",
+      url: "/api/household/{id}",
       path: {
-        'id': id,
+        id: id,
       },
       body: requestBody,
-      mediaType: 'application/json',
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
@@ -89,14 +89,12 @@ export class HouseholdService {
    * @returns void
    * @throws ApiError
    */
-  public static deleteHouseholdApiHouseholdIdDelete(
-    id: number,
-  ): CancelablePromise<void> {
+  public static deleteHouseholdApiHouseholdIdDelete(id: number): CancelablePromise<void> {
     return __request(OpenAPI, {
-      method: 'DELETE',
-      url: '/api/household/{id}',
+      method: "DELETE",
+      url: "/api/household/{id}",
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         422: `Validation Error`,
@@ -110,13 +108,13 @@ export class HouseholdService {
    * @throws ApiError
    */
   public static getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
-    twinworldId: number,
+    twinworldId: number
   ): CancelablePromise<Array<HouseholdRead_Output>> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/household/twinworld/{twinworld_id}',
+      method: "GET",
+      url: "/api/household/twinworld/{twinworld_id}",
       path: {
-        'twinworld_id': twinworldId,
+        twinworld_id: twinworldId,
       },
       errors: {
         422: `Validation Error`,

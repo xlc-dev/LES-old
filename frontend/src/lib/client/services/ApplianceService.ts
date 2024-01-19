@@ -2,15 +2,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ApplianceCreate } from '../models/ApplianceCreate';
-import type { ApplianceRead_Output } from '../models/ApplianceRead_Output';
-import type { ApplianceTimeWindowCreate } from '../models/ApplianceTimeWindowCreate';
-import type { ApplianceTimeWindowRead } from '../models/ApplianceTimeWindowRead';
-import type { ApplianceTimeWindowUpdate } from '../models/ApplianceTimeWindowUpdate';
-import type { ApplianceUpdate } from '../models/ApplianceUpdate';
-import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { ApplianceCreate } from "../models/ApplianceCreate";
+import type { ApplianceRead_Output } from "../models/ApplianceRead_Output";
+import type { ApplianceTimeWindowCreate } from "../models/ApplianceTimeWindowCreate";
+import type { ApplianceTimeWindowRead } from "../models/ApplianceTimeWindowRead";
+import type { ApplianceTimeWindowUpdate } from "../models/ApplianceTimeWindowUpdate";
+import type { ApplianceUpdate } from "../models/ApplianceUpdate";
+import type { CancelablePromise } from "../core/CancelablePromise";
+import { OpenAPI } from "../core/OpenAPI";
+import { request as __request } from "../core/request";
 export class ApplianceService {
   /**
    * Get Appliances
@@ -19,8 +19,8 @@ export class ApplianceService {
    */
   public static getAppliancesApiApplianceGet(): CancelablePromise<Array<ApplianceRead_Output>> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/appliance/',
+      method: "GET",
+      url: "/api/appliance/",
     });
   }
   /**
@@ -30,13 +30,13 @@ export class ApplianceService {
    * @throws ApiError
    */
   public static postApplianceApiAppliancePost(
-    requestBody: ApplianceCreate,
+    requestBody: ApplianceCreate
   ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: 'POST',
-      url: '/api/appliance/',
+      method: "POST",
+      url: "/api/appliance/",
       body: requestBody,
-      mediaType: 'application/json',
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
@@ -49,13 +49,13 @@ export class ApplianceService {
    * @throws ApiError
    */
   public static getApplianceApiApplianceIdGet(
-    id: number,
+    id: number
   ): CancelablePromise<ApplianceRead_Output> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/appliance/{id}',
+      method: "GET",
+      url: "/api/appliance/{id}",
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         422: `Validation Error`,
@@ -71,16 +71,16 @@ export class ApplianceService {
    */
   public static updateApplianceApiApplianceIdPatch(
     id: number,
-    requestBody: ApplianceUpdate,
+    requestBody: ApplianceUpdate
   ): CancelablePromise<ApplianceUpdate> {
     return __request(OpenAPI, {
-      method: 'PATCH',
-      url: '/api/appliance/{id}',
+      method: "PATCH",
+      url: "/api/appliance/{id}",
       path: {
-        'id': id,
+        id: id,
       },
       body: requestBody,
-      mediaType: 'application/json',
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
@@ -92,14 +92,12 @@ export class ApplianceService {
    * @returns void
    * @throws ApiError
    */
-  public static deleteApplianceApiApplianceIdDelete(
-    id: number,
-  ): CancelablePromise<void> {
+  public static deleteApplianceApiApplianceIdDelete(id: number): CancelablePromise<void> {
     return __request(OpenAPI, {
-      method: 'DELETE',
-      url: '/api/appliance/{id}',
+      method: "DELETE",
+      url: "/api/appliance/{id}",
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         422: `Validation Error`,
@@ -111,10 +109,12 @@ export class ApplianceService {
    * @returns ApplianceTimeWindowRead Successful Response
    * @throws ApiError
    */
-  public static getApplianceTimewindowsApiApplianceTimewindowGet(): CancelablePromise<Array<ApplianceTimeWindowRead>> {
+  public static getApplianceTimewindowsApiApplianceTimewindowGet(): CancelablePromise<
+    Array<ApplianceTimeWindowRead>
+  > {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/appliance/timewindow/',
+      method: "GET",
+      url: "/api/appliance/timewindow/",
     });
   }
   /**
@@ -124,13 +124,13 @@ export class ApplianceService {
    * @throws ApiError
    */
   public static getApplianceTimewindowApiApplianceTimewindowIdGet(
-    id: number,
+    id: number
   ): CancelablePromise<ApplianceTimeWindowRead> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/appliance/timewindow/{id}',
+      method: "GET",
+      url: "/api/appliance/timewindow/{id}",
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         422: `Validation Error`,
@@ -146,16 +146,16 @@ export class ApplianceService {
    */
   public static updateApplianceTimewindowApiApplianceTimewindowIdPatch(
     id: number,
-    requestBody: ApplianceTimeWindowUpdate,
+    requestBody: ApplianceTimeWindowUpdate
   ): CancelablePromise<ApplianceTimeWindowUpdate> {
     return __request(OpenAPI, {
-      method: 'PATCH',
-      url: '/api/appliance/timewindow/{id}',
+      method: "PATCH",
+      url: "/api/appliance/timewindow/{id}",
       path: {
-        'id': id,
+        id: id,
       },
       body: requestBody,
-      mediaType: 'application/json',
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
@@ -168,13 +168,13 @@ export class ApplianceService {
    * @throws ApiError
    */
   public static postApplianceTimewindowApiApplianceTimewindowPost(
-    requestBody: ApplianceTimeWindowCreate,
+    requestBody: ApplianceTimeWindowCreate
   ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: 'POST',
-      url: '/api/appliance/timewindow',
+      method: "POST",
+      url: "/api/appliance/timewindow",
       body: requestBody,
-      mediaType: 'application/json',
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
@@ -187,13 +187,13 @@ export class ApplianceService {
    * @throws ApiError
    */
   public static deleteApplianceTimewindowApiAppliancetimewindowIdDelete(
-    id: number,
+    id: number
   ): CancelablePromise<void> {
     return __request(OpenAPI, {
-      method: 'DELETE',
-      url: '/api/appliancetimewindow/{id}',
+      method: "DELETE",
+      url: "/api/appliancetimewindow/{id}",
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         422: `Validation Error`,

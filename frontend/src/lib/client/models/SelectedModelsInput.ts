@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AlgorithmRead } from './AlgorithmRead';
-import type { CostModelRead } from './CostModelRead';
-import type { HouseholdRead_Input } from './HouseholdRead_Input';
-import type { TwinWorldRead } from './TwinWorldRead';
+import type { AlgorithmRead } from "./AlgorithmRead";
+import type { CostModelRead } from "./CostModelRead";
+import type { HouseholdRead_Input } from "./HouseholdRead_Input";
+import type { TwinWorldRead } from "./TwinWorldRead";
 export type SelectedModelsInput = {
   chunkoffset: number;
   households: Array<HouseholdRead_Input>;
@@ -13,4 +13,3 @@ export type SelectedModelsInput = {
   algorithm: AlgorithmRead;
   twinworld: TwinWorldRead;
 };
-

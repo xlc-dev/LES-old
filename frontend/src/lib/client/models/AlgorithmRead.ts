@@ -5,8 +5,7 @@
 export type AlgorithmRead = {
   name: string;
   description: string;
-  max_temperature: (number | null);
+  max_temperature: number | null;
   algorithm: string;
   id: number;
 };
-

@@ -7,9 +7,9 @@
   and download this data before a new session is started.
   */
 
-  import { onMount, onDestroy } from 'svelte';
-  import Chart from 'chart.js/auto';
-  import { writable } from 'svelte/store';
+  import { onMount, onDestroy } from "svelte";
+  import Chart from "chart.js/auto";
+  import { writable } from "svelte/store";
 
   let chartContainer;
   let chartContainerTwo;
@@ -136,32 +136,31 @@
     },
   };
 
-
   onMount(() => {
     if (chartContainer) {
-      chart = new Chart(chartContainer.getContext('2d'), {
-        type: 'line',
+      chart = new Chart(chartContainer.getContext("2d"), {
+        type: "line",
         data: data,
         options: options,
       });
     }
     if (chartContainerTwo) {
-      chartTwo = new Chart(chartContainerTwo.getContext('2d'), {
-        type: 'bar',
+      chartTwo = new Chart(chartContainerTwo.getContext("2d"), {
+        type: "bar",
         data: dataTwo,
         options: options,
       });
     }
     if (chartContainerThree) {
-      chartThree = new Chart(chartContainerThree.getContext('2d'), {
-        type: 'line',
+      chartThree = new Chart(chartContainerThree.getContext("2d"), {
+        type: "line",
         data: dataThree,
         options: options,
       });
     }
     if (chartContainerFour) {
-      chartFour = new Chart(chartContainerFour.getContext('2d'), {
-        type: 'bar',
+      chartFour = new Chart(chartContainerFour.getContext("2d"), {
+        type: "bar",
         data: dataFour,
         options: options,
       });
@@ -187,12 +186,12 @@
     location.reload();
   }
 
-  function doNothing() {
-  }
+  function doNothing() {}
 </script>
 
 <div class="max-w-3xl mx-auto pt-8">
-  <div class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
+  <div
+    class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
     <div class="chart-container">
       <canvas bind:this={chartContainer}></canvas>
     </div>
@@ -206,8 +205,12 @@
       <canvas bind:this={chartContainerFour}></canvas>
     </div>
     <div class="col-span-2 flex justify-between mt-8">
-      <button class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-dark-les-bg" on:click={refreshPage}>New session</button>
-      <button class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-blue hover:brightness-110" on:click={doNothing}>Download</button>
+      <button
+        class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-dark-les-bg"
+        on:click={refreshPage}>New session</button>
+      <button
+        class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-blue hover:brightness-110"
+        on:click={doNothing}>Download</button>
     </div>
   </div>
 </div>

@@ -2,12 +2,10 @@ import { type Writable, writable } from "svelte/store";
 
 import type { HouseholdRead_Output, SelectedOptions } from "./client";
 
-export const stepperData: Writable<Array<HouseholdRead_Output>> = writable(<Array<HouseholdRead_Output>>[]);
+export const stepperData: Writable<SelectedOptions> = writable(<SelectedOptions>{algorithm: {}, twinworld: {}, costmodel: {}, households: []});
 
-export const activatedHousehold = writable(<HouseholdRead_Output>null);
+export const activatedHousehold: Writable<HouseholdRead_Output> = writable(
+  <HouseholdRead_Output>null
+);
 
-export const twdata = writable({
-  twinworld: "",
-  costmodel: "",
-  algorithm: "",
-});
+// new stores: bitmapefficiencyresultstore (4 grafieken te maken met results), timedailystore

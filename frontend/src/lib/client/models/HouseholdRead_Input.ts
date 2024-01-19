@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ApplianceRead_Input } from './ApplianceRead_Input';
+import type { ApplianceRead_Input } from "./ApplianceRead_Input";
 export type HouseholdRead_Input = {
   name: string;
   size?: number;
@@ -13,4 +13,3 @@ export type HouseholdRead_Input = {
   appliances?: Array<ApplianceRead_Input>;
   twinworld_id: number;
 };
-

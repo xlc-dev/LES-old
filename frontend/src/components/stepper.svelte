@@ -12,7 +12,7 @@
 
   import * as monaco from "monaco-editor";
 
-  import { stepperData, twdata } from "../lib/stores";
+  import { stepperData } from "../lib/stores";
 
   import {
     SimulateService,
@@ -226,23 +226,24 @@
     const keys = Object.keys(simulationData);
     if (currentStep > 0 && currentStep <= keys.length) {
       const key = keys[currentStep - 1];
-      currentDescription = simulationData[key] && simulationData[key][0] ? simulationData[key][0].description : "";
+      currentDescription =
+        simulationData[key] && simulationData[key][0] ? simulationData[key][0].description : "";
     } else {
       currentDescription = "";
     }
   }
 
   // Handles a button click when an option in the options frame has been selected
-  const selectOption = (optionId: number, category: keyof typeof selectedIDs, optionName: string) => {
+  const selectOption = (optionId: number, category: string, optionName: string) => {
     selectedIDs[category] = optionId;
-    twdata.update((data) => ({ ...data, [category]: optionName }));
+    stepperData.update((data) => ({ ...data, [category]: optionName }));
     fetchHouseholds();
   };
 
   // Removes an option in the options frame that has been created by the researcher
   const deleteOption = async (optionId: number, category: any) => {
     selectedIDs[category] = 0;
-    twdata.update((data) => ({ ...data, [category]: "-" }));
+    stepperData.update((data) => ({ ...data, [category]: "-" }));
     await deleteOptionBasedOnCategory(category, optionId);
     simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
   };
@@ -330,7 +331,7 @@
       .then(async () => {
         twinworldHouseholds =
           await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
-            selectedIDs.twinworld,
+            selectedIDs.twinworld
           );
 
         checkboxStates = Array(24).fill(false);
@@ -351,7 +352,7 @@
           if (appliance.appliance_windows) {
             // Filter out the specific appliance_time_window based on its ID
             appliance.appliance_windows = appliance.appliance_windows.filter(
-              (window) => window.id !== id,
+              (window) => window.id !== id
             );
           }
           return appliance;
@@ -368,7 +369,7 @@
     try {
       await ApplianceService.updateApplianceTimewindowApiApplianceTimewindowIdPatch(
         editingApplianceTimeWindow.id,
-        editingApplianceTimeWindow,
+        editingApplianceTimeWindow
       );
       editingApplianceTimeWindow = null;
     } catch (err) {
@@ -383,7 +384,7 @@
       .then(async () => {
         twinworldHouseholds =
           await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
-            selectedIDs.twinworld,
+            selectedIDs.twinworld
           );
 
         applianceToAdd = 0;
@@ -417,7 +418,7 @@
       .then(async () => {
         twinworldHouseholds =
           await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
-            selectedIDs.twinworld,
+            selectedIDs.twinworld
           );
         applianceToAdd = 0;
         householdError = "";
@@ -443,7 +444,7 @@
     try {
       await HouseholdService.updateHouseholdApiHouseholdIdPatch(
         editingHousehold.id,
-        editingHousehold,
+        editingHousehold
       );
       editingHousehold = null;
     } catch (err) {
@@ -454,7 +455,10 @@
   // Gets all households for the selected twin world
   const fetchHouseholds = async () => {
     if (selectedIDs.twinworld) {
-      twinworldHouseholds = await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(selectedIDs.twinworld);
+      twinworldHouseholds =
+        await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
+          selectedIDs.twinworld
+        );
     }
   };
 
@@ -526,7 +530,7 @@
           // Check if the current appliance has an appliance_windows array
           if (appliance.appliance_windows) {
             const missingDays = Object.values(ApplianceDays).filter(
-              (day) => !appliance.appliance_windows.some((window) => window.day === day),
+              (day) => !appliance.appliance_windows.some((window) => window.day === day)
             );
 
             // If missingDays is not empty, add information to applianceCheck
@@ -544,7 +548,7 @@
           }
 
           return false; // Return false if appliance_windows is undefined or null
-        }),
+        })
       )
       .flat()
       .some(Boolean);
@@ -601,7 +605,7 @@
   $: if (timewindowToAdd > 0) {
     // Find the household with the matching id in twinworldHouseholds array
     const matchingHousehold = twinworldHouseholds.find(
-      (household) => household.id === timewindowToAdd,
+      (household) => household.id === timewindowToAdd
     );
 
     if (matchingHousehold) {
@@ -676,14 +680,14 @@
           <p class="text-white absolute top-10 transform -translate-x-28 w-64 text-center">
             {#if selectedIDs.twinworld !== 0 && stepName === "twinworld"}
               {#if applianceCheck.length > 0}
-                <span class="!text-les-red">{$twdata.twinworld}</span>
+                <span class="!text-les-red">{$stepperData.twinworld}</span>
               {:else}
-                {$twdata.twinworld}
+                {$stepperData.twinworld}
               {/if}
             {:else if selectedIDs.costmodel !== 0 && stepName === "costmodel"}
-              {$twdata.costmodel}
+              {$stepperData.costmodel}
             {:else if selectedIDs.algorithm !== 0 && stepName === "algorithm"}
-              {$twdata.algorithm}
+              {$stepperData.algorithm}
             {:else}
               -
             {/if}
@@ -695,12 +699,13 @@
 
   {#if isStepZero}
     <div class="max-w-3xl mx-auto pt-8">
-      <div class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
-    <div class="step-zero">
-      <h2>Local Energy System Research Application</h2>
-      <p>Welcome to the LES Research application! In this application you can lorem ipsum.</p>
-      <button on:click={nextStep}>Get started</button>
-    </div>
+      <div
+        class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
+        <div class="step-zero">
+          <h2>Local Energy System Research Application</h2>
+          <p>Welcome to the LES Research application! In this application you can lorem ipsum.</p>
+          <button on:click={nextStep}>Get started</button>
+        </div>
       </div>
     </div>
   {:else}
@@ -763,21 +768,24 @@
             {#if currentStep !== 1}
               <button
                 class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-dark-les-bg"
-                on:click={prevStep}>Back
+                on:click={prevStep}
+                >Back
               </button>
             {/if}
 
             {#if currentStep !== 3}
               <button
                 class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-blue hover:brightness-110"
-                on:click={nextStep}>Next
+                on:click={nextStep}
+                >Next
               </button>
             {/if}
 
             {#if selectedIDs.algorithm !== 0 && selectedIDs.twinworld !== 0 && selectedIDs.costmodel !== 0}
               <button
                 class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-red hover:brightness-110"
-                on:click={startSimulation}>Start
+                on:click={startSimulation}
+                >Start
               </button>
             {/if}
           </div>
@@ -787,629 +795,634 @@
   {/if}
 
   {#if !isStepZero && simulationData && Object.keys(simulationData).length > 0}
-  <div class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow">
-    <p class="font-bold text-lg mb-4">
-      Upload Custom {Object.keys(simulationData)[currentStep - 1].charAt(0).toUpperCase() +
-    Object.keys(simulationData)[currentStep - 1].slice(1).replace("_", " ")}:
-    </p>
+    <div class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow">
+      <p class="font-bold text-lg mb-4">
+        Upload Custom {Object.keys(simulationData)[currentStep - 1].charAt(0).toUpperCase() +
+          Object.keys(simulationData)[currentStep - 1].slice(1).replace("_", " ")}:
+      </p>
 
-    {#if currentStep === 1}
-      <form method="post" on:submit|preventDefault={uploadTwinWorld} class="flex flex-col gap-6">
-        <label for="name" class="font-bold pt-4">Name:</label>
-        <input
-          type="text"
-          name="name"
-          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required />
+      {#if currentStep === 1}
+        <form method="post" on:submit|preventDefault={uploadTwinWorld} class="flex flex-col gap-6">
+          <label for="name" class="font-bold pt-4">Name:</label>
+          <input
+            type="text"
+            name="name"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            required />
 
-        <label for="description" class="font-bold">Description:</label>
-        <textarea
-          name="description"
-          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required></textarea>
+          <label for="description" class="font-bold">Description:</label>
+          <textarea
+            name="description"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            required></textarea>
 
-        <button
-          type="submit"
-          class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
-        >Submit
-        </button>
-      </form>
+          <button
+            type="submit"
+            class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            >Submit
+          </button>
+        </form>
 
-      {#if selectedIDs.twinworld}
-        <hr class="my-8 bg-les-highlight" />
+        {#if selectedIDs.twinworld}
+          <hr class="my-8 bg-les-highlight" />
 
-        <h2 class="font-bold text-lg mb-4">
-          Add household for Twin World id: {selectedIDs.twinworld}
-        </h2>
-
-        <div class="flex flex-wrap">
-          <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
-            <label for="name" class="font-bold">Name:</label>
-            <input
-              id="name"
-              class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-              type="text"
-              minlength="1"
-              required
-              bind:value={newHousehold.name}
-              placeholder="Name" />
-          </div>
-
-          <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
-            <label for="size" class="font-bold">Size:</label>
-            <input
-              id="size"
-              min="1"
-              max="5"
-              class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-              type="number"
-              bind:value={newHousehold.size}
-              placeholder="Size" />
-          </div>
-
-          <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
-            <label for="energy_usage" class="font-bold">Energy Usage:</label>
-            <input
-              id="energy_usage"
-              class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-              type="number"
-              min="0"
-              bind:value={newHousehold.energy_usage}
-              placeholder="Energy usage" />
-          </div>
-
-          <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
-            <label for="solar_panels" class="font-bold">Solar Panels:</label>
-            <input
-              id="solar_panels"
-              class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-              type="number"
-              min="0"
-              bind:value={newHousehold.solar_panels}
-              placeholder="Solar panels" />
-          </div>
-
-          <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
-            <label for="solar_yield_yearly" class="font-bold">Solar Yield Yearly:</label>
-            <input
-              id="solar_yield_yearly"
-              class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-              type="number"
-              min="0"
-              bind:value={newHousehold.solar_yield_yearly}
-              placeholder="Solar yield yearly" />
-          </div>
-          <div class="flex items-end">
-            <button
-              type="button"
-              class="py-3 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
-              on:click={addHousehold}>Add Household
-            </button>
-          </div>
-
-          {#if householdError}
-            <p class="text-les-red">{householdError}</p>
-          {/if}
-        </div>
-
-        {#if applianceToAdd > 0}
-          <hr class="my-8 bg-les-highlight" id="applianceLocation" />
-
-          <h2 class="text-lg font-bold pb-4">
-            Add appliance for household id: {applianceToAdd}
+          <h2 class="font-bold text-lg mb-4">
+            Add household for Twin World id: {selectedIDs.twinworld}
           </h2>
 
           <div class="flex flex-wrap">
             <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
               <label for="name" class="font-bold">Name:</label>
-              <select
-                id="type"
+              <input
+                id="name"
                 class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-                bind:value={newAppliance.name}>
-                {#each Object.values(ApplianceType) as type (type)}
-                  <option value={type}>{type}</option>
-                {/each}
-              </select>
+                type="text"
+                minlength="1"
+                required
+                bind:value={newHousehold.name}
+                placeholder="Name" />
             </div>
 
             <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
-              <label for="power" class="font-bold">Power:</label>
+              <label for="size" class="font-bold">Size:</label>
               <input
-                id="power"
+                id="size"
+                min="1"
+                max="5"
                 class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
                 type="number"
-                bind:value={newAppliance.power} />
+                bind:value={newHousehold.size}
+                placeholder="Size" />
             </div>
 
             <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
-              <label for="duration" class="font-bold">Duration:</label>
+              <label for="energy_usage" class="font-bold">Energy Usage:</label>
               <input
-                id="duration"
+                id="energy_usage"
                 class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
                 type="number"
-                bind:value={newAppliance.duration} />
+                min="0"
+                bind:value={newHousehold.energy_usage}
+                placeholder="Energy usage" />
             </div>
 
             <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
-              <label for="daily_usage" class="font-bold">Daily Usage:</label>
+              <label for="solar_panels" class="font-bold">Solar Panels:</label>
               <input
-                id="daily_usage"
+                id="solar_panels"
                 class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
                 type="number"
-                bind:value={newAppliance.daily_usage} />
+                min="0"
+                bind:value={newHousehold.solar_panels}
+                placeholder="Solar panels" />
             </div>
 
+            <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+              <label for="solar_yield_yearly" class="font-bold">Solar Yield Yearly:</label>
+              <input
+                id="solar_yield_yearly"
+                class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                type="number"
+                min="0"
+                bind:value={newHousehold.solar_yield_yearly}
+                placeholder="Solar yield yearly" />
+            </div>
             <div class="flex items-end">
               <button
                 type="button"
                 class="py-3 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
-                on:click={addAppliance}>Add Appliance
+                on:click={addHousehold}
+                >Add Household
               </button>
             </div>
 
-            {#if applianceError}
-              <p class="text-les-red">{applianceError}</p>
+            {#if householdError}
+              <p class="text-les-red">{householdError}</p>
             {/if}
           </div>
-        {/if}
 
-        {#if timewindowToAdd > 0}
-          <span id="timewindowLocation"></span>
+          {#if applianceToAdd > 0}
+            <hr class="my-8 bg-les-highlight" id="applianceLocation" />
 
-          {#each currentAppliances as appliance}
-            <hr class="my-8 bg-les-highlight" />
-            <h3 class="font-bold text-lg">Timewindows for: {appliance.name}</h3>
-            <table class="min-w-full leading-normal rounded-lg mt-4 overflow-hidden">
-              {#if currentAppliances.length === 0}
-                <p class="text-center text-gray-500 py-4">No timewindows added yet.</p>
-              {:else}
-                <thead>
+            <h2 class="text-lg font-bold pb-4">
+              Add appliance for household id: {applianceToAdd}
+            </h2>
+
+            <div class="flex flex-wrap">
+              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+                <label for="name" class="font-bold">Name:</label>
+                <select
+                  id="type"
+                  class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                  bind:value={newAppliance.name}>
+                  {#each Object.values(ApplianceType) as type (type)}
+                    <option value={type}>{type}</option>
+                  {/each}
+                </select>
+              </div>
+
+              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+                <label for="power" class="font-bold">Power:</label>
+                <input
+                  id="power"
+                  class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                  type="number"
+                  bind:value={newAppliance.power} />
+              </div>
+
+              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+                <label for="duration" class="font-bold">Duration:</label>
+                <input
+                  id="duration"
+                  class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                  type="number"
+                  bind:value={newAppliance.duration} />
+              </div>
+
+              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+                <label for="daily_usage" class="font-bold">Daily Usage:</label>
+                <input
+                  id="daily_usage"
+                  class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                  type="number"
+                  bind:value={newAppliance.daily_usage} />
+              </div>
+
+              <div class="flex items-end">
+                <button
+                  type="button"
+                  class="py-3 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+                  on:click={addAppliance}
+                  >Add Appliance
+                </button>
+              </div>
+
+              {#if applianceError}
+                <p class="text-les-red">{applianceError}</p>
+              {/if}
+            </div>
+          {/if}
+
+          {#if timewindowToAdd > 0}
+            <span id="timewindowLocation"></span>
+
+            {#each currentAppliances as appliance}
+              <hr class="my-8 bg-les-highlight" />
+              <h3 class="font-bold text-lg">Timewindows for: {appliance.name}</h3>
+              <table class="min-w-full leading-normal rounded-lg mt-4 overflow-hidden">
+                {#if currentAppliances.length === 0}
+                  <p class="text-center text-gray-500 py-4">No timewindows added yet.</p>
+                {:else}
+                  <thead>
+                    <tr>
+                      <th
+                        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                        >Day
+                      </th>
+                      <th
+                        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                        >Bitmap Window
+                      </th>
+                      <th
+                        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                        >Options
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {#each appliance.appliance_windows as appliance_window}
+                      <tr class="bg-white text-sm hover:bg-gray-200">
+                        <td class="px-5 py-5 border-b border-gray-200">
+                          {#if editingApplianceTimeWindow === appliance_window}
+                            <select
+                              id="day"
+                              class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                              bind:value={appliance_window.day}>
+                              {#each Object.values(ApplianceDays) as type (type)}
+                                <option value={type}>{type}</option>
+                              {/each}
+                            </select>
+                          {:else}
+                            {appliance_window.day}
+                          {/if}
+                        </td>
+
+                        <td class="px-5 py-5 border-b border-gray-200">
+                          {#if editingApplianceTimeWindow === appliance_window}
+                            <input
+                              bind:value={appliance_window.bitmap_window}
+                              class="border rounded-md px-2 py-1"
+                              style="max-width: 130px;" />
+                          {:else}
+                            {appliance_window.bitmap_window}
+                          {/if}
+                        </td>
+
+                        <td class="px-5 py-5 border-b border-gray-200 space-y-4">
+                          {#if editingApplianceTimeWindow === appliance_window}
+                            <button
+                              type="button"
+                              class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-green transition-colors duration-200"
+                              on:click={stopEditingTimewindow}>
+                              Done
+                            </button>
+                          {:else}
+                            <button
+                              type="button"
+                              class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                              on:click={() => startEditingTimewindow(appliance_window)}>
+                              <img src="/edit.svg" alt="" class="w-4 h-4" />
+                            </button>
+
+                            <button
+                              type="button"
+                              class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-red transition-colors duration-200"
+                              on:click={() => deleteTimewindow(appliance_window.id)}>
+                              <img src="/trash.svg" alt="" class="w-4 h-4" />
+                            </button>
+                          {/if}
+                        </td>
+                      </tr>
+                    {/each}
+                  </tbody>
+                {/if}
+              </table>
+            {/each}
+            <hr class="my-8 bg-les-highlight" id="applianceLocation" />
+
+            <h2 class="text-lg font-bold pb-4">
+              Add timewindow for household id: {timewindowToAdd}
+            </h2>
+
+            <div class="flex flex-wrap">
+              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+                <label for="day" class="font-bold">Day:</label>
+                <select
+                  id="day"
+                  class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                  bind:value={newTimeWindow.day}>
+                  {#each Object.values(ApplianceDays) as type (type)}
+                    <option value={type}>{type}</option>
+                  {/each}
+                </select>
+              </div>
+
+              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+                <label for="appliance_id" class="font-bold">Appliance</label>
+                <select
+                  id="appliance_id"
+                  class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                  bind:value={newTimeWindow.appliance_id}>
+                  {#each currentAppliances as appliance (appliance.id)}
+                    <option value={appliance.id}>{appliance.name}</option>
+                  {/each}
+                </select>
+              </div>
+
+              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+                <label for="bitmap_window_display" class="font-bold">Bitmap Window Value:</label>
+                <input
+                  id="bitmap_window_display"
+                  class="bg-gray-300 cursor-not-allowed p-2.5 rounded-lg border-2 border-gray-400"
+                  type="text"
+                  readonly
+                  disabled
+                  value={newTimeWindow.bitmap_window} />
+              </div>
+
+              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4 pt-2">
+                <label for="bitmap_window" class="font-bold">Bitmap Window:</label>
+                <div class="flex flex-wrap">
+                  {#each hoursArray as hour, hourIndex}
+                    <div class="flex items-center w-1/3 pr-4">
+                      <input
+                        id="bitmap_window_{hourIndex}"
+                        class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                        type="checkbox"
+                        bind:checked={checkboxStates[hourIndex]}
+                        on:change={updateBitmapWindow} />
+                      <label for="bitmap_window_{hourIndex}" class="ml-2">{hour}</label>
+                    </div>
+                  {/each}
+                </div>
+              </div>
+
+              <div class="flex h-fit pt-8">
+                <button
+                  type="button"
+                  class="py-3 px-4 w-fit bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+                  on:click={addTimewindow}
+                  >Add Timewindow
+                </button>
+              </div>
+
+              {#if timewindowError}
+                <p class="text-les-red flex items-center">{timewindowError}</p>
+              {/if}
+            </div>
+          {/if}
+          <table class="min-w-full leading-normal rounded-lg mt-4 overflow-hidden">
+            {#if twinworldHouseholds.length === 0}
+              <p class="text-center text-gray-500 py-4">No households added yet.</p>
+            {:else}
+              <thead>
                 <tr>
                   <th
                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
-                  >Day
+                    >Name
+                  </th>
+
+                  <th
+                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                    >Size
                   </th>
                   <th
                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
-                  >Bitmap Window
+                    >Energy Usage
                   </th>
+
                   <th
                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
-                  >Options
+                    >Solar Yield Yearly
+                  </th>
+
+                  <th
+                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                    >Appliances
+                  </th>
+
+                  <th
+                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                    >Options
                   </th>
                 </tr>
-                </thead>
-                <tbody>
-                {#each appliance.appliance_windows as appliance_window}
+              </thead>
+              <tbody>
+                {#each twinworldHouseholds as household}
                   <tr class="bg-white text-sm hover:bg-gray-200">
                     <td class="px-5 py-5 border-b border-gray-200">
-                      {#if editingApplianceTimeWindow === appliance_window}
-                        <select
-                          id="day"
-                          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-                          bind:value={appliance_window.day}>
-                          {#each Object.values(ApplianceDays) as type (type)}
-                            <option value={type}>{type}</option>
-                          {/each}
-                        </select>
+                      {#if editingHousehold === household}
+                        <input
+                          bind:value={household.name}
+                          class="border rounded-md px-2 py-1"
+                          minlength="1"
+                          style="max-width: 130px;" />
                       {:else}
-                        {appliance_window.day}
+                        {household.name}
                       {/if}
                     </td>
 
                     <td class="px-5 py-5 border-b border-gray-200">
-                      {#if editingApplianceTimeWindow === appliance_window}
+                      {#if editingHousehold === household}
                         <input
-                          bind:value={appliance_window.bitmap_window}
+                          type="number"
+                          bind:value={household.size}
+                          min="1"
+                          max="5"
                           class="border rounded-md px-2 py-1"
-                          style="max-width: 130px;" />
+                          style="max-width: 50px;" />
                       {:else}
-                        {appliance_window.bitmap_window}
+                        {household.size}
                       {/if}
+                    </td>
+
+                    <td class="px-5 py-5 border-b border-gray-200">
+                      {#if editingHousehold === household}
+                        <input
+                          type="number"
+                          min="0"
+                          bind:value={household.energy_usage}
+                          class="border rounded-md px-2 py-1"
+                          style="max-width: 80px;" />
+                      {:else}
+                        {household.energy_usage}
+                      {/if}
+                    </td>
+
+                    <td class="px-5 py-5 border-b border-gray-200">
+                      {#if editingHousehold === household}
+                        <input
+                          type="number"
+                          min="0"
+                          bind:value={household.solar_yield_yearly}
+                          class="border rounded-md px-2 py-1"
+                          style="max-width: 80px;" />
+                      {:else}
+                        {household.solar_yield_yearly}
+                      {/if}
+                    </td>
+
+                    <td class="px-5 py-5 border-b border-gray-200">
+                      {#each household.appliances as appliance}
+                        <div class="flex gap-2 justify-between items-center max-w-[25px]">
+                          <p class="pb-2">{appliance.name}</p>
+
+                          <button on:click={() => deleteAppliance(appliance.id)} class="pb-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              data-slot="icon"
+                              class="stroke-les-red hover:stroke-les-red-dark h-4 cursor-pointer">
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                          </button>
+                        </div>
+                      {/each}
                     </td>
 
                     <td class="px-5 py-5 border-b border-gray-200 space-y-4">
-                      {#if editingApplianceTimeWindow === appliance_window}
+                      {#if editingHousehold === household}
                         <button
                           type="button"
                           class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-green transition-colors duration-200"
-                          on:click={stopEditingTimewindow}>
+                          on:click={stopEditingHousehold}>
                           Done
                         </button>
                       {:else}
                         <button
                           type="button"
                           class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
-                          on:click={() => startEditingTimewindow(appliance_window)}>
+                          on:click={() => startEditingHousehold(household)}>
                           <img src="/edit.svg" alt="" class="w-4 h-4" />
                         </button>
 
                         <button
                           type="button"
                           class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-red transition-colors duration-200"
-                          on:click={() => deleteTimewindow(appliance_window.id)}>
+                          on:click={() => deleteHousehold(household.id)}>
                           <img src="/trash.svg" alt="" class="w-4 h-4" />
                         </button>
+
+                        <button
+                          type="button"
+                          class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                          on:click={() => (applianceToAdd = household.id)}>
+                          <img src="/plus.svg" alt="" class="w-4 h-4" />
+                        </button>
+
+                        {#if household.appliances.length > 0}
+                          <button
+                            type="button"
+                            class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                            on:click={() => (timewindowToAdd = household.id)}>
+                            <img src="/clock.svg" alt="" class="w-4 h-4" />
+                          </button>
+                        {/if}
                       {/if}
                     </td>
                   </tr>
                 {/each}
-                </tbody>
-              {/if}
-            </table>
-          {/each}
-          <hr class="my-8 bg-les-highlight" id="applianceLocation" />
-
-          <h2 class="text-lg font-bold pb-4">
-            Add timewindow for household id: {timewindowToAdd}
-          </h2>
-
-          <div class="flex flex-wrap">
-            <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
-              <label for="day" class="font-bold">Day:</label>
-              <select
-                id="day"
-                class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-                bind:value={newTimeWindow.day}>
-                {#each Object.values(ApplianceDays) as type (type)}
-                  <option value={type}>{type}</option>
-                {/each}
-              </select>
-            </div>
-
-            <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
-              <label for="appliance_id" class="font-bold">Appliance</label>
-              <select
-                id="appliance_id"
-                class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-                bind:value={newTimeWindow.appliance_id}>
-                {#each currentAppliances as appliance (appliance.id)}
-                  <option value={appliance.id}>{appliance.name}</option>
-                {/each}
-              </select>
-            </div>
-
-            <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
-              <label for="bitmap_window_display" class="font-bold">Bitmap Window Value:</label>
-              <input
-                id="bitmap_window_display"
-                class="bg-gray-300 cursor-not-allowed p-2.5 rounded-lg border-2 border-gray-400"
-                type="text"
-                readonly
-                disabled
-                value={newTimeWindow.bitmap_window} />
-            </div>
-
-            <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4 pt-2">
-              <label for="bitmap_window" class="font-bold">Bitmap Window:</label>
-              <div class="flex flex-wrap">
-                {#each hoursArray as hour, hourIndex}
-                  <div class="flex items-center w-1/3 pr-4">
-                    <input
-                      id="bitmap_window_{hourIndex}"
-                      class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-                      type="checkbox"
-                      bind:checked={checkboxStates[hourIndex]}
-                      on:change={updateBitmapWindow} />
-                    <label for="bitmap_window_{hourIndex}" class="ml-2">{hour}</label>
-                  </div>
-                {/each}
-              </div>
-            </div>
-
-            <div class="flex h-fit pt-8">
-              <button
-                type="button"
-                class="py-3 px-4 w-fit bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
-                on:click={addTimewindow}>Add Timewindow
-              </button>
-            </div>
-
-            {#if timewindowError}
-              <p class="text-les-red flex items-center">{timewindowError}</p>
+              </tbody>
             {/if}
+          </table>
+        {/if}
+      {:else if currentStep === 2}
+        <form
+          method="post"
+          on:submit|preventDefault={uploadCostModel}
+          class="flex flex-col space-y-3">
+          <div>
+            <label for="name" class="font-bold pt-4">Name:</label>
+            <p class="text-sm text-gray-500">Name of the costmodel</p>
           </div>
-        {/if}
-        <table class="min-w-full leading-normal rounded-lg mt-4 overflow-hidden">
-          {#if twinworldHouseholds.length === 0}
-            <p class="text-center text-gray-500 py-4">No households added yet.</p>
-          {:else}
-            <thead>
-            <tr>
-              <th
-                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
-              >Name
-              </th>
 
-              <th
-                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
-              >Size
-              </th>
-              <th
-                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
-              >Energy Usage
-              </th>
+          <input
+            type="text"
+            name="name"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            required />
 
-              <th
-                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
-              >Solar Yield Yearly
-              </th>
+          <div>
+            <label for="description" class="font-bold">Description:</label>
+            <p class="text-sm text-gray-500">Description of the costmodel</p>
+          </div>
 
-              <th
-                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
-              >Appliances
-              </th>
+          <textarea
+            name="description"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            required
+            rows="8"></textarea>
 
-              <th
-                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
-              >Options
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            {#each twinworldHouseholds as household}
-              <tr class="bg-white text-sm hover:bg-gray-200">
-                <td class="px-5 py-5 border-b border-gray-200">
-                  {#if editingHousehold === household}
-                    <input
-                      bind:value={household.name}
-                      class="border rounded-md px-2 py-1"
-                      minlength="1"
-                      style="max-width: 130px;" />
-                  {:else}
-                    {household.name}
-                  {/if}
-                </td>
+          <div>
+            <label for="price_network_buy_consumer" class="font-bold"
+              >Price Network Buy Consumer:</label>
+            <p class="text-sm text-gray-500">
+              The price for buying energy from the energy provider
+            </p>
+          </div>
 
-                <td class="px-5 py-5 border-b border-gray-200">
-                  {#if editingHousehold === household}
-                    <input
-                      type="number"
-                      bind:value={household.size}
-                      min="1"
-                      max="5"
-                      class="border rounded-md px-2 py-1"
-                      style="max-width: 50px;" />
-                  {:else}
-                    {household.size}
-                  {/if}
-                </td>
+          <input
+            step="any"
+            type="number"
+            name="price_network_buy_consumer"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            required />
+          <div>
+            <label for="price_network_sell_consumer" class="font-bold"
+              >Price Network Sell Consumer:</label>
+            <p class="text-sm text-gray-500">
+              The price for selling energy back to the energy provider
+            </p>
+          </div>
 
-                <td class="px-5 py-5 border-b border-gray-200">
-                  {#if editingHousehold === household}
-                    <input
-                      type="number"
-                      min="0"
-                      bind:value={household.energy_usage}
-                      class="border rounded-md px-2 py-1"
-                      style="max-width: 80px;" />
-                  {:else}
-                    {household.energy_usage}
-                  {/if}
-                </td>
+          <input
+            step="any"
+            type="number"
+            name="price_network_sell_consumer"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            required />
+          <div>
+            <label for="fixed_price_ratio" class="font-bold">Fixed Price Ratio:</label>
+            <p class="text-sm text-gray-500">
+              Determines the internal price for selling and buying energy. A higher ratio means
+              that the price will tend towards the buying price
+            </p>
+          </div>
 
-                <td class="px-5 py-5 border-b border-gray-200">
-                  {#if editingHousehold === household}
-                    <input
-                      type="number"
-                      min="0"
-                      bind:value={household.solar_yield_yearly}
-                      class="border rounded-md px-2 py-1"
-                      style="max-width: 80px;" />
-                  {:else}
-                    {household.solar_yield_yearly}
-                  {/if}
-                </td>
+          <input
+            step="any"
+            type="number"
+            name="fixed_price_ratio"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
 
-                <td class="px-5 py-5 border-b border-gray-200">
-                  {#each household.appliances as appliance}
-                    <div class="flex gap-2 justify-between items-center max-w-[25px]">
-                      <p class="pb-2">{appliance.name}</p>
+          <div>
+            <label for="costmodel_algorithm" class="font-bold">Costmodel Algorithm:</label>
+            <p class="text-sm text-gray-500">
+              A custom formula used to determine the internal buying and selling price. See
+              documentation for details
+            </p>
+          </div>
 
-                      <button on:click={() => deleteAppliance(appliance.id)} class="pb-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          data-slot="icon"
-                          class="stroke-les-red hover:stroke-les-red-dark h-4 cursor-pointer">
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                      </button>
-                    </div>
-                  {/each}
-                </td>
+          <div
+            use:initMonaco={{
+              initialCode: costmodelCode,
+              onChange: (code) => (costmodelCode = code),
+            }}
+            class="h-48 border-2 border-gray-400 aria-selected:border-gray-600 rounded-lg">
+          </div>
 
-                <td class="px-5 py-5 border-b border-gray-200 space-y-4">
-                  {#if editingHousehold === household}
-                    <button
-                      type="button"
-                      class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-green transition-colors duration-200"
-                      on:click={stopEditingHousehold}>
-                      Done
-                    </button>
-                  {:else}
-                    <button
-                      type="button"
-                      class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
-                      on:click={() => startEditingHousehold(household)}>
-                      <img src="/edit.svg" alt="" class="w-4 h-4" />
-                    </button>
-
-                    <button
-                      type="button"
-                      class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-red transition-colors duration-200"
-                      on:click={() => deleteHousehold(household.id)}>
-                      <img src="/trash.svg" alt="" class="w-4 h-4" />
-                    </button>
-
-                    <button
-                      type="button"
-                      class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
-                      on:click={() => (applianceToAdd = household.id)}>
-                      <img src="/plus.svg" alt="" class="w-4 h-4" />
-                    </button>
-
-                    {#if household.appliances.length > 0}
-                      <button
-                        type="button"
-                        class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
-                        on:click={() => (timewindowToAdd = household.id)}>
-                        <img src="/clock.svg" alt="" class="w-4 h-4" />
-                      </button>
-                    {/if}
-                  {/if}
-                </td>
-              </tr>
-            {/each}
-            </tbody>
+          {#if algorithmError}
+            <p class="text-les-red">{algorithmError}</p>
           {/if}
-        </table>
+
+          <button
+            type="submit"
+            class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            >Submit
+          </button>
+        </form>
+      {:else if currentStep === 3}
+        <form method="post" on:submit|preventDefault={uploadAlgorithm} class="flex flex-col gap-6">
+          <div>
+            <label for="name" class="font-bold pt-4">Name:</label>
+            <p class="text-sm text-gray-500">Name for the new algorithm</p>
+          </div>
+
+          <input
+            type="text"
+            name="name"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            required />
+
+          <div>
+            <label for="description" class="font-bold">Description:</label>
+            <p class="text-sm text-gray-500">Description for the new algorithm</p>
+          </div>
+
+          <textarea
+            name="description"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            required></textarea>
+
+          <div>
+            <label for="algorithm" class="font-bold">Algorithm:</label>
+            <p class="text-sm text-gray-500">
+              A custom algorithm used to determine when an appliance will be planned in. See
+              documentation for details
+            </p>
+          </div>
+
+          <div
+            use:initMonaco={{
+              initialCode: algorithmCode,
+              onChange: (code) => (algorithmCode = code),
+            }}
+            class="h-48 border-2 border-gray-400 aria-selected:border-gray-600 rounded-lg">
+          </div>
+
+          <button
+            type="submit"
+            class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            >Submit
+          </button>
+        </form>
       {/if}
-    {:else if currentStep === 2}
-      <form
-        method="post"
-        on:submit|preventDefault={uploadCostModel}
-        class="flex flex-col space-y-3">
-        <div>
-          <label for="name" class="font-bold pt-4">Name:</label>
-          <p class="text-sm text-gray-500">Name of the costmodel</p>
-        </div>
-
-        <input
-          type="text"
-          name="name"
-          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required />
-
-        <div>
-          <label for="description" class="font-bold">Description:</label>
-          <p class="text-sm text-gray-500">Description of the costmodel</p>
-        </div>
-
-        <textarea
-          name="description"
-          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required
-          rows="8"></textarea>
-
-        <div>
-          <label for="price_network_buy_consumer" class="font-bold"
-            >Price Network Buy Consumer:</label>
-          <p class="text-sm text-gray-500">The price for buying energy from the energy provider</p>
-        </div>
-
-        <input
-          step="any"
-          type="number"
-          name="price_network_buy_consumer"
-          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required />
-        <div>
-          <label for="price_network_sell_consumer" class="font-bold"
-            >Price Network Sell Consumer:</label>
-          <p class="text-sm text-gray-500">
-            The price for selling energy back to the energy provider
-          </p>
-        </div>
-
-        <input
-          step="any"
-          type="number"
-          name="price_network_sell_consumer"
-          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required />
-        <div>
-          <label for="fixed_price_ratio" class="font-bold">Fixed Price Ratio:</label>
-          <p class="text-sm text-gray-500">
-            Determines the internal price for selling and buying energy. A higher ratio means that
-            the price will tend towards the buying price
-          </p>
-        </div>
-
-        <input
-          step="any"
-          type="number"
-          name="fixed_price_ratio"
-          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
-
-        <div>
-          <label for="costmodel_algorithm" class="font-bold">Costmodel Algorithm:</label>
-          <p class="text-sm text-gray-500">
-            A custom formula used to determine the internal buying and selling price. See
-            documentation for details
-          </p>
-        </div>
-
-        <div
-          use:initMonaco={{
-            initialCode: costmodelCode,
-            onChange: (code) => (costmodelCode = code),
-          }}
-          class="h-48 border-2 border-gray-400 aria-selected:border-gray-600 rounded-lg">
-        </div>
-
-        {#if algorithmError}
-          <p class="text-les-red">{algorithmError}</p>
-        {/if}
-
-        <button
-          type="submit"
-          class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
-        >Submit
-        </button>
-      </form>
-    {:else if currentStep === 3}
-      <form method="post" on:submit|preventDefault={uploadAlgorithm} class="flex flex-col gap-6">
-        <div>
-          <label for="name" class="font-bold pt-4">Name:</label>
-          <p class="text-sm text-gray-500">Name for the new algorithm</p>
-        </div>
-
-        <input
-          type="text"
-          name="name"
-          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required />
-
-        <div>
-          <label for="description" class="font-bold">Description:</label>
-          <p class="text-sm text-gray-500">Description for the new algorithm</p>
-        </div>
-
-        <textarea
-          name="description"
-          class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-          required></textarea>
-
-        <div>
-          <label for="algorithm" class="font-bold">Algorithm:</label>
-          <p class="text-sm text-gray-500">
-            A custom algorithm used to determine when an appliance will be planned in. See
-            documentation for details
-          </p>
-        </div>
-
-        <div
-          use:initMonaco={{
-            initialCode: algorithmCode,
-            onChange: (code) => (algorithmCode = code),
-          }}
-          class="h-48 border-2 border-gray-400 aria-selected:border-gray-600 rounded-lg">
-        </div>
-
-        <button
-          type="submit"
-          class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
-        >Submit
-        </button>
-      </form>
-    {/if}
-  </div>
+    </div>
   {/if}
 </div>

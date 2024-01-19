@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ApplianceTimeWindowRead } from './ApplianceTimeWindowRead';
-import type { ApplianceType } from './ApplianceType';
+import type { ApplianceTimeWindowRead } from "./ApplianceTimeWindowRead";
+import type { ApplianceType } from "./ApplianceType";
 export type ApplianceRead_Input = {
   name: ApplianceType;
   power: number;
@@ -12,4 +12,3 @@ export type ApplianceRead_Input = {
   id: number;
   appliance_windows?: Array<ApplianceTimeWindowRead>;
 };
-

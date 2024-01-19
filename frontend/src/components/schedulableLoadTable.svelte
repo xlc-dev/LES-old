@@ -70,8 +70,8 @@
     };
   };
 
-  const handleClickOutside = event => {
-    if (!event.target.closest('.date-picker-container')) {
+  const handleClickOutside = (event) => {
+    if (!event.target.closest(".date-picker-container")) {
       showDatePicker = false;
     }
   };
@@ -104,7 +104,7 @@
 
   // Initializes the event listener that handles button clicks of filters in the schedulable load table
   onMount(() => {
-    window.addEventListener('click', handleClickOutside);
+    window.addEventListener("click", handleClickOutside);
     document.addEventListener("click", (event: any) => {
       for (const filterName in filters) {
         const filterDropdown = document.getElementById(`${filterName}-dropdown`);
@@ -116,13 +116,13 @@
   });
 
   onDestroy(() => {
-    window.removeEventListener('click', handleClickOutside);
+    window.removeEventListener("click", handleClickOutside);
   });
 
   // Applies the filter logic on the schedulable load table
   $: {
     let data = get(stepperData);
-    filteredData = data.filter((item) => {
+    filteredData = data.households.filter((item) => {
       const matchesSearch =
         !searchQuery ||
         item.id.toString().includes(searchQuery) ||
@@ -202,14 +202,17 @@
         {/if}
       </button>
     {/each}
-    <div class="date-picker-container relative" on:click|stopPropagation>
-      <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" on:click={toggleDatePicker}>Select Date</button>
+    <button class="date-picker-container relative" on:click|stopPropagation>
+      <button
+        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        on:click={toggleDatePicker}>Select Date</button>
       {#if showDatePicker}
-        <div class="date-picker-popup absolute z-10 mt-2 bg-white border border-gray-300 rounded shadow-lg p-4">
+        <div
+          class="date-picker-popup absolute z-10 mt-2 bg-white border border-gray-300 rounded shadow-lg p-4">
           <DatePicker bind:value={selectedDate} on:change={handleDateChange} />
         </div>
       {/if}
-    </div>
+    </button>
   </div>
 </div>
 
