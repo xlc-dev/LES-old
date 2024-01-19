@@ -20,5 +20,5 @@ jobs:
 
       - name: Install dependencies and run checks
         run: |
-          npm i --legacy-peer-deps
+          npm i
           npm run check

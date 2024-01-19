@@ -55,10 +55,6 @@ class Appliance(ApplianceBase, table=True):
         back_populates="appliance"
     )
 
-    appliance_time_no_energy_daily: list[
-        "ApplianceTimeNoEnergyDaily"
-    ] = Relationship(back_populates="appliance")
-
 
 class ApplianceTimeWindowBase(SQLModel):
     day: ApplianceDays = Field(
@@ -80,15 +76,34 @@ class ApplianceTimeDailyBase(SQLModel):
     day: int = Field(
         nullable=False, ge=1
     )  # Number day of reviewed dataset, example=1
-    bitmap_plan: int = Field(nullable=False)  # 24 bit bitmap
+    bitmap_plan_energy: int = Field(
+        default=0, nullable=False, ge=0, le=2**24 - 1
+    )
+    bitmap_plan_no_energy: int = Field(
+        default=0, nullable=False, ge=0, le=2**24 - 1
+    )
 
-    @field_validator("bitmap_plan")
+    @field_validator("bitmap_plan_energy")
     @classmethod
-    def ensure_bitmap_plan(cls, v: Any):
+    def ensure_bitmap_plan_energy(cls, v: Any):
         if v:
             if v < 0 and v > 2**24 - 1:
                 raise ValueError("Bit length unequal to 24")
             return v
+        # If value is None, just set to 0
+        else:
+            return 0
+
+    @field_validator("bitmap_plan_no_energy")
+    @classmethod
+    def ensure_bitmap_plan_no_energy(cls, v: Any):
+        if v:
+            if v < 0 and v > 2**24 - 1:
+                raise ValueError("Bit length unequal to 24")
+            return v
+        # If value is None, just set to 0
+        else:
+            return 0
 
 
 class ApplianceTimeDaily(ApplianceTimeDailyBase, table=True):
@@ -102,32 +117,6 @@ class ApplianceTimeDaily(ApplianceTimeDailyBase, table=True):
     appliance_id: int = Field(foreign_key="appliance.id")
 
 
-class ApplianceTimeNoEnergyDailyBase(SQLModel):
-    day: int = Field(
-        nullable=False, ge=1
-    )  # Number day of reviewed dataset, example=1
-    bitmap_plan: int = Field(nullable=False)  # 24 bit bitmap
-
-    @field_validator("bitmap_plan")
-    @classmethod
-    def ensure_bitmap_plan(cls, v: Any):
-        if v:
-            if v < 0 and v > 2**24 - 1:
-                raise ValueError("Bit length unequal to 24")
-            return v
-
-
-class ApplianceTimeNoEnergyDaily(ApplianceTimeNoEnergyDailyBase, table=True):
-    id: int = Field(
-        primary_key=True
-    )  # id number of the appliance that is being planned in, example=0
-
-    appliance: "Appliance" = Relationship(
-        back_populates="appliance_time_no_energy_daily"
-    )
-    appliance_id: int = Field(foreign_key="appliance.id")
-
-
 class ApplianceTimeDailyRead(ApplianceTimeDailyBase):
     id: int
 
@@ -137,18 +126,6 @@ class ApplianceTimeDailyCreate(ApplianceTimeDailyBase):
 
 
 class ApplianceTimeDailyUpdate(ApplianceTimeDailyBase):
-    pass
-
-
-class ApplianceTimeNoEnergyDailyRead(ApplianceTimeNoEnergyDailyBase):
-    pass
-
-
-class ApplianceTimeNoEnergyDailyCreate(ApplianceTimeNoEnergyDailyBase):
-    pass
-
-
-class ApplianceTimeNoEnergyDailyUpdate(ApplianceTimeNoEnergyDailyBase):
     pass
 
 
@@ -168,7 +145,6 @@ class ApplianceRead(ApplianceBase):
     id: int
     appliance_windows: list[ApplianceTimeWindowRead] = []
     # appliance_time_daily: list[ApplianceTimeDaily] = []
-    # appliance_time_no_energy_daily: list[ApplianceTimeNoEnergyDaily] = []
 
 
 class ApplianceCreate(ApplianceBase):

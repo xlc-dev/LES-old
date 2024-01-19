@@ -1,3 +1,10 @@
+import pandas
+import numpy
+import math
+import random
+import scipy
+import ast
+
 from typing import Sequence
 
 from fastapi import APIRouter, Depends, status
@@ -49,6 +56,44 @@ async def post_algorithm(
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"algorithm with name: {form_data.name} already exists.",
+        )
+
+    # Create a restricted globals dictionary
+    restricted_globals = {
+        "pandas": pandas,
+        "numpy": numpy,
+        "scipy": scipy,
+        "math": math,
+        "random": random,
+    }
+
+    # Simple check if the code is valid Python syntax, it is bypassable.
+    # TODO: make this more comprehensive.
+    try:
+        compile(form_data.algorithm, "<string>", "exec")
+    except SyntaxError as e:
+        Logger.exception(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid syntax in the provided code: {str(e)}",
+        )
+
+    imports = set()
+
+    # Walk through the tree and find all imports
+    for node in ast.walk(ast.parse(form_data.algorithm)):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                imports.add(alias.name)
+        elif isinstance(node, ast.ImportFrom):
+            imports.add(node.module)
+
+    # Check if any imported module is not in restricted_globals
+    invalid_imports = [imp for imp in imports if imp not in restricted_globals]
+
+    if invalid_imports:
+        Logger.exception(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid imports: {', '.join(invalid_imports)}",
         )
 
     algorithm_crud.create(session=session, obj_in=form_data)

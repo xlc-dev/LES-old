@@ -1,10 +1,10 @@
 import { writable } from "svelte/store";
 
-import type { HouseholdRead } from "./client";
+import type { HouseholdRead_Output } from "./client";
 
-export const stepperData = writable(<Array<HouseholdRead>>[]);
+export const stepperData = writable(<Array<HouseholdRead_Output>>[]);
 
-export const activatedHousehold = writable(<HouseholdRead>null);
+export const activatedHousehold = writable(<HouseholdRead_Output>null);
 
 export const twdata = writable({
   twin_world: "",

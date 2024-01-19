@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 export type AlgorithmCreate = {
   name: string;
   description: string;
+  algorithm: string;
 };

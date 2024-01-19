@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type TwinWorldRead = {
-  name: string;
-  description: string;
+export type ApplianceTimeDailyRead = {
+  day: number;
+  bitmap_plan: number;
   id: number;
 };

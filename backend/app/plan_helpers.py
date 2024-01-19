@@ -1,365 +1,387 @@
-from math import floor
-from sqlmodel import Session
-
+from collections import defaultdict
 from calendar import day_name
+from math import floor
+
+from sqlmodel import Session, SQLModel
+
+from app.utils import SECONDS_IN_DAY, HOURS_IN_WEEK, unix_to_hour
 
 from app.core.models.household_model import HouseholdRead
 from app.core.models.energyflow_model import EnergyFlowRead
+from app.core.models.costmodel_model import CostModelRead
+from app.core.models.twinworld_model import TwinWorldRead
+from app.core.models.algorithm_model import AlgorithmRead
 from app.core.models.appliance_model import (
     ApplianceRead,
     ApplianceDays,
     ApplianceTimeDaily,
-    ApplianceTimeDailyUpdate,
-    ApplianceTimeNoEnergyDaily,
-    ApplianceTimeNoEnergyDailyUpdate,
+    ApplianceTimeDailyRead,
 )
 
-from app.core.crud.appliance_crud import (
-    appliance_time_daily_crud,
-    appliance_time_no_energy_daily_crud,
-)
+from app.core.crud.appliance_crud import appliance_time_daily_crud
+from app.core.crud.energyflow_crud import energyflow_crud
 
 
-def plan_with_energy(
-    session: Session,
-    appliance: ApplianceRead,
-    hour: int,
-    appliance_bitmap_plan: ApplianceTimeDaily,
-) -> None:
-    appliance_duration = appliance.duration
-    if (24 - hour - appliance_duration) >= 0:
-        appliance_duration_bit = 2**appliance_duration - 1 << int(
-            24 - hour - appliance_duration
-        )
-    else:
-        appliance_duration_bit = 2**appliance_duration - 1 >> int(
-            hour + appliance_duration - 24
-        )
-    if not appliance_bitmap_plan:
-        if not appliance_bitmap_plan.bitmap_plan:
-            new_bitmap_window = (
-                appliance_duration_bit | appliance_bitmap_plan.bitmap_plan
-            )
-    else:
-        new_bitmap_window = appliance_duration_bit
-
-    new_appliance_time_daily = ApplianceTimeDailyUpdate(
-        day=appliance_bitmap_plan.day,
-        bitmap_plan=new_bitmap_window,
-    )
-    appliance_time_daily_crud.update(
-        session=session,
-        db_obj=appliance_bitmap_plan,
-        obj_in=new_appliance_time_daily,
-    )
+class SelectedOptions(SQLModel):
+    twinworld: TwinWorldRead
+    costmodel: CostModelRead
+    algorithm: AlgorithmRead
+    households: list[HouseholdRead]
 
 
-def plan_no_energy(
-    session: Session,
-    appliance: ApplianceRead,
-    unix: int,
-    appliance_no_energy_bitmap_plan: ApplianceTimeNoEnergyDaily,
-) -> None:
-    hour = unix_to_hour(unix)
-    appliance_duration = appliance.duration
+class SimulationData(SQLModel):
+    twinworld: list[TwinWorldRead]
+    costmodel: list[CostModelRead]
+    algorithm: list[AlgorithmRead]
 
-    if (24 - hour - appliance_duration) >= 0:
-        appliance_duration_bit = 2**appliance_duration - 1 << int(
-            24 - hour - appliance_duration
-        )
-    else:
-        appliance_duration_bit = 2**appliance_duration - 1 >> int(
-            hour + appliance_duration - 24
-        )
-    if not appliance_no_energy_bitmap_plan.bitmap_plan:
-        new_bitmap_window = appliance_duration_bit
-    else:
-        new_bitmap_window = (
-            appliance_duration_bit
-            | appliance_no_energy_bitmap_plan.bitmap_plan
-        )
-    new_appliance_time_no_energy_daily = ApplianceTimeNoEnergyDailyUpdate(
-        day=appliance_no_energy_bitmap_plan.day,
-        bitmap_plan=new_bitmap_window,
-    )
-    appliance_time_no_energy_daily_crud.update(
-        session=session,
-        db_obj=appliance_no_energy_bitmap_plan,
-        obj_in=new_appliance_time_no_energy_daily,
+
+class SelectedModelsInput(SQLModel):
+    chunkoffset: int
+    households: list[HouseholdRead]
+    costmodel: CostModelRead
+    algorithm: AlgorithmRead
+    twinworld: TwinWorldRead
+
+
+class SelectedModelsOutput(SQLModel):
+    timedaily: list[ApplianceTimeDailyRead]
+    results: list[list[float]]
+
+
+def cost_static(
+    *,
+    buy_consumer: float,
+    sell_consumer: float,
+    fixed_price_ratio: float,
+) -> float:
+    return buy_consumer * fixed_price_ratio + sell_consumer * (
+        1 - fixed_price_ratio
     )
 
 
-def update_energy(
-    session: Session,
-    appliance: ApplianceRead,
-    old_hour: int,
-    has_energy: bool,
-    new_hour: int,
-    gets_energy: bool,
-    appliance_bitmap_plan: ApplianceTimeDaily | None = None,
-    appliance_no_energy_bitmap_plan: ApplianceTimeNoEnergyDaily | None = None,
-) -> None:
-    appliance_duration = appliance.duration
-    if appliance_bitmap_plan is not None:
-        day = appliance_bitmap_plan.day
-    elif appliance_no_energy_bitmap_plan is not None:
-        day = appliance_no_energy_bitmap_plan.day
-    else:
-        print(
-            "Both appliance_bitmap_plan and \
-                appliance_no_energy_bitmap_plan are empty, \
-                which shouldn't be possible."
-        )
-    if (24 - old_hour - appliance_duration) >= 0:
-        appliance_duration_bit_old = 2**appliance_duration - 1 << int(
-            24 - old_hour - appliance_duration
-        )
-    else:
-        appliance_duration_bit_old = 2**appliance_duration - 1 >> int(
-            old_hour + appliance_duration - 24
-        )
+def cost_variable(
+    *,
+    buy_consumer: float,
+    sell_consumer: float,
+    previous_efficiency: float,
+) -> float:
+    return buy_consumer * previous_efficiency + sell_consumer * (
+        1 - previous_efficiency
+    )
 
-    if (24 - new_hour - appliance_duration) >= 0:
-        appliance_duration_bit_new = 2**appliance_duration - 1 << int(
-            24 - new_hour - appliance_duration
-        )
-    else:
-        appliance_duration_bit_new = 2**appliance_duration - 1 >> int(
-            new_hour + appliance_duration - 24
-        )
 
-    if has_energy:
-        if gets_energy:  # Had energy and gets energy
-            if appliance_bitmap_plan is not None:
-                new_bitmap_window = (
-                    appliance_bitmap_plan.bitmap_plan
-                    | appliance_duration_bit_new ^ appliance_duration_bit_old
-                )
-        else:  # Had energy but won't get energy
-            if appliance_bitmap_plan is not None:
-                new_bitmap_window = (
-                    appliance_bitmap_plan.bitmap_plan
-                    ^ appliance_duration_bit_old
-                )
-            if appliance_no_energy_bitmap_plan is not None:
-                new_bitmap_window_no_energy = (
-                    appliance_no_energy_bitmap_plan.bitmap_plan
-                    | appliance_duration_bit_new
-                )
-    else:
-        if gets_energy:  # Had no energy but gets energy
-            if appliance_bitmap_plan is not None:
-                new_bitmap_window = (
-                    appliance_bitmap_plan.bitmap_plan
-                    | appliance_duration_bit_new
-                )
-            if appliance_no_energy_bitmap_plan is not None:
-                new_bitmap_window_no_energy = (
-                    appliance_no_energy_bitmap_plan.bitmap_plan
-                    ^ appliance_duration_bit_old
-                )
-        else:  # Had no energy and gets no energy
-            if appliance_no_energy_bitmap_plan is not None:
-                new_bitmap_window_no_energy = (
-                    appliance_no_energy_bitmap_plan.bitmap_plan
-                    | appliance_duration_bit_new ^ appliance_duration_bit_old
-                )
-
-    if has_energy or gets_energy:
-        new_appliance_time_daily = ApplianceTimeDailyUpdate(
-            day=day,
-            bitmap_plan=new_bitmap_window,
-        )
-        if appliance_bitmap_plan is not None:
-            appliance_time_daily_crud.update(
-                session=session,
-                db_obj=appliance_bitmap_plan,
-                obj_in=new_appliance_time_daily,
-            )
-    if has_energy is False or gets_energy is False:
-        new_appliance_time_no_energy_daily = ApplianceTimeNoEnergyDailyUpdate(
-            day=day,
-            bitmap_plan=new_bitmap_window_no_energy,
-        )
-        if appliance_no_energy_bitmap_plan is not None:
-            appliance_time_no_energy_daily_crud.update(
-                session=session,
-                db_obj=appliance_no_energy_bitmap_plan,
-                obj_in=new_appliance_time_no_energy_daily,
-            )
+def calculate_appliance_duration_bit(duration: int, hour: int) -> int:
+    shift = 24 - hour - duration
+    return (
+        (2**duration - 1) << shift
+        if shift >= 0
+        else (2**duration - 1) >> -shift
+    )
 
 
 def get_potential_energy(
-    household: HouseholdRead, energy_used: float, solar_produced: float
+    household: HouseholdRead,
+    energy_used: float,
+    solar_produced: float,
+    solar_panels_factor: int,
+    energy_usage_factor: int,
 ) -> float:
-    energy_usage_factor = 7000  # Hardcoded, is total energy in energyflow
-    solar_panels_factor = 25  # Hardcoded, amount of solar panels in energyflow
     return (
         solar_produced * household.solar_panels / solar_panels_factor
         - energy_used * 0.8 * household.energy_usage / energy_usage_factor
     )
 
 
+def plan_energy(
+    hour: int, appliance_duration: int, appliance_bitmap_plan: int
+) -> int:
+    appliance_duration_bit = calculate_appliance_duration_bit(
+        duration=appliance_duration, hour=hour
+    )
+
+    return appliance_duration_bit | appliance_bitmap_plan
+
+
+def update_energy(
+    old_hour: int,
+    new_hour: int,
+    has_energy: bool,
+    gets_energy: bool,
+    appliance: ApplianceRead,
+    appliance_bitmap_plan_energy: int,
+    appliance_bitmap_plan_no_energy: int,
+) -> tuple[int, int]:
+    appliance_duration_bit_old = calculate_appliance_duration_bit(
+        appliance.duration, old_hour
+    )
+    appliance_duration_bit_new = calculate_appliance_duration_bit(
+        appliance.duration, new_hour
+    )
+
+    new_bitmap_window_energy = appliance_bitmap_plan_energy
+    new_bitmap_window_no_energy = appliance_bitmap_plan_no_energy
+
+    if has_energy:
+        new_bitmap_window_energy ^= appliance_duration_bit_old
+    else:
+        new_bitmap_window_no_energy ^= appliance_duration_bit_old
+
+    if gets_energy:
+        new_bitmap_window_energy |= appliance_duration_bit_new
+    else:
+        new_bitmap_window_no_energy |= appliance_duration_bit_new
+
+    return new_bitmap_window_energy, new_bitmap_window_no_energy
+
+
 def check_appliance_time(
     appliance: ApplianceRead,
     unix: int,
-    appliance_bitmap_plan: ApplianceTimeDaily,
-    appliance_no_energy_bitmap_plan: ApplianceTimeNoEnergyDaily,
     has_energy: bool,
+    appliance_bitmap_plan: int,
 ) -> bool:
+    if appliance_bitmap_plan == 0:
+        return True
+
     hour = unix_to_hour(unix)
-    for window in appliance.appliance_windows:
-        current_day = day_name[(floor(unix / 86400 + 4) % 7)]
-        day_string = ApplianceDays(current_day).name
-        day_number = ApplianceDays[day_string.upper()].value
-        if window.day == day_number:
-            bitmap_window = window.bitmap_window
+    current_day = day_name[(floor(unix / SECONDS_IN_DAY + 4) % 7)]
+    day_number = ApplianceDays[current_day.upper()].value
+
+    bitmap_window = next(
+        (
+            window.bitmap_window
+            for window in appliance.appliance_windows
+            if window.day == day_number
+        ),
+        None,
+    )
+
+    if bitmap_window is None:
+        return True
 
     appliance_duration = appliance.duration
-    appliance_duration_bit = 2**appliance.duration - 1
-    if 24 - hour - appliance_duration >= 0:
-        current_time_window = bitmap_window >> int(
-            24 - hour - appliance_duration
-        )
-    else:
-        current_time_window = bitmap_window << int(
-            hour + appliance_duration - 24
-        )
+    appliance_duration_bit = 2**appliance_duration - 1
+    shift = 24 - hour - appliance_duration
+    current_time_window = (
+        bitmap_window >> shift if shift >= 0 else bitmap_window << -shift
+    )
+
     if appliance_duration_bit & current_time_window:
         return False
-    if has_energy:
-        if not appliance_bitmap_plan.bitmap_plan:
-            return True
-        if 24 - hour - appliance_duration >= 0:
-            current_appliance_task = appliance_bitmap_plan.bitmap_plan >> int(
-                24 - hour - appliance_duration
-            )
-        else:
-            current_appliance_task = appliance_bitmap_plan.bitmap_plan << int(
-                hour + appliance_duration - 24
-            )
-        if appliance_duration_bit & current_appliance_task:
-            return False
-    else:
-        if not appliance_no_energy_bitmap_plan.bitmap_plan:
-            return True
-        if 24 - hour - appliance_duration >= 0:
-            current_appliance_no_energy_task = (
-                appliance_no_energy_bitmap_plan.bitmap_plan
-                >> int(24 - hour - appliance_duration)
-            )
-        else:
-            current_appliance_no_energy_task = (
-                appliance_no_energy_bitmap_plan.bitmap_plan
-                << int(hour + appliance_duration - 24)
-            )
 
-        if appliance_duration_bit & current_appliance_no_energy_task:
-            return False
+    current_appliance_task = (
+        appliance_bitmap_plan >> shift
+        if shift >= 0
+        else appliance_bitmap_plan << -shift
+    )
+
+    if appliance_duration_bit & current_appliance_task:
+        return False
+
     return True
 
 
-def unix_to_hour(unix: int) -> int:
-    return unix // 3600 % 24
-
-
-def cost_static() -> float:
-    return 0.25
-
-
-def cost_variable_household(date: int, household: HouseholdRead):
-    return
-
-
 def energy_efficiency_day(
-    session: Session,
-    energy_flow: list[EnergyFlowRead],
-    planning: list[HouseholdRead],
     day: int,
     date: int,
-):
-    # Hardcoded
-    solar_panels_factor = 25
-    buy_price = 0.4
-    sell_price = 0.1
+    solar_panels_factor: int,
+    energy_flow: list[EnergyFlowRead],
+    planning: list[HouseholdRead],
+    appliance_bitmap_plan: list[ApplianceTimeDaily],
+    costmodel: CostModelRead,
+) -> tuple[float, float, float, float]:
+    total_panels = sum(household.solar_panels for household in planning)
+    solar_energy_produced = [
+        ef.solar_produced * total_panels / solar_panels_factor
+        for ef in energy_flow
+    ]
 
-    solar_energy_produced = [0.0 for x in range(24)]
-    solar_energy_used_self = [0.0 for x in range(24)]
-    solar_energy_used_total = [0.0 for x in range(24)]
-    household_energy_available = [0.0 for x in range(24)]
-    previous_total_usage = [0.0 for x in range(24)]
-    current_total_usage = [0.0 for x in range(24)]
+    solar_energy_used_self = [0.0] * 24
+    solar_energy_used_total = [0.0] * 24
 
-    total_panels = 0
     for household in planning:
-        total_panels += household.solar_panels
-        for hour in range(24):
-            household_energy_available[hour] = (
-                energy_flow[hour].solar_produced
-                * household.solar_panels
-                / solar_panels_factor
-            )
+        household_energy_available = [
+            ef.solar_produced * household.solar_panels / solar_panels_factor
+            for ef in energy_flow
+        ]
+
         for appliance in household.appliances:
-            appliance_bitmap_plan = (
-                appliance_time_daily_crud.get_appliance_time_daily(
-                    session=session,
-                    appliance_id=appliance.id,
-                    day=day,
-                )
-            )
-            if appliance_bitmap_plan is None:
-                continue
-            if appliance_bitmap_plan.bitmap_plan is None:
-                continue
-            bitmap = "{0:24b}".format(appliance_bitmap_plan.bitmap_plan)
-            for hour in range(24):
-                if bitmap[hour] == "1":
-                    solar_energy_used_total[hour] += (
-                        appliance.power / appliance.duration
+            bitmap = f"{appliance_bitmap_plan[appliance.id - 1].bitmap_plan_energy:024b}"  # noqa: E501
+
+            for hour, bit in enumerate(bitmap):
+                if bit == "1":
+                    power_per_hour = appliance.power / appliance.duration
+                    used_energy = min(
+                        power_per_hour, household_energy_available[hour]
                     )
-                    solar_energy_used_self[hour] += min(
-                        appliance.power / appliance.duration,
-                        household_energy_available[hour],
-                    )
-                    household_energy_available[hour] -= min(
-                        appliance.power / appliance.duration,
-                        household_energy_available[hour],
-                    )
+                    solar_energy_used_total[hour] += power_per_hour
+                    solar_energy_used_self[hour] += used_energy
+                    household_energy_available[hour] -= used_energy
 
-    for hour in range(24):
-        solar_energy_produced[hour] = (
-            energy_flow[hour].solar_produced
-            * total_panels
-            / solar_panels_factor
+    previous_total_usage = [
+        min(used_self, produced)
+        for used_self, produced in zip(
+            solar_energy_used_self, solar_energy_produced
         )
-        previous_total_usage[hour] = min(
-            solar_energy_used_self[hour], solar_energy_produced[hour]
+    ]
+    current_total_usage = [
+        min(used_total, produced)
+        for used_total, produced in zip(
+            solar_energy_used_total, solar_energy_produced
         )
-        current_total_usage[hour] = min(
-            solar_energy_used_total[hour], solar_energy_produced[hour]
-        )
+    ]
 
-    if sum(solar_energy_produced) > 0:
-        previous_efficiency = sum(previous_total_usage) / sum(
-            solar_energy_produced
-        )
-        current_efficiency = sum(current_total_usage) / sum(
-            solar_energy_produced
-        )
-    else:
-        previous_efficiency = 1
-        current_efficiency = 1
+    sum_produced = sum(solar_energy_produced)
 
-    if sum(previous_total_usage) == 0:
-        previous_efficiency = 1
-    if sum(current_total_usage) == 0:
-        current_efficiency = 1
-
-    energy_price = buy_price * previous_efficiency + sell_price * (
-        1 - previous_efficiency
+    previous_efficiency = (
+        sum(previous_total_usage) / sum_produced if sum_produced > 0 else 0
     )
+    current_efficiency = (
+        sum(current_total_usage) / sum_produced if sum_produced > 0 else 0
+    )
+
+    energy_price_code = costmodel.algorithm
+
+    # Remove trailing parentheses if they exist
+    energy_price_code = energy_price_code.rstrip("()")
+
+    # Adding parameters to the code
+    energy_price_code_with_params = f"""{energy_price_code}(
+    buy_consumer={costmodel.price_network_buy_consumer},
+    sell_consumer={costmodel.price_network_sell_consumer},
+    previous_efficiency={previous_efficiency})"""
+
+    # Execute the modified code using eval
+    energy_price = eval(energy_price_code_with_params)
+
     cost_savings = (sum(current_total_usage) - sum(previous_total_usage)) * (
-        buy_price - energy_price
+        costmodel.price_network_buy_consumer - energy_price
     )
 
     return previous_efficiency, current_efficiency, energy_price, cost_savings
+
+
+def setup_planning(
+    *, session: Session, planning: SelectedModelsInput
+) -> tuple[
+    int,
+    int,
+    int,
+    int,
+    int,
+    list[EnergyFlowRead],
+    list[EnergyFlowRead],
+    list[ApplianceRead],
+    list[HouseholdRead],
+    list[list[float]],
+    dict[int, list[EnergyFlowRead]],
+]:
+    energyflow_data = energyflow_crud.get_by_solar_produced(
+        session=session,
+        limit=HOURS_IN_WEEK,
+        offset=planning.chunkoffset * 24,
+    )
+
+    energyflow_data_sim = energyflow_crud.get_all_sorted_by_timestamp(
+        session=session,
+        limit=HOURS_IN_WEEK,
+        offset=planning.chunkoffset * 24,
+    )
+
+    appliance_time = appliance_time_daily_crud.get_multi(session=session)
+
+    total_start_date, total_end_date = energyflow_crud.get_start_end_date(
+        session=session
+    )
+
+    total_start_date = total_start_date.timestamp
+    total_end_date = total_end_date.timestamp
+
+    days_in_chunk = (
+        energyflow_data_sim[-1].timestamp - energyflow_data_sim[0].timestamp
+    ) // SECONDS_IN_DAY + 1
+
+    start_date = energyflow_data_sim[0].timestamp
+
+    days_in_planning = (
+        total_end_date - total_start_date
+    ) // SECONDS_IN_DAY + 1
+
+    results = [[0.0 for _ in range(4)] for _ in range(days_in_chunk)]
+
+    household_planning = planning.households
+    length_planning = len(household_planning)
+
+    energyflow_by_day = defaultdict(list)
+
+    for el in energyflow_data:
+        day = (el.timestamp - total_start_date) // SECONDS_IN_DAY
+        energyflow_by_day[day].append(el)
+
+    return (
+        days_in_chunk,
+        days_in_planning,
+        length_planning,
+        start_date,
+        total_start_date,
+        energyflow_data_sim,
+        energyflow_data,
+        appliance_time,
+        household_planning,
+        results,
+        energyflow_by_day,
+    )
+
+
+def loop_helpers(
+    *,
+    start_date: int,
+    total_start_date: int,
+    day_iterator: int,
+    length_planning: int,
+    household_planning: list[HouseholdRead],
+    energyflow_data: list[EnergyFlowRead],
+    twinworld: TwinWorldRead,
+) -> tuple[int, list[EnergyFlowRead], list[list[float]], float, int]:
+    day_number_in_planning = (
+        start_date - total_start_date
+    ) // SECONDS_IN_DAY + day_iterator
+
+    print(day_number_in_planning)
+
+    date = start_date + day_number_in_planning * SECONDS_IN_DAY
+    energyflow_day = [
+        el
+        for el in energyflow_data
+        if (el.timestamp - start_date) // SECONDS_IN_DAY == day_iterator - 1
+    ]
+
+    # Initialize data structures for the current day
+    household_energy = [
+        [0.0 for _ in range(length_planning)] for _ in range(24)
+    ]
+    total_available_energy = 0.0
+
+    for household_idx, household in enumerate(household_planning):
+        if household.solar_panels <= 0:
+            continue
+        for flow in energyflow_day:
+            hour = unix_to_hour(flow.timestamp)
+            potential_energy = get_potential_energy(
+                household=household,
+                energy_used=flow.energy_used,
+                solar_produced=flow.solar_produced,
+                solar_panels_factor=twinworld.solar_panels_factor,
+                energy_usage_factor=twinworld.energy_usage_factor,
+            )
+
+            household_energy[hour][household_idx] += potential_energy
+            total_available_energy += potential_energy
+
+    return (
+        date,
+        energyflow_day,
+        household_energy,
+        total_available_energy,
+        day_number_in_planning,
+    )

@@ -1,36 +1,7 @@
 <script lang="ts">
-  /*
-  The household component contains the view that is displayed when an individual household
-  is clicked in the schedulable load table or in the simulation view. It contains additional
-  data about the selected household and its' appliances, which is regularly updated and
-  translated into a part of the visualisations in the dashboard component.
-  */
+  import type { HouseholdRead_Output } from "../lib/client";
 
-  import type { HouseholdRead } from "../lib/client";
-  import SchedulableLoadGrid from "./schedulableLoadGrid.svelte";
-  import { DatePicker } from "date-picker-svelte";
-
-  export let household: HouseholdRead;
-  let selectedDate = new Date();
-  let currentDate = new Date();
-
-
-  // Checks if the selected date is in the past
-  const isPastDate = (date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return date < today;
-  };
-
-  // Fetches data for the selected date
-  // This function needs to be supplemented with logic that fetches the required data
-  const fetchDataForDate = async (date) => {
-  };
-
-  // Updates the displayed data when a new data has been selected
-  $: if (isPastDate(selectedDate)) {
-    fetchDataForDate(selectedDate);
-  }
+  export let household: HouseholdRead_Output;
 </script>
 
 <h1 class="font-bold text-4xl pb-4 flex items-center gap-4 dark:text-les-white">

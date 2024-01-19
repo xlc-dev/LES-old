@@ -9,9 +9,9 @@
   panels, while the red boxes indicate that the energy used is drawn from the national grid.
   */
 
-  import type { ApplianceRead } from "../lib/client";
+  import type { ApplianceRead_Output } from "../lib/client";
 
-  export let appliances: ApplianceRead[];
+  export let appliances: ApplianceRead_Output[];
   export let hours: number[];
 
   // Determines the color of a box in a schedulable load grid raster based on a bitmap value

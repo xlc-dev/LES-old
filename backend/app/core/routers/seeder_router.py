@@ -90,11 +90,7 @@ def add_appliance_to_session(session: Session, appliance: Appliance):
         daily_planning = create_initial_daily_planning(
             session, day_number, appliance.id
         )
-        daily_no_energy_planning = create_initial_no_energy_daily_planning(
-            session, day_number, appliance.id
-        )
         session.add(daily_planning)
-        session.add(daily_no_energy_planning)
         session.flush()
 
 
@@ -162,18 +158,8 @@ def create_initial_daily_planning(
 ) -> appliance_model.ApplianceTimeDaily:
     empty_day = appliance_model.ApplianceTimeDaily(
         day=day,
-        bitmap_plan=0b000000000000000000000000,  # 24 bits for hour of day
-        appliance_id=appliance_id,
-    )
-    return empty_day
-
-
-def create_initial_no_energy_daily_planning(
-    session: Session, day: int, appliance_id: int
-) -> appliance_model.ApplianceTimeNoEnergyDaily:
-    empty_day = appliance_model.ApplianceTimeNoEnergyDaily(
-        day=day,
-        bitmap_plan=0b000000000000000000000000,  # 24 bits for hour of day
+        bitmap_plan_energy=0,
+        bitmap_plan_no_energy=0,
         appliance_id=appliance_id,
     )
     return empty_day
@@ -476,35 +462,32 @@ def seed(session: Session = Depends(get_session)) -> None:
 
     greedy = algorithm_model.Algorithm(
         name="Greedy planning",
-        description="An initial planning that puts appliances in \
-            their local optimum through a greedy algorithm. \
-            Will not optimize further than one \
-            pass through all appliances.",
+        description="An initial planning that puts appliances in their local optimum through a greedy algorithm. Will not optimize further than one pass through all appliances.",  # noqa: E501
+        algorithm="greedy()",
     )
 
     session.add(greedy)
 
     simulated_annealing = algorithm_model.Algorithm(
-        name="Simulated_annealing",
-        description="An algorithm that improves on a given algorithm \
-            by randomly changing the time of planned in appliances. \
-                The conditions for what changes becomes stricter over \
-                time, resulting in a further optimized solution.",
+        name="Simulated Annealing",
+        description="An algorithm that improves on a given algorithm by randomly changing the time of planned in appliances. The conditions for what changes becomes stricter over time, resulting in a further optimized solution.",  # noqa: E501
+        algorithm="simmulated_annealing()",
+        max_temperature=10000,
     )
 
     session.add(simulated_annealing)
 
     buy_consumer = 0.4
     sell_consumer = 0.1
-    fixed_division = 0.5
+    fixed_price_ratio = 0.5
 
     costmodel_fixed = costmodel_model.CostModel(
         name="Fixed Price",
-        description=f"A fixed price for buying and selling energy. The price for buying from the utility is {buy_consumer} and the price for selling is {sell_consumer}. The price is determined by {buy_consumer * fixed_division + (1 - fixed_division) * sell_consumer}. A higher fixed devisision means a higher trading price.",  # noqa: E501
+        description=f"A fixed price for buying and selling energy. The price for buying from the utility is {buy_consumer} and the price for selling is {sell_consumer}. The price is determined by {buy_consumer * fixed_price_ratio + (1 - fixed_price_ratio) * sell_consumer}. A higher fixed devisision means a higher trading price.",  # noqa: E501
         price_network_buy_consumer=buy_consumer,
         price_network_sell_consumer=sell_consumer,
-        fixed_division=fixed_division,
-        algo_1="algo1",
+        fixed_price_ratio=fixed_price_ratio,
+        algorithm="cost_static()",
     )
 
     session.add(costmodel_fixed)
@@ -514,7 +497,7 @@ def seed(session: Session = Depends(get_session)) -> None:
         description="A price model based on the TEMO model. The price is determined by a formula that compares the energy needed to the various prices available, and returns an internal buying and selling prices",  # noqa: E501
         price_network_buy_consumer=buy_consumer,
         price_network_sell_consumer=sell_consumer,
-        algo_1="algo1",
+        algorithm="cost_variable()",
     )
 
     session.add(costmodel_temo)
@@ -522,6 +505,8 @@ def seed(session: Session = Depends(get_session)) -> None:
     twinworld_1 = twinworld_model.TwinWorld(
         name="TwinWorld Large",
         description="A larger twin world consisting of roughly 75 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
+        solar_panels_factor=25,
+        energy_usage_factor=7000,
     )
 
     session.add(twinworld_1)
@@ -529,6 +514,8 @@ def seed(session: Session = Depends(get_session)) -> None:
     twinworld_2 = twinworld_model.TwinWorld(
         name="TwinWorld Small",
         description="A smaller twin world consisting of roughly 25 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
+        solar_panels_factor=25,
+        energy_usage_factor=7000,
     )
 
     session.add(twinworld_2)

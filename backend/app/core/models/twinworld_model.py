@@ -10,16 +10,34 @@ if TYPE_CHECKING:
 
 class TwinWorldBase(SQLModel):
     name: str = Field(index=True, unique=True, nullable=False)
-    description: str = Field(nullable=False, min_length=1, max_length=200)
+    description: str = Field(nullable=False, min_length=1, max_length=500)
+    solar_panels_factor: int = Field(nullable=False, ge=1)
+    energy_usage_factor: int = Field(nullable=False, ge=1)
 
     @field_validator("description")
     @classmethod
     def ensure_description(cls, v: str):
         if v:
-            if len(v) < 1 or len(v) > 200:
+            if len(v) < 1 or len(v) > 500:
                 raise ValueError(
-                    "description must be between 1 and 200 characters"
+                    "description must be between 1 and 300 characters"
                 )
+            return v
+
+    @field_validator("solar_panels_factor")
+    @classmethod
+    def ensure_solar_panels_factor(cls, v: int):
+        if v:
+            if v < 1:
+                raise ValueError("solar_panels_factor must be greater than 0")
+            return v
+
+    @field_validator("energy_usage_factor")
+    @classmethod
+    def ensure_energy_usage_factor(cls, v: int):
+        if v:
+            if v < 1:
+                raise ValueError("energy_usage_factor must be greater than 0")
             return v
 
 
