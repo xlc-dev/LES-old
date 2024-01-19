@@ -1,7 +1,17 @@
 <script lang="ts">
-  import { Chart } from "svelte-chartjs";
+  /*
+  The dashboard component contains all the relevant data that is created for the simulation
+  that is run using the selected of created twin world, cost model, and algorithm for the
+  current session. This component consists of graphs that are updated in realtime and other
+  visualisations of the live data that the application collects and generates.
+  */
 
-  import "chart.js/auto";
+  import { onMount, onDestroy } from 'svelte';
+  import Chart from 'chart.js/auto';
+  import { writable } from 'svelte/store';
+
+  let chartContainer;
+  let chart;
 
   let data = {
     labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
@@ -37,6 +47,23 @@
       },
     },
   };
+
+
+  onMount(() => {
+    if (chartContainer) {
+      chart = new Chart(chartContainer.getContext('2d'), {
+        type: 'bar',
+        data: data,
+        options: options,
+      });
+    }
+  });
+
+  onDestroy(() => {
+    if (chart) {
+      chart.destroy();
+    }
+  });
 </script>
 
-<Chart type="bar" {data} {options} />
+<canvas bind:this={chartContainer}></canvas>
