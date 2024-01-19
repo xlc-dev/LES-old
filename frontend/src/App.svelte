@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { stepperData, efficiencyresultstore } from "./lib/stores";
+  import { stepperData, efficiencyresultstore, type EfficiencyResult } from "./lib/stores";
   import { OpenAPI, SimulateService } from "./lib/client";
 
   import Stepper from "./components/stepper.svelte";
@@ -36,11 +36,17 @@
         households: $stepperData.households,
       });
 
-      // Update the efficiencyresultstore with the new data
-      efficiencyresultstore.update(store => {
-        // Assuming you want to concatenate the new data
-        return [...store, ...response.results];
+      // Transform and update the store
+      const transformedResults = response.results.map(resultArray => {
+        return {
+          solarEnergyIndividual: resultArray[0],
+          solarEnergyTotal: resultArray[1],
+          internalBoughtEnergyPrice: resultArray[2],
+          totalAmountSaved: resultArray[3]
+        } as EfficiencyResult;
       });
+
+      efficiencyresultstore.update(store => [...store, ...transformedResults]);
 
       // Check if more data needs to be fetched
       // if (/* condition to determine if more data is needed */) {
