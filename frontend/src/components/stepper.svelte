@@ -89,7 +89,8 @@
   let costmodelEditor: monaco.editor.IStandaloneCodeEditor;
   let algorithmEditor: monaco.editor.IStandaloneCodeEditor;
   let costmodelCode = "";
-  let algorithmCode = "import pandas\nimport numpy\nimport scipy\nimport math\nimport random\n\ndef run():\n    pass\n";
+  let algorithmCode =
+    "import pandas\nimport numpy\nimport scipy\nimport math\nimport random\n\ndef run():\n    pass\n";
 
   let checkboxStates = Array(24).fill(false);
   let currentStep: number = 1;
@@ -1181,7 +1182,6 @@
         method="post"
         on:submit|preventDefault={uploadCostModel}
         class="flex flex-col space-y-3">
-
         <div>
           <label for="name" class="font-bold pt-4">Name:</label>
           <p class="text-sm text-gray-500">Name of the costmodel</p>
@@ -1207,9 +1207,7 @@
         <div>
           <label for="price_network_buy_consumer" class="font-bold"
             >Price Network Buy Consumer:</label>
-          <p class="text-sm text-gray-500">
-            The price for buying energy from the energy provider
-          </p>
+          <p class="text-sm text-gray-500">The price for buying energy from the energy provider</p>
         </div>
 
         <input
@@ -1234,7 +1232,10 @@
           required />
         <div>
           <label for="fixed_price_ratio" class="font-bold">Fixed Price Ratio:</label>
-          <p class="text-sm text-gray-500">Determines the internal price for selling and buying energy. A higher ratio means that the price will tend towards the buying price</p>
+          <p class="text-sm text-gray-500">
+            Determines the internal price for selling and buying energy. A higher ratio means that
+            the price will tend towards the buying price
+          </p>
         </div>
 
         <input
@@ -1245,7 +1246,10 @@
 
         <div>
           <label for="costmodel_algorithm" class="font-bold">Costmodel Algorithm:</label>
-          <p class="text-sm text-gray-500">A custom formula used to determine the internal buying and selling price. See documentation for details</p>
+          <p class="text-sm text-gray-500">
+            A custom formula used to determine the internal buying and selling price. See
+            documentation for details
+          </p>
         </div>
 
         <div
@@ -1290,7 +1294,10 @@
 
         <div>
           <label for="algorithm" class="font-bold">Algorithm:</label>
-          <p class="text-sm text-gray-500">A custom algorithm used to determine when an appliance will be planned in. See documentation for details</p>
+          <p class="text-sm text-gray-500">
+            A custom algorithm used to determine when an appliance will be planned in. See
+            documentation for details
+          </p>
         </div>
 
         <div

@@ -6,9 +6,9 @@
   visualisations of the live data that the application collects and generates.
   */
 
-  import { onMount, onDestroy } from 'svelte';
-  import Chart from 'chart.js/auto';
-  import { writable } from 'svelte/store';
+  import { onMount, onDestroy } from "svelte";
+  import Chart from "chart.js/auto";
+  import { writable } from "svelte/store";
 
   let chartContainer;
   let chart;
@@ -48,11 +48,10 @@
     },
   };
 
-
   onMount(() => {
     if (chartContainer) {
-      chart = new Chart(chartContainer.getContext('2d'), {
-        type: 'bar',
+      chart = new Chart(chartContainer.getContext("2d"), {
+        type: "bar",
         data: data,
         options: options,
       });
