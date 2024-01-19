@@ -5,5 +5,7 @@
 export type AlgorithmCreate = {
   name: string;
   description: string;
+  max_temperature: (number | null);
   algorithm: string;
 };
+

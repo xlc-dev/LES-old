@@ -2,9 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ApplianceDays } from "./ApplianceDays";
+import type { ApplianceDays } from './ApplianceDays';
 export type ApplianceTimeWindowCreate = {
   day: ApplianceDays;
   bitmap_window: number;
   appliance_id: number;
 };
+

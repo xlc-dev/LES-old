@@ -4,10 +4,13 @@
 /* eslint-disable */
 import type { AlgorithmRead } from './AlgorithmRead';
 import type { CostModelRead } from './CostModelRead';
+import type { HouseholdRead_Input } from './HouseholdRead_Input';
 import type { TwinWorldRead } from './TwinWorldRead';
-export type SimulationData = {
-  twinworld: Array<TwinWorldRead>;
-  costmodel: Array<CostModelRead>;
-  algorithm: Array<AlgorithmRead>;
+export type SelectedModelsInput = {
+  chunkoffset: number;
+  households: Array<HouseholdRead_Input>;
+  costmodel: CostModelRead;
+  algorithm: AlgorithmRead;
+  twinworld: TwinWorldRead;
 };
 

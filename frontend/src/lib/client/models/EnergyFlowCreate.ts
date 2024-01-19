@@ -7,3 +7,4 @@ export type EnergyFlowCreate = {
   energy_used: number;
   solar_produced: number;
 };
+

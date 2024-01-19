@@ -92,8 +92,8 @@
     <div class="px-4">
       <h3 class="text-lg font-semibold text-les-white pb-4">Selected Options:</h3>
 
-      <p class="text-gray-400">Twin World: {$twdata.twin_world}</p>
-      <p class="text-gray-400">Cost Model: {$twdata.cost_model}</p>
+      <p class="text-gray-400">Twin World: {$twdata.twinworld}</p>
+      <p class="text-gray-400">Cost Model: {$twdata.costmodel}</p>
       <p class="text-gray-400">Algorithm: {$twdata.algorithm}</p>
 
       <hr class="border-gray-800 my-4" />

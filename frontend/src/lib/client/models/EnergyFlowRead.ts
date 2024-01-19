@@ -7,3 +7,4 @@ export type EnergyFlowRead = {
   energy_used: number;
   solar_produced: number;
 };
+

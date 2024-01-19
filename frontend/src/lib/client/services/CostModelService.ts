@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CostModelCreate } from "../models/CostModelCreate";
-import type { CostModelRead } from "../models/CostModelRead";
-import type { CancelablePromise } from "../core/CancelablePromise";
-import { OpenAPI } from "../core/OpenAPI";
-import { request as __request } from "../core/request";
+import type { CostModelCreate } from '../models/CostModelCreate';
+import type { CostModelRead } from '../models/CostModelRead';
+import type { CancelablePromise } from '../core/CancelablePromise';
+import { OpenAPI } from '../core/OpenAPI';
+import { request as __request } from '../core/request';
 export class CostModelService {
   /**
    * Get Costmodels
@@ -15,8 +15,8 @@ export class CostModelService {
    */
   public static getCostmodelsApiCostmodelGet(): CancelablePromise<Array<CostModelRead>> {
     return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/costmodel/",
+      method: 'GET',
+      url: '/api/costmodel/',
     });
   }
   /**
@@ -26,13 +26,20 @@ export class CostModelService {
    * @throws ApiError
    */
   public static postCostmodelApiCostmodelPost(
-    requestBody: CostModelCreate
+    requestBody: {
+      price_network_buy_consumer: any;
+      name: any;
+      costmodel_algorithm: string;
+      description: any;
+      price_network_sell_consumer: any;
+      fixed_price_ratio: any
+    },
   ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: "POST",
-      url: "/api/costmodel/",
+      method: 'POST',
+      url: '/api/costmodel/',
       body: requestBody,
-      mediaType: "application/json",
+      mediaType: 'application/json',
       errors: {
         422: `Validation Error`,
       },
@@ -44,12 +51,14 @@ export class CostModelService {
    * @returns CostModelRead Successful Response
    * @throws ApiError
    */
-  public static getCostmodelApiCostmodelIdGet(id: number): CancelablePromise<CostModelRead> {
+  public static getCostmodelApiCostmodelIdGet(
+    id: number,
+  ): CancelablePromise<CostModelRead> {
     return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/costmodel/{id}",
+      method: 'GET',
+      url: '/api/costmodel/{id}',
       path: {
-        id: id,
+        'id': id,
       },
       errors: {
         422: `Validation Error`,
@@ -62,12 +71,14 @@ export class CostModelService {
    * @returns void
    * @throws ApiError
    */
-  public static deleteCostmodelApiCostmodelIdDelete(id: number): CancelablePromise<void> {
+  public static deleteCostmodelApiCostmodelIdDelete(
+    id: number,
+  ): CancelablePromise<void> {
     return __request(OpenAPI, {
-      method: "DELETE",
-      url: "/api/costmodel/{id}",
+      method: 'DELETE',
+      url: '/api/costmodel/{id}',
       path: {
-        id: id,
+        'id': id,
       },
       errors: {
         422: `Validation Error`,

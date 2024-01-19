@@ -61,13 +61,13 @@
 
   let simulationData: SimulationData = {
     algorithm: [],
-    twin_world: [],
-    cost_model: [],
+    twinworld: [],
+    costmodel: [],
   };
 
   let selectedIDs = {
-    twin_world: 0,
-    cost_model: 0,
+    twinworld: 0,
+    costmodel: 0,
     algorithm: 0,
   };
 
@@ -233,9 +233,10 @@
   }
 
   // Handles a button click when an option in the options frame has been selected
-  const selectOption = (optionId: number, category: any, optionName: string) => {
+  const selectOption = (optionId: number, category: keyof typeof selectedIDs, optionName: string) => {
     selectedIDs[category] = optionId;
     twdata.update((data) => ({ ...data, [category]: optionName }));
+    fetchHouseholds();
   };
 
   // Removes an option in the options frame that has been created by the researcher
@@ -249,10 +250,10 @@
   // Removes an option in the options frame that has been created by the researcher based on a category
   const deleteOptionBasedOnCategory = async (category: keyof SimulationData, optionId: number) => {
     switch (category) {
-      case "cost_model":
+      case "costmodel":
         await CostModelService.deleteCostmodelApiCostmodelIdDelete(optionId);
         break;
-      case "twin_world":
+      case "twinworld":
         await TwinWorldService.deleteTwinworldApiTwinworldIdDelete(optionId);
         break;
       case "algorithm":
@@ -329,7 +330,7 @@
       .then(async () => {
         twinworldHouseholds =
           await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
-            selectedIDs.twin_world,
+            selectedIDs.twinworld,
           );
 
         checkboxStates = Array(24).fill(false);
@@ -382,7 +383,7 @@
       .then(async () => {
         twinworldHouseholds =
           await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
-            selectedIDs.twin_world,
+            selectedIDs.twinworld,
           );
 
         applianceToAdd = 0;
@@ -411,12 +412,12 @@
 
   // Adds a household to a created twin world
   const addHousehold = async () => {
-    newHousehold.twinworld_id = selectedIDs.twin_world;
+    newHousehold.twinworld_id = selectedIDs.twinworld;
     await HouseholdService.postHouseholdApiHouseholdPost(newHousehold)
       .then(async () => {
         twinworldHouseholds =
           await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
-            selectedIDs.twin_world,
+            selectedIDs.twinworld,
           );
         applianceToAdd = 0;
         householdError = "";
@@ -452,13 +453,12 @@
 
   // Gets all households for the selected twin world
   const fetchHouseholds = async () => {
-    twinworldHouseholds =
-      await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
-        selectedIDs.twin_world,
-      );
+    if (selectedIDs.twinworld) {
+      twinworldHouseholds = await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(selectedIDs.twinworld);
+    }
   };
 
-  // // Sends a post request containing the form data of a created cost model and add it to the array of selectable options
+  // Sends a post request containing the form data of a created cost model and add it to the array of selectable options
   const uploadCostModel = async (event: any) => {
     const target = event.target;
 
@@ -557,8 +557,8 @@
 
     await SimulateService.startApiSimulateStartPost({
       algorithm_id: selectedIDs.algorithm,
-      twinworld_id: selectedIDs.twin_world,
-      costmodel_id: selectedIDs.cost_model,
+      twinworld_id: selectedIDs.twinworld,
+      costmodel_id: selectedIDs.costmodel,
     }).then((res) => ($stepperData = res));
   };
 
@@ -588,7 +588,7 @@
   });
 
   // If a twin world's values have changed, the array of households is fetched again
-  $: selectedIDs.twin_world && fetchHouseholds();
+  $: selectedIDs.twinworld && fetchHouseholds();
 
   // If an appliance has been added to a created twin world the window scrolls to a section in which a new appliance can be added
   $: if (applianceToAdd > 0) {
@@ -674,14 +674,14 @@
           {/if}
 
           <p class="text-white absolute top-10 transform -translate-x-28 w-64 text-center">
-            {#if selectedIDs.twin_world !== 0 && stepName === "twin_world"}
+            {#if selectedIDs.twinworld !== 0 && stepName === "twinworld"}
               {#if applianceCheck.length > 0}
-                <span class="!text-les-red">{$twdata.twin_world}</span>
+                <span class="!text-les-red">{$twdata.twinworld}</span>
               {:else}
-                {$twdata.twin_world}
+                {$twdata.twinworld}
               {/if}
-            {:else if selectedIDs.cost_model !== 0 && stepName === "cost_model"}
-              {$twdata.cost_model}
+            {:else if selectedIDs.costmodel !== 0 && stepName === "costmodel"}
+              {$twdata.costmodel}
             {:else if selectedIDs.algorithm !== 0 && stepName === "algorithm"}
               {$twdata.algorithm}
             {:else}
@@ -774,7 +774,7 @@
               </button>
             {/if}
 
-            {#if selectedIDs.algorithm !== 0 && selectedIDs.twin_world !== 0 && selectedIDs.cost_model !== 0}
+            {#if selectedIDs.algorithm !== 0 && selectedIDs.twinworld !== 0 && selectedIDs.costmodel !== 0}
               <button
                 class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-red hover:brightness-110"
                 on:click={startSimulation}>Start
@@ -815,11 +815,11 @@
         </button>
       </form>
 
-      {#if selectedIDs.twin_world}
+      {#if selectedIDs.twinworld}
         <hr class="my-8 bg-les-highlight" />
 
         <h2 class="font-bold text-lg mb-4">
-          Add household for Twin World id: {selectedIDs.twin_world}
+          Add household for Twin World id: {selectedIDs.twinworld}
         </h2>
 
         <div class="flex flex-wrap">

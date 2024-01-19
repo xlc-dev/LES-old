@@ -4,6 +4,8 @@
 /* eslint-disable */
 export type ApplianceTimeDailyRead = {
   day: number;
-  bitmap_plan: number;
+  bitmap_plan_energy?: number;
+  bitmap_plan_no_energy?: number;
   id: number;
 };
+

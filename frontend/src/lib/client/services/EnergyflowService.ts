@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { EnergyFlowCreate } from "../models/EnergyFlowCreate";
-import type { EnergyFlowRead } from "../models/EnergyFlowRead";
-import type { CancelablePromise } from "../core/CancelablePromise";
-import { OpenAPI } from "../core/OpenAPI";
-import { request as __request } from "../core/request";
+import type { EnergyFlowCreate } from '../models/EnergyFlowCreate';
+import type { EnergyFlowRead } from '../models/EnergyFlowRead';
+import type { CancelablePromise } from '../core/CancelablePromise';
+import { OpenAPI } from '../core/OpenAPI';
+import { request as __request } from '../core/request';
 export class EnergyflowService {
   /**
    * Get Energyflows
@@ -15,8 +15,8 @@ export class EnergyflowService {
    */
   public static getEnergyflowsApiEnergyflowGet(): CancelablePromise<Array<EnergyFlowRead>> {
     return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/energyflow/",
+      method: 'GET',
+      url: '/api/energyflow/',
     });
   }
   /**
@@ -26,13 +26,13 @@ export class EnergyflowService {
    * @throws ApiError
    */
   public static postEnergyflowApiEnergyflowPost(
-    requestBody: EnergyFlowCreate
+    requestBody: EnergyFlowCreate,
   ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: "POST",
-      url: "/api/energyflow/",
+      method: 'POST',
+      url: '/api/energyflow/',
       body: requestBody,
-      mediaType: "application/json",
+      mediaType: 'application/json',
       errors: {
         422: `Validation Error`,
       },
@@ -44,12 +44,14 @@ export class EnergyflowService {
    * @returns EnergyFlowRead Successful Response
    * @throws ApiError
    */
-  public static getEnergyflowApiEnergyflowIdGet(id: number): CancelablePromise<EnergyFlowRead> {
+  public static getEnergyflowApiEnergyflowIdGet(
+    id: number,
+  ): CancelablePromise<EnergyFlowRead> {
     return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/energyflow/{id}/",
+      method: 'GET',
+      url: '/api/energyflow/{id}',
       path: {
-        id: id,
+        'id': id,
       },
       errors: {
         422: `Validation Error`,
