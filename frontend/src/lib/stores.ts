@@ -8,6 +8,15 @@ export const activatedHousehold: Writable<HouseholdRead_Output> = writable(
   <HouseholdRead_Output>null
 );
 
+export interface EfficiencyResult {
+  solarEnergyIndividual: number;
+  solarEnergyTotal: number;
+  internalBoughtEnergyPrice: number;
+  totalAmountSaved: number;
+}
+
+export const efficiencyresultstore = writable<Array<EfficiencyResult>>([]);
+
 // new stores: efficiencyresultstore (4 graphs can be made with results:
 // 1. % solar energy used by an individual household,
 // 2. % total solar energy used by entire twin world full of household,
