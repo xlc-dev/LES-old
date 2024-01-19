@@ -462,10 +462,7 @@ def seed(session: Session = Depends(get_session)) -> None:
 
     greedy = algorithm_model.Algorithm(
         name="Greedy planning",
-        description="An initial planning that puts appliances in \
-            their local optimum through a greedy algorithm. \
-            Will not optimize further than one \
-            pass through all appliances.",
+        description="An initial planning that puts appliances in their local optimum through a greedy algorithm. Will not optimize further than one pass through all appliances.",  # noqa: E501
         algorithm="greedy()",
     )
 
@@ -473,11 +470,9 @@ def seed(session: Session = Depends(get_session)) -> None:
 
     simulated_annealing = algorithm_model.Algorithm(
         name="Simulated Annealing",
-        description="An algorithm that improves on a given algorithm \
-            by randomly changing the time of planned in appliances. \
-                The conditions for what changes becomes stricter over \
-                time, resulting in a further optimized solution.",
+        description="An algorithm that improves on a given algorithm by randomly changing the time of planned in appliances. The conditions for what changes becomes stricter over time, resulting in a further optimized solution.",  # noqa: E501
         algorithm="simmulated_annealing()",
+        max_temperature=10000,
     )
 
     session.add(simulated_annealing)
@@ -510,6 +505,8 @@ def seed(session: Session = Depends(get_session)) -> None:
     twinworld_1 = twinworld_model.TwinWorld(
         name="TwinWorld Large",
         description="A larger twin world consisting of roughly 75 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
+        solar_panels_factor=25,
+        energy_usage_factor=7000,
     )
 
     session.add(twinworld_1)
@@ -517,6 +514,8 @@ def seed(session: Session = Depends(get_session)) -> None:
     twinworld_2 = twinworld_model.TwinWorld(
         name="TwinWorld Small",
         description="A smaller twin world consisting of roughly 25 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
+        solar_panels_factor=25,
+        energy_usage_factor=7000,
     )
 
     session.add(twinworld_2)
