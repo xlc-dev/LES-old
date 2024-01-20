@@ -8,6 +8,7 @@
   OpenAPI.BASE = "http://localhost:8000";
 
   async function fetchData(chunkoffset = 0) {
+    if (!$isStarted) return;
     try {
       const response = await SimulateService.planApiSimulatePlanPost({
         chunkoffset: chunkoffset,
@@ -24,8 +25,8 @@
         totalAmountSaved: resultArray[3]
       }));
 
-      efficiencyresultstore.set(transformedResults);
-
+      efficiencyresultstore.update(store => [...store, ...transformedResults]);
+      setTimeout(() => fetchData(chunkoffset + 7), 5000);
     } catch (err) {
       if (err.status !== 500) {
         return
