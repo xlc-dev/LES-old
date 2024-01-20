@@ -7,7 +7,6 @@
 
   OpenAPI.BASE = "http://localhost:8000";
 
-  // Recursive function to fetch data and update the store
   async function fetchData(chunkoffset = 0, previousSolarEnergyTotal = 0, previousTotalAmountSaved = 0) {
     try {
       const response = await SimulateService.planApiSimulatePlanPost({
@@ -18,52 +17,12 @@
         households: $stepperData.households,
       });
 
-      // const transformedResults = response.results.map((resultArray, index) => {
-      //   let solarEnergyTotal = calculateSolarEnergyTotal(resultArray, previousSolarEnergyTotal);
-      //   let totalAmountSaved = calculateTotalAmountSaved(resultArray, previousTotalAmountSaved);
-      //
-      //   if (index === response.results.length - 1) {
-      //     previousSolarEnergyTotal = solarEnergyTotal;
-      //     previousTotalAmountSaved = totalAmountSaved;
-      //   }
-      //
-      //   return {
-      //     solarEnergyIndividual: calculateSolarEnergyIndividual(resultArray),
-      //     solarEnergyTotal: solarEnergyTotal,
-      //     internalBoughtEnergyPrice: calculateInternalBoughtEnergyPrice(resultArray),
-      //     totalAmountSaved: totalAmountSaved,
-      //   } as EfficiencyResult;
-      // });
-
       const transformedResults = response.results.map(resultArray => ({
         solarEnergyIndividual: resultArray[0],
         solarEnergyTotal: resultArray[1],
         internalBoughtEnergyPrice: resultArray[2],
         totalAmountSaved: resultArray[3]
       }));
-
-      function calculateSolarEnergyIndividual(data) {
-        if (data.bitmap_plan_energy + data.bitmap_plan_no_energy === 0) {
-          return 0;
-        }
-        return (data.bitmap_plan_energy / (data.bitmap_plan_energy + data.bitmap_plan_no_energy)) * 100;
-      }
-
-      function calculateSolarEnergyTotal(data, previousTotal = 0) {
-        if (data.bitmap_plan_energy + data.bitmap_plan_no_energy === 0) {
-          return previousTotal;
-        }
-        let currentPercentage = (data.bitmap_plan_energy / (data.bitmap_plan_energy + data.bitmap_plan_no_energy)) * 100;
-        return previousTotal + currentPercentage;
-      }
-
-      function calculateInternalBoughtEnergyPrice(data) {
-        return data.bitmap_plan_no_energy;
-      }
-
-      function calculateTotalAmountSaved(data, previousTotal = 0) {
-        return previousTotal + data.bitmap_plan_energy;
-      }
 
       efficiencyresultstore.set(transformedResults);
 
@@ -76,7 +35,6 @@
     }
   }
 
-  // Initial call to start the data fetching process
   $: $isStarted && fetchData();
 </script>
 
