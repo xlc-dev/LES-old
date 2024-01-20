@@ -30,9 +30,9 @@
             {
               label: getChartLabel(index),
               data: [],
-              backgroundColor: getChartColor(index),
+              backgroundColor: getChartFillColor(index),
               borderColor: getChartColor(index),
-              fill: false,
+              fill: true,
             },
           ],
         },
@@ -52,7 +52,7 @@
     charts.forEach((chart, index) => {
       const latestData = data.slice(-maxDataPoints);
 
-      chart.data.labels = latestData.map((_, i) => `Data ${data.length - maxDataPoints + i + 1}`);
+      chart.data.labels = latestData.map((_, i) => `Day ${data.length - maxDataPoints + i + 1}`);
       chart.data.datasets[0].data = latestData.map((item) => {
         switch (index) {
           case 0:
@@ -83,12 +83,28 @@
     }
   }
 
+  function getChartFillColor(index) {
+    const fillColors = [
+      "rgba(255, 0, 0, 0.2)",
+      "rgba(255, 255, 0, 0.2)",
+      "rgba(0, 0, 255, 0.2)",
+      "rgba(0, 128, 0, 0.2)",
+    ];
+    return fillColors[index] || "rgba(0, 0, 0, 0.2)";
+  }
+
   function getChartColor(index) {
-    const colors = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"];
+    const colors = ["#f23f44", "#cbba07", "#1565c0", "#008000"];
     return colors[index] || "#000000";
   }
 </script>
 
-{#each Array(4) as _, index (index)}
-  <canvas bind:this={chartContainers[index]}></canvas>
-{/each}
+<div class="max-w-5xl mx-auto pt-8">
+  <div class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
+    {#each Array(4) as _, index (index)}
+      <div class="chart-container">
+        <canvas bind:this={chartContainers[index]}></canvas>
+      </div>
+    {/each}
+  </div>
+</div>
