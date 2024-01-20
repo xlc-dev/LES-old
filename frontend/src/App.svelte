@@ -37,16 +37,16 @@
       });
 
       // Transform and update the store
-      const transformedResults = response.results.map(resultArray => {
+      const transformedResults = response.results.map((resultArray) => {
         return {
           solarEnergyIndividual: resultArray[0],
           solarEnergyTotal: resultArray[1],
           internalBoughtEnergyPrice: resultArray[2],
-          totalAmountSaved: resultArray[3]
+          totalAmountSaved: resultArray[3],
         } as EfficiencyResult;
       });
 
-      efficiencyresultstore.update(store => [...store, ...transformedResults]);
+      efficiencyresultstore.update((store) => [...store, ...transformedResults]);
 
       // Check if more data needs to be fetched
       // if (/* condition to determine if more data is needed */) {
@@ -55,7 +55,8 @@
     } catch (err) {
       // Handle errors
       if (err.status !== 500) {
-        fetchData(chunkoffset + 7); // Attempt to fetch next chunk
+        // fetchData(chunkoffset + 7); // Attempt to fetch next chunk
+        return
       } else {
         // Handle server error
         console.error("Server error:", err);
@@ -65,7 +66,6 @@
 
   // Initial call to start the data fetching process
   fetchData();
-
 </script>
 
 {#if $stepperData.households.length !== 0}
