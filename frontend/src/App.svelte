@@ -9,6 +9,10 @@
 
   async function fetchData(chunkoffset = 0) {
     if (!$isStarted) return;
+    if (chunkoffset === 308) {
+      chunkoffset = 303;
+      return;
+    }
     try {
       const response = await SimulateService.planApiSimulatePlanPost({
         chunkoffset: chunkoffset,
@@ -28,6 +32,7 @@
       efficiencyresultstore.update(store => [...store, ...transformedResults]);
       setTimeout(() => fetchData(chunkoffset + 7), 50);
     } catch (err) {
+      console.error("Error fetching data:", err);
       if (err.status !== 500) {
         return
       } else {
