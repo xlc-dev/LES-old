@@ -5,6 +5,7 @@
 
   let chartContainers = [];
   let charts = [];
+  const maxDataPoints = 51;
 
   $: if ($efficiencyresultstore.length > 0) {
     updateCharts($efficiencyresultstore);
@@ -47,8 +48,10 @@
   function updateCharts(data) {
     console.log("Updating charts with mapped data:", data);
     charts.forEach((chart, index) => {
-      chart.data.labels = data.map((_, i) => `Data ${i + 1}`);
-      chart.data.datasets[0].data = data.map(item => {
+      const latestData = data.slice(-maxDataPoints);
+
+      chart.data.labels = latestData.map((_, i) => `Data ${data.length - maxDataPoints + i + 1}`);
+      chart.data.datasets[0].data = latestData.map(item => {
         switch (index) {
           case 0: return item.solarEnergyIndividual;
           case 1: return item.solarEnergyTotal;

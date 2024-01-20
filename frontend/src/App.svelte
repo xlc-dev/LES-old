@@ -26,7 +26,7 @@
       }));
 
       efficiencyresultstore.update(store => [...store, ...transformedResults]);
-      setTimeout(() => fetchData(chunkoffset + 7), 5000);
+      setTimeout(() => fetchData(chunkoffset + 7), 50);
     } catch (err) {
       if (err.status !== 500) {
         return
