@@ -25,11 +25,9 @@ export class AlgorithmService {
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static postAlgorithmApiAlgorithmPost(requestBody: {
-    name: any;
-    description: any;
-    algorithm: string;
-  }): CancelablePromise<any> {
+  public static postAlgorithmApiAlgorithmPost(
+    requestBody: AlgorithmCreate
+  ): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/algorithm/",

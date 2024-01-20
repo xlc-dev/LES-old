@@ -56,14 +56,7 @@
 
   async function fetchDataForSelectedDate() {
     const selectedDate = $selectedDateStore;
-
-    async function fetchDataByDate(date) {
-
-    }
-
     // Fetch data based on the selected date
-    const data = await fetchDataByDate(selectedDate);
-    filteredData = data;
     console.log("Data for selected date:", filteredData);
   }
 

@@ -25,11 +25,9 @@ export class TwinWorldService {
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static postTwinworldApiTwinworldPost(requestBody: {
-    name: any;
-    description: any;
-    households: any[];
-  }): CancelablePromise<any> {
+  public static postTwinworldApiTwinworldPost(
+    requestBody: TwinWorldCreate
+  ): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/twinworld/",

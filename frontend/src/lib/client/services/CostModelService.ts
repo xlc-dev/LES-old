@@ -25,14 +25,9 @@ export class CostModelService {
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static postCostmodelApiCostmodelPost(requestBody: {
-    price_network_buy_consumer: any;
-    name: any;
-    costmodel_algorithm: string;
-    description: any;
-    price_network_sell_consumer: any;
-    fixed_price_ratio: any;
-  }): CancelablePromise<any> {
+  public static postCostmodelApiCostmodelPost(
+    requestBody: CostModelCreate
+  ): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/costmodel/",

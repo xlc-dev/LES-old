@@ -26,13 +26,15 @@
         type: "line",
         data: {
           labels: [],
-          datasets: [{
-            label: getChartLabel(index),
-            data: [],
-            backgroundColor: getChartColor(index),
-            borderColor: getChartColor(index),
-            fill: false,
-          }],
+          datasets: [
+            {
+              label: getChartLabel(index),
+              data: [],
+              backgroundColor: getChartColor(index),
+              borderColor: getChartColor(index),
+              fill: false,
+            },
+          ],
         },
         options: {
           scales: {
@@ -51,12 +53,16 @@
       const latestData = data.slice(-maxDataPoints);
 
       chart.data.labels = latestData.map((_, i) => `Data ${data.length - maxDataPoints + i + 1}`);
-      chart.data.datasets[0].data = latestData.map(item => {
+      chart.data.datasets[0].data = latestData.map((item) => {
         switch (index) {
-          case 0: return item.solarEnergyIndividual;
-          case 1: return item.solarEnergyTotal;
-          case 2: return item.internalBoughtEnergyPrice;
-          case 3: return item.totalAmountSaved;
+          case 0:
+            return item.solarEnergyIndividual;
+          case 1:
+            return item.solarEnergyTotal;
+          case 2:
+            return item.internalBoughtEnergyPrice;
+          case 3:
+            return item.totalAmountSaved;
         }
       });
       console.log(`Chart ${index} data:`, chart.data.datasets[0].data);
@@ -66,10 +72,14 @@
 
   function getChartLabel(index) {
     switch (index) {
-      case 0: return "% Solar Energy (Individual)";
-      case 1: return "% Solar Energy (Total)";
-      case 2: return "Internal Bought Energy Price";
-      case 3: return "Total Amount Saved";
+      case 0:
+        return "% Solar Energy (Individual)";
+      case 1:
+        return "% Solar Energy (Total)";
+      case 2:
+        return "Internal Bought Energy Price";
+      case 3:
+        return "Total Amount Saved";
     }
   }
 

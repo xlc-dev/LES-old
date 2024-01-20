@@ -117,6 +117,7 @@
   let applianceError: string = "";
   let timewindowError: string = "";
   let algorithmError: string = "";
+  let costmodelError: string = "";
 
   let applianceCheck: Array<{
     householdName: string;
@@ -240,7 +241,6 @@
     if (optionName === "twinworld") {
       fetchHouseholds();
     }
-
   };
 
   // Removes an option in the options frame that has been created by the researcher
@@ -317,6 +317,8 @@
       /(?:def|class)\s+\w+\s*\(.*\)\s*:\s*|import\s+\w+|from\s+\w+\s+import\s+\w+/;
     return pythonPattern.test(code);
   };
+
+  // klaar. voeg grijze text toe aan twinworld net als de andere 2 upload secties. kijk maar in stepper wat ik bdl
 
   // Assigns time slots and appliances to a created schedulable load
   const addTimewindow = async () => {
@@ -475,14 +477,15 @@
       price_network_buy_consumer: target.price_network_buy_consumer.value,
       price_network_sell_consumer: target.price_network_sell_consumer.value,
       fixed_price_ratio: target.fixed_price_ratio.value,
-      costmodel_algorithm: costmodelCode,
+      algorithm: costmodelCode,
     };
 
     try {
       await CostModelService.postCostmodelApiCostmodelPost(formData);
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+      costmodelError = "";
     } catch (error) {
-      console.log(error);
+      costmodelError = error.message
     }
   };
 
@@ -493,7 +496,8 @@
     const formData = {
       name: target.name.value,
       description: target.description.value,
-      households: twinworldHouseholds,
+      solar_panels_factor: target.solar_panels_factor.value,
+      energy_usage_factor: target.energy_usage_factor.value,
     };
 
     try {
@@ -512,6 +516,7 @@
     const formData = {
       name: target.name.value,
       description: target.description.value,
+      max_temperature: target.max_temperature.value,
       algorithm: algorithmCode,
     };
 
@@ -550,11 +555,8 @@
             return missingDays.length > 0; // Return true if missingDays is not empty
           }
 
-
-
           return false; // Return false if appliance_windows is undefined or null
-        }
-        )
+        })
       )
       .flat()
       .some(Boolean);
@@ -570,9 +572,9 @@
       twinworld_id: selectedIDs.twinworld,
       costmodel_id: selectedIDs.costmodel,
     }).then((res) => {
-      $stepperData = res
-      $isStarted = true
-  });
+      $stepperData = res;
+      $isStarted = true;
+    });
   };
 
   // Initializes the simulation data, the twin world, the simulation data's object keys, and the Monaco editors
@@ -821,6 +823,20 @@
             name="description"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
             required></textarea>
+
+          <label for="solar_panels_factor" class="font-bold pt-4">Solar Panels Factor:</label>
+          <input
+            type="text"
+            name="solar_panels_factor"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            required />
+
+          <label for="energy_usage_factor" class="font-bold pt-4">Energy Usage Factor:</label>
+          <input
+            type="text"
+            name="energy_usage_factor"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            required />
 
           <button
             type="submit"
@@ -1358,7 +1374,7 @@
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
 
           <div>
-            <label for="costmodel_algorithm" class="font-bold">Costmodel Algorithm:</label>
+            <label for="algorithm" class="font-bold">Costmodel Algorithm:</label>
             <p class="text-sm text-gray-500">
               A custom formula used to determine the internal buying and selling price. See
               documentation for details
@@ -1373,8 +1389,8 @@
             class="h-48 border-2 border-gray-400 aria-selected:border-gray-600 rounded-lg">
           </div>
 
-          {#if algorithmError}
-            <p class="text-les-red">{algorithmError}</p>
+          {#if costmodelError}
+            <p class="text-les-red">{costmodelError}</p>
           {/if}
 
           <button
@@ -1405,6 +1421,17 @@
             name="description"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
             required></textarea>
+
+          <div>
+            <label for="description" class="font-bold">Max Temperature:</label>
+            <p class="text-sm text-gray-500">Set the max temperature for your algorithm</p>
+          </div>
+
+          <input
+            type="text"
+            name="max_temperature"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            required />
 
           <div>
             <label for="algorithm" class="font-bold">Algorithm:</label>

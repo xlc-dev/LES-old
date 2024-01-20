@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { stepperData, efficiencyresultstore, type EfficiencyResult, isStarted } from "./lib/stores";
+  import {
+    stepperData,
+    efficiencyresultstore,
+    type EfficiencyResult,
+    isStarted,
+  } from "./lib/stores";
   import { OpenAPI, SimulateService } from "./lib/client";
 
   import Stepper from "./components/stepper.svelte";
@@ -22,19 +27,19 @@
         households: $stepperData.households,
       });
 
-      const transformedResults = response.results.map(resultArray => ({
+      const transformedResults = response.results.map((resultArray) => ({
         solarEnergyIndividual: resultArray[0],
         solarEnergyTotal: resultArray[1],
         internalBoughtEnergyPrice: resultArray[2],
-        totalAmountSaved: resultArray[3]
+        totalAmountSaved: resultArray[3],
       }));
 
-      efficiencyresultstore.update(store => [...store, ...transformedResults]);
+      efficiencyresultstore.update((store) => [...store, ...transformedResults]);
       setTimeout(() => fetchData(chunkoffset + 7), 50);
     } catch (err) {
       console.error("Error fetching data:", err);
       if (err.status !== 500) {
-        return
+        return;
       } else {
         console.error("Server error:", err);
       }
