@@ -92,9 +92,9 @@
     <div class="px-4">
       <h3 class="text-lg font-semibold text-les-white pb-4">Selected Options:</h3>
 
-      <p class="text-gray-400">Twin World: {$stepperData.twinworld}</p>
-      <p class="text-gray-400">Cost Model: {$stepperData.costmodel}</p>
-      <p class="text-gray-400">Algorithm: {$stepperData.algorithm}</p>
+      <p class="text-gray-400">Twin World: {$stepperData.twinworld.name}</p>
+      <p class="text-gray-400">Cost Model: {$stepperData.costmodel.name}</p>
+      <p class="text-gray-400">Algorithm: {$stepperData.algorithm.name}</p>
 
       <hr class="border-gray-800 my-4" />
 
