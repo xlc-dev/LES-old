@@ -7,7 +7,7 @@
 
   OpenAPI.BASE = "http://localhost:8000";
 
-  async function fetchData(chunkoffset = 0, previousSolarEnergyTotal = 0, previousTotalAmountSaved = 0) {
+  async function fetchData(chunkoffset = 0) {
     try {
       const response = await SimulateService.planApiSimulatePlanPost({
         chunkoffset: chunkoffset,
@@ -39,7 +39,7 @@
     fetchData();
   }
 
-  $: $isStarted && fetchData();
+  // $: $isStarted && fetchData();
 </script>
 
 {#if $stepperData.households.length !== 0}
