@@ -3,70 +3,77 @@
   import Chart from "chart.js/auto";
   import { efficiencyresultstore } from "../lib/stores";
 
-  let chartContainer;
-  let chart;
+  let chartContainers = [];
+  let charts = [];
 
-  // Subscribe to the store
-  let efficiencyResults = [];
-  const unsubscribe = efficiencyresultstore.subscribe((data) => {
-    efficiencyResults = data;
-    updateChart();
-  });
+  function setupCharts() {
+    chartContainers.forEach((container, index) => {
+      charts[index] = new Chart(container.getContext("2d"), {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [{
+            label: getChartLabel(index),
+            data: [],
+            backgroundColor: getChartColor(index),
+            borderColor: getChartColor(index),
+            fill: false,
+          }],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    });
+  }
 
-  function updateChart() {
-    if (chart) {
-      chart.data.datasets[0].data = efficiencyResults.map((r) => r.solarEnergyIndividual);
-      chart.data.datasets[1].data = efficiencyResults.map((r) => r.solarEnergyTotal);
-      chart.data.datasets[2].data = efficiencyResults.map((r) => r.internalBoughtEnergyPrice);
-      chart.data.datasets[3].data = efficiencyResults.map((r) => r.totalAmountSaved);
+  function updateCharts(data) {
+    if (data.length === 0) return;
+
+    charts.forEach((chart, index) => {
+      chart.data.labels = data.map((_, i) => `Data ${i + 1}`);
+      chart.data.datasets[0].data = data.map((r) => {
+        switch (index) {
+          case 0: return r.solarEnergyIndividual;
+          case 1: return r.solarEnergyTotal;
+          case 2: return r.internalBoughtEnergyPrice;
+          case 3: return r.totalAmountSaved;
+        }
+      });
       chart.update();
-    }
+    });
   }
 
   onMount(() => {
-    chart = new Chart(chartContainer.getContext("2d"), {
-      type: "bar", // or 'line', 'pie', etc.
-      data: {
-        labels: efficiencyResults.map((_, index) => `Data ${index + 1}`),
-        datasets: [
-          {
-            label: "% Solar Energy (Individual)",
-            data: [], // Data will be set via updateChart()
-            backgroundColor: "rgba(255, 99, 132, 0.2)",
-          },
-          {
-            label: "% Solar Energy (Total)",
-            data: [],
-            backgroundColor: "rgba(54, 162, 235, 0.2)",
-          },
-          {
-            label: "Internal Bought Energy Price",
-            data: [],
-            backgroundColor: "rgba(255, 206, 86, 0.2)",
-          },
-          {
-            label: "Total Amount Saved",
-            data: [],
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-          },
-        ],
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
+    setupCharts();
+
+    const unsubscribe = efficiencyresultstore.subscribe(updateCharts);
+
+    onDestroy(() => {
+      unsubscribe();
+      charts.forEach((chart) => chart?.destroy());
     });
   });
 
-  onDestroy(() => {
-    if (chart) {
-      chart.destroy();
+  function getChartLabel(index) {
+    switch (index) {
+      case 0: return "% Solar Energy (Individual)";
+      case 1: return "% Solar Energy (Total)";
+      case 2: return "Internal Bought Energy Price";
+      case 3: return "Total Amount Saved";
     }
-    unsubscribe();
-  });
+  }
+
+  function getChartColor(index) {
+    const colors = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"];
+    return colors[index] || "#000000";
+  }
 </script>
 
-<canvas bind:this={chartContainer}></canvas>
+{#each Array(4) as _, index (index)}
+  <canvas bind:this={chartContainers[index]}></canvas>
+{/each}

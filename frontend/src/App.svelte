@@ -26,7 +26,7 @@
   //   // else load result component (can also be done in the if else statement below)
 
   // Recursive function to fetch data and update the store
-  async function fetchData(chunkoffset = 0) {
+  async function fetchData(chunkoffset = 0, previousSolarEnergyTotal = 0, previousTotalAmountSaved = 0) {
     try {
       const response = await SimulateService.planApiSimulatePlanPost({
         chunkoffset: chunkoffset,
@@ -36,15 +36,45 @@
         households: $stepperData.households,
       });
 
-      // Transform and update the store
-      const transformedResults = response.results.map((resultArray) => {
+      const transformedResults = response.results.map((resultArray, index) => {
+        let solarEnergyTotal = calculateSolarEnergyTotal(resultArray, previousSolarEnergyTotal);
+        let totalAmountSaved = calculateTotalAmountSaved(resultArray, previousTotalAmountSaved);
+
+        if (index === response.results.length - 1) {
+          previousSolarEnergyTotal = solarEnergyTotal;
+          previousTotalAmountSaved = totalAmountSaved;
+        }
+
         return {
-          solarEnergyIndividual: resultArray[0],
-          solarEnergyTotal: resultArray[1],
-          internalBoughtEnergyPrice: resultArray[2],
-          totalAmountSaved: resultArray[3],
+          solarEnergyIndividual: calculateSolarEnergyIndividual(resultArray),
+          solarEnergyTotal: solarEnergyTotal,
+          internalBoughtEnergyPrice: calculateInternalBoughtEnergyPrice(resultArray),
+          totalAmountSaved: totalAmountSaved,
         } as EfficiencyResult;
       });
+
+      function calculateSolarEnergyIndividual(data) {
+        if (data.bitmap_plan_energy + data.bitmap_plan_no_energy === 0) {
+          return 0;
+        }
+        return (data.bitmap_plan_energy / (data.bitmap_plan_energy + data.bitmap_plan_no_energy)) * 100;
+      }
+
+      function calculateSolarEnergyTotal(data, previousTotal = 0) {
+        if (data.bitmap_plan_energy + data.bitmap_plan_no_energy === 0) {
+          return previousTotal;
+        }
+        let currentPercentage = (data.bitmap_plan_energy / (data.bitmap_plan_energy + data.bitmap_plan_no_energy)) * 100;
+        return previousTotal + currentPercentage;
+      }
+
+      function calculateInternalBoughtEnergyPrice(data) {
+        return data.bitmap_plan_no_energy;
+      }
+
+      function calculateTotalAmountSaved(data, previousTotal = 0) {
+        return previousTotal + data.bitmap_plan_energy;
+      }
 
       efficiencyresultstore.update((store) => [...store, ...transformedResults]);
 
