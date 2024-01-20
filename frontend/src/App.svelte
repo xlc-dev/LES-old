@@ -35,6 +35,10 @@
     }
   }
 
+  $: if ($isStarted) {
+    fetchData();
+  }
+
   $: $isStarted && fetchData();
 </script>
 

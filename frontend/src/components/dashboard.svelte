@@ -12,6 +12,7 @@
 
   onMount(() => {
     initializeCharts();
+    updateCharts($efficiencyresultstore);
   });
 
   onDestroy(() => {
