@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { stepperData, efficiencyresultstore, type EfficiencyResult } from "./lib/stores";
+  import { stepperData, efficiencyresultstore, type EfficiencyResult, isStarted } from "./lib/stores";
   import { OpenAPI, SimulateService } from "./lib/client";
 
   import Stepper from "./components/stepper.svelte";
@@ -65,7 +65,7 @@
   }
 
   // Initial call to start the data fetching process
-  fetchData();
+  $: $isStarted && fetchData();
 </script>
 
 {#if $stepperData.households.length !== 0}

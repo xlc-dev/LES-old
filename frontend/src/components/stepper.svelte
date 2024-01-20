@@ -12,7 +12,7 @@
 
   import * as monaco from "monaco-editor";
 
-  import { stepperData } from "../lib/stores";
+  import { isStarted, stepperData } from "../lib/stores";
 
   import {
     SimulateService,
@@ -237,7 +237,10 @@
   const selectOption = (optionId: number, category: string, optionName: string) => {
     selectedIDs[category] = optionId;
     stepperData.update((data) => ({ ...data, [category]: optionName }));
-    fetchHouseholds();
+    if (optionName === "twinworld") {
+      fetchHouseholds();
+    }
+
   };
 
   // Removes an option in the options frame that has been created by the researcher
@@ -547,8 +550,11 @@
             return missingDays.length > 0; // Return true if missingDays is not empty
           }
 
+
+
           return false; // Return false if appliance_windows is undefined or null
-        })
+        }
+        )
       )
       .flat()
       .some(Boolean);
@@ -563,7 +569,10 @@
       algorithm_id: selectedIDs.algorithm,
       twinworld_id: selectedIDs.twinworld,
       costmodel_id: selectedIDs.costmodel,
-    }).then((res) => ($stepperData = res));
+    }).then((res) => {
+      $stepperData = res
+      $isStarted = true
+  });
   };
 
   // Initializes the simulation data, the twin world, the simulation data's object keys, and the Monaco editors
@@ -590,9 +599,6 @@
       automaticLayout: true,
     });
   });
-
-  // If a twin world's values have changed, the array of households is fetched again
-  $: selectedIDs.twinworld && fetchHouseholds();
 
   // If an appliance has been added to a created twin world the window scrolls to a section in which a new appliance can be added
   $: if (applianceToAdd > 0) {
