@@ -46,6 +46,8 @@ class SelectedModelsInput(SQLModel):
 class SelectedModelsOutput(SQLModel):
     timedaily: list[ApplianceTimeDailyRead]
     results: list[list[float]]
+    start_date: int
+    end_date: int
 
 
 def cost_static(
@@ -269,6 +271,7 @@ def setup_planning(
     int,
     int,
     int,
+    int,
     list[EnergyFlowRead],
     list[EnergyFlowRead],
     list[ApplianceRead],
@@ -297,11 +300,10 @@ def setup_planning(
     total_start_date = total_start_date.timestamp
     total_end_date = total_end_date.timestamp
 
-    days_in_chunk = (
-        energyflow_data_sim[-1].timestamp - energyflow_data_sim[0].timestamp
-    ) // SECONDS_IN_DAY + 1
-
     start_date = energyflow_data_sim[0].timestamp
+    end_date = energyflow_data_sim[-1].timestamp
+
+    days_in_chunk = (end_date - start_date) // SECONDS_IN_DAY + 1
 
     days_in_planning = (
         total_end_date - total_start_date
@@ -323,6 +325,7 @@ def setup_planning(
         days_in_planning,
         length_planning,
         start_date,
+        end_date,
         total_start_date,
         energyflow_data_sim,
         energyflow_data,

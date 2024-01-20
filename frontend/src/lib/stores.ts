@@ -24,6 +24,8 @@ export const efficiencyresultstore = writable<Array<EfficiencyResult>>([]);
 
 export const isStarted = writable(false);
 
+export const selectedDateStore = writable(new Date());
+
 // new stores: efficiencyresultstore (4 graphs can be made with results:
 // 1. % solar energy used by an individual household,
 // 2. % total solar energy used by entire twin world full of household,

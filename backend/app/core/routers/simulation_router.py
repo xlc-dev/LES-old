@@ -121,6 +121,7 @@ async def plan(
         days_in_planning,
         length_planning,
         start_date,
+        end_date,
         total_start_date,
         energyflow_data_sim,
         energyflow_data,
@@ -432,6 +433,8 @@ async def plan(
     return SelectedModelsOutput(
         results=results,
         timedaily=time_daily,
+        start_date=start_date,
+        end_date=end_date,
     )
 
 

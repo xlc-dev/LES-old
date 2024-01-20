@@ -12,7 +12,7 @@
   import { slide } from "svelte/transition";
   import { DatePicker } from "date-picker-svelte";
 
-  import { activatedHousehold, stepperData } from "../lib/stores";
+  import { activatedHousehold, selectedDateStore, stepperData } from "../lib/stores";
 
   import SchedulableLoadGrid from "./schedulableLoadGrid.svelte";
   import SortIcon from "./sortIcon.svelte";
@@ -45,6 +45,8 @@
   let showDatePicker = false;
   let selectedDate = new Date();
 
+  $: $selectedDateStore, fetchDataForSelectedDate();
+
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
   // Displays a dropdown menu of a filter when its' corresponding button is clicked
@@ -52,11 +54,25 @@
     showDropdown = showDropdown === filterName ? null : filterName;
   };
 
+  async function fetchDataForSelectedDate() {
+    const selectedDate = $selectedDateStore;
+
+    async function fetchDataByDate(date) {
+
+    }
+
+    // Fetch data based on the selected date
+    const data = await fetchDataByDate(selectedDate);
+    filteredData = data;
+    console.log("Data for selected date:", filteredData);
+  }
+
   function toggleDatePicker() {
     showDatePicker = !showDatePicker;
   }
 
   function handleDateChange(newDate) {
+    selectedDateStore.set(newDate);
     selectedDate = newDate;
     showDatePicker = false;
   }
