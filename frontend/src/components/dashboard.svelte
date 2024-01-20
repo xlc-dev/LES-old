@@ -6,7 +6,19 @@
   let chartContainers = [];
   let charts = [];
 
-  function setupCharts() {
+  $: if ($efficiencyresultstore.length > 0) {
+    updateCharts($efficiencyresultstore);
+  }
+
+  onMount(() => {
+    initializeCharts();
+  });
+
+  onDestroy(() => {
+    charts.forEach((chart) => chart?.destroy());
+  });
+
+  function initializeCharts() {
     chartContainers.forEach((container, index) => {
       charts[index] = new Chart(container.getContext("2d"), {
         type: "line",
@@ -32,32 +44,21 @@
   }
 
   function updateCharts(data) {
-    if (data.length === 0) return;
-
+    console.log("Updating charts with mapped data:", data);
     charts.forEach((chart, index) => {
       chart.data.labels = data.map((_, i) => `Data ${i + 1}`);
-      chart.data.datasets[0].data = data.map((r) => {
+      chart.data.datasets[0].data = data.map(item => {
         switch (index) {
-          case 0: return r.solarEnergyIndividual;
-          case 1: return r.solarEnergyTotal;
-          case 2: return r.internalBoughtEnergyPrice;
-          case 3: return r.totalAmountSaved;
+          case 0: return item.solarEnergyIndividual;
+          case 1: return item.solarEnergyTotal;
+          case 2: return item.internalBoughtEnergyPrice;
+          case 3: return item.totalAmountSaved;
         }
       });
+      console.log(`Chart ${index} data:`, chart.data.datasets[0].data);
       chart.update();
     });
   }
-
-  onMount(() => {
-    setupCharts();
-
-    const unsubscribe = efficiencyresultstore.subscribe(updateCharts);
-
-    onDestroy(() => {
-      unsubscribe();
-      charts.forEach((chart) => chart?.destroy());
-    });
-  });
 
   function getChartLabel(index) {
     switch (index) {

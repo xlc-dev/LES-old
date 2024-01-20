@@ -7,24 +7,6 @@
 
   OpenAPI.BASE = "http://localhost:8000";
 
-  // const call = SimulateService.planApiSimulatePlanPost({
-  //   chunkoffset: 0, // constantly increase with 7 when recursion occurs
-  //   costmodel: $stepperData.costmodel,
-  //   algorithm: $stepperData.algorithm,
-  //   twinworld: $stepperData.twinworld,
-  //   households: $stepperData.households,
-  // }).then((res) => {
-  //   // update other store(s) with results for dashboard
-  //   // timedaily store (cumulative, not replacing)
-  //
-  //   // call the function again (recursion): chunkoffset + 7
-  //
-  // }).catch((err) => {
-  //   // catch and show
-  //   // if the error code is not 500, call the function again (recursion)
-  // })
-  //   // else load result component (can also be done in the if else statement below)
-
   // Recursive function to fetch data and update the store
   async function fetchData(chunkoffset = 0, previousSolarEnergyTotal = 0, previousTotalAmountSaved = 0) {
     try {
@@ -36,22 +18,29 @@
         households: $stepperData.households,
       });
 
-      const transformedResults = response.results.map((resultArray, index) => {
-        let solarEnergyTotal = calculateSolarEnergyTotal(resultArray, previousSolarEnergyTotal);
-        let totalAmountSaved = calculateTotalAmountSaved(resultArray, previousTotalAmountSaved);
+      // const transformedResults = response.results.map((resultArray, index) => {
+      //   let solarEnergyTotal = calculateSolarEnergyTotal(resultArray, previousSolarEnergyTotal);
+      //   let totalAmountSaved = calculateTotalAmountSaved(resultArray, previousTotalAmountSaved);
+      //
+      //   if (index === response.results.length - 1) {
+      //     previousSolarEnergyTotal = solarEnergyTotal;
+      //     previousTotalAmountSaved = totalAmountSaved;
+      //   }
+      //
+      //   return {
+      //     solarEnergyIndividual: calculateSolarEnergyIndividual(resultArray),
+      //     solarEnergyTotal: solarEnergyTotal,
+      //     internalBoughtEnergyPrice: calculateInternalBoughtEnergyPrice(resultArray),
+      //     totalAmountSaved: totalAmountSaved,
+      //   } as EfficiencyResult;
+      // });
 
-        if (index === response.results.length - 1) {
-          previousSolarEnergyTotal = solarEnergyTotal;
-          previousTotalAmountSaved = totalAmountSaved;
-        }
-
-        return {
-          solarEnergyIndividual: calculateSolarEnergyIndividual(resultArray),
-          solarEnergyTotal: solarEnergyTotal,
-          internalBoughtEnergyPrice: calculateInternalBoughtEnergyPrice(resultArray),
-          totalAmountSaved: totalAmountSaved,
-        } as EfficiencyResult;
-      });
+      const transformedResults = response.results.map(resultArray => ({
+        solarEnergyIndividual: resultArray[0],
+        solarEnergyTotal: resultArray[1],
+        internalBoughtEnergyPrice: resultArray[2],
+        totalAmountSaved: resultArray[3]
+      }));
 
       function calculateSolarEnergyIndividual(data) {
         if (data.bitmap_plan_energy + data.bitmap_plan_no_energy === 0) {
@@ -76,19 +65,12 @@
         return previousTotal + data.bitmap_plan_energy;
       }
 
-      efficiencyresultstore.update((store) => [...store, ...transformedResults]);
+      efficiencyresultstore.set(transformedResults);
 
-      // Check if more data needs to be fetched
-      // if (/* condition to determine if more data is needed */) {
-      //   fetchData(chunkoffset + 7); // Fetch next chunk
-      // }
     } catch (err) {
-      // Handle errors
       if (err.status !== 500) {
-        // fetchData(chunkoffset + 7); // Attempt to fetch next chunk
         return
       } else {
-        // Handle server error
         console.error("Server error:", err);
       }
     }
