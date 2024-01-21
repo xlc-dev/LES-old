@@ -34,6 +34,14 @@
         totalAmountSaved: resultArray[3],
       }));
 
+      // Updates the number of households constantly
+      // This may be redundant, as this value isn't supposed to change during a session
+      stepperData.update(data => {
+        return {
+          ...data,
+          households: data.households
+        };
+      });
       efficiencyresultstore.update((store) => [...store, ...transformedResults]);
       setTimeout(() => fetchData(chunkoffset + 7), 50);
     } catch (err) {

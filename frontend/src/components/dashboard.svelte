@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import Chart from "chart.js/auto";
-  import { efficiencyresultstore } from "../lib/stores";
+  import { efficiencyresultstore, stepperData } from "../lib/stores";
 
   let chartContainers = [];
   let charts = [];
@@ -10,6 +10,8 @@
   $: if ($efficiencyresultstore.length > 0) {
     updateCharts($efficiencyresultstore);
   }
+
+  $: numberOfHouseholds = $stepperData.households.length;
 
   onMount(() => {
     initializeCharts();
@@ -107,4 +109,5 @@
       </div>
     {/each}
   </div>
+  <p>Number of Households: {numberOfHouseholds}</p>
 </div>
