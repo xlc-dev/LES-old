@@ -9,7 +9,7 @@
 
   import { onMount, onDestroy } from "svelte";
   import Chart from "chart.js/auto";
-  import { writable } from "svelte/store";
+  import { runtime } from '../lib/stores';
 
   let chartContainer;
   let chartContainerTwo;
@@ -204,6 +204,7 @@
     <div class="chart-container">
       <canvas bind:this={chartContainerFour}></canvas>
     </div>
+    <p>Runtime: {$runtime} seconds</p>
     <div class="col-span-2 flex justify-between mt-8">
       <button
         class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-dark-les-bg"

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import Chart from "chart.js/auto";
-  import { efficiencyresultstore, stepperData } from "../lib/stores";
+  import { efficiencyresultstore, runtime, stepperData } from "../lib/stores";
 
   let chartContainers = [];
   let charts = [];
@@ -125,5 +125,6 @@
   <p>Twin world energy usage factor: {twinWorldEnergyUsageFactor}</p>
   <p>Twin world solar panels factor: {twinWorldSolarPanelsFactor}</p>
   <p>Algorithm max temperature: {algorithmMaxTemperature}</p>
+  <p>Runtime: {$runtime} seconds</p>
   </div>
 </div>

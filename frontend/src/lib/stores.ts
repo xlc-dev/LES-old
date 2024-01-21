@@ -20,11 +20,31 @@ export interface EfficiencyResult {
   totalAmountSaved: number;
 }
 
+function createRuntimeStore() {
+  const { subscribe, set, update } = writable(0);
+  let timer;
+
+  return {
+    subscribe,
+    start: () => {
+      set(0);
+      timer = setInterval(() => {
+        update(n => n + 1);
+      }, 1000);
+    },
+    stop: () => {
+      clearInterval(timer);
+    }
+  };
+}
+
 export const efficiencyresultstore = writable<Array<EfficiencyResult>>([]);
 
 export const isStarted = writable(false);
 
 export const selectedDateStore = writable(new Date());
+
+export const runtime = createRuntimeStore();
 
 // new stores: efficiencyresultstore (4 graphs can be made with results:
 // 1. % solar energy used by an individual household,

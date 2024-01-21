@@ -4,6 +4,7 @@
     efficiencyresultstore,
     type EfficiencyResult,
     isStarted,
+    runtime
   } from "./lib/stores";
   import { OpenAPI, SimulateService } from "./lib/client";
 
@@ -55,7 +56,10 @@
   }
 
   $: if ($isStarted) {
+    runtime.start();
     fetchData();
+  } else {
+    runtime.stop();
   }
 
   // $: $isStarted && fetchData();
