@@ -12,6 +12,13 @@
   }
 
   $: numberOfHouseholds = $stepperData.households.length;
+  $: costModelAlgorithm = $stepperData.costmodel.algorithm;
+  $: costModelFixedPriceRatio = $stepperData.costmodel.fixed_price_ratio;
+  $: costModelPriceNetworkBuyConsumer = $stepperData.costmodel.price_network_buy_consumer;
+  $: costModelPriceNetworkSellConsumer = $stepperData.costmodel.price_network_sell_consumer;
+  $: twinWorldEnergyUsageFactor = $stepperData.twinworld.energy_usage_factor;
+  $: twinWorldSolarPanelsFactor = $stepperData.twinworld.solar_panels_factor;
+  $: algorithmMaxTemperature = $stepperData.algorithm.max_temperature;
 
   onMount(() => {
     initializeCharts();
@@ -109,5 +116,14 @@
       </div>
     {/each}
   </div>
+  <div class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
   <p>Number of Households: {numberOfHouseholds}</p>
+  <p>Cost model algorithm: {costModelAlgorithm}</p>
+  <p>Cost model fixed price ratio: {costModelFixedPriceRatio}</p>
+  <p>Cost model price network buy consumer: {costModelPriceNetworkBuyConsumer}</p>
+  <p>Cost model price network sell consumer: {costModelPriceNetworkSellConsumer}</p>
+  <p>Twin world energy usage factor: {twinWorldEnergyUsageFactor}</p>
+  <p>Twin world solar panels factor: {twinWorldSolarPanelsFactor}</p>
+  <p>Algorithm max temperature: {algorithmMaxTemperature}</p>
+  </div>
 </div>
