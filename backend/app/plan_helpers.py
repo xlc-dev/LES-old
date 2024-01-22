@@ -83,7 +83,7 @@ def _energy_efficiency_day(
     planning: list[HouseholdRead],
     appliance_bitmap_plan: list[ApplianceTimeDaily],
     costmodel: CostModelRead,
-) -> tuple[float, float, float, float]:
+) -> tuple[float, float, float, float, float]:
     total_panels = sum(household.solar_panels for household in planning)
     solar_energy_produced = [
         ef.solar_produced * total_panels / solar_panels_factor
@@ -157,7 +157,13 @@ def _energy_efficiency_day(
         costmodel.price_network_buy_consumer - energy_price
     )
 
-    return previous_efficiency, current_efficiency, energy_price, cost_savings
+    return (
+        previous_efficiency,
+        current_efficiency,
+        energy_price,
+        cost_savings,
+        sum_produced,
+    )
 
 
 def plan_energy(
@@ -301,7 +307,7 @@ def setup_planning(
         total_end_date - total_start_date
     ) // SECONDS_IN_DAY + 1
 
-    results = [[0.0 for _ in range(4)] for _ in range(days_in_chunk)]
+    results = [[0.0 for _ in range(7)] for _ in range(days_in_chunk)]
 
     household_planning = planning.households
     length_planning = len(household_planning)
@@ -410,7 +416,22 @@ def write_results(
         costmodel=costmodel,
     )
 
-    for iter in range(4):
+    if day_iterator == 0:
+        results[day_iterator - 1][5] = (
+            temp_result[0] - results[day_iterator - 1][0]
+        ) * temp_result[4]
+        results[day_iterator - 1][6] = (
+            temp_result[1] - results[day_iterator - 1][1]
+        ) * temp_result[4]
+    else:
+        results[day_iterator - 1][5] = (
+            temp_result[0] - results[day_iterator - 1][0]
+        ) * temp_result[4] + results[day_iterator - 2][0]
+        results[day_iterator - 1][6] = (
+            temp_result[1] - results[day_iterator - 1][1]
+        ) * temp_result[4] + results[day_iterator - 2][1]
+
+    for iter in range(5):
         if temp_result[iter] > results[day_iterator - 1][iter]:
             results[day_iterator - 1][iter] = temp_result[iter]
 
