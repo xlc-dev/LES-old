@@ -3,26 +3,23 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { HouseholdCreate } from "../models/HouseholdCreate";
-import type { HouseholdRead } from "../models/HouseholdRead";
+import type { HouseholdRead_Output } from "../models/HouseholdRead_Output";
 import type { HouseholdUpdate } from "../models/HouseholdUpdate";
-
 import type { CancelablePromise } from "../core/CancelablePromise";
 import { OpenAPI } from "../core/OpenAPI";
 import { request as __request } from "../core/request";
-
 export class HouseholdService {
   /**
    * Get Households
-   * @returns HouseholdRead Successful Response
+   * @returns HouseholdRead_Output Successful Response
    * @throws ApiError
    */
-  public static getHouseholdsApiHouseholdGet(): CancelablePromise<Array<HouseholdRead>> {
+  public static getHouseholdsApiHouseholdGet(): CancelablePromise<Array<HouseholdRead_Output>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/household/",
     });
   }
-
   /**
    * Post Household
    * @param requestBody
@@ -42,14 +39,15 @@ export class HouseholdService {
       },
     });
   }
-
   /**
    * Get Household
    * @param id
-   * @returns HouseholdRead Successful Response
+   * @returns HouseholdRead_Output Successful Response
    * @throws ApiError
    */
-  public static getHouseholdApiHouseholdIdGet(id: number): CancelablePromise<HouseholdRead> {
+  public static getHouseholdApiHouseholdIdGet(
+    id: number
+  ): CancelablePromise<HouseholdRead_Output> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/household/{id}",
@@ -61,7 +59,6 @@ export class HouseholdService {
       },
     });
   }
-
   /**
    * Update Household
    * @param id
@@ -86,7 +83,6 @@ export class HouseholdService {
       },
     });
   }
-
   /**
    * Delete Household
    * @param id
@@ -105,16 +101,15 @@ export class HouseholdService {
       },
     });
   }
-
   /**
    * Get Households By Twinworld
    * @param twinworldId
-   * @returns HouseholdRead Successful Response
+   * @returns HouseholdRead_Output Successful Response
    * @throws ApiError
    */
   public static getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
     twinworldId: number
-  ): CancelablePromise<Array<HouseholdRead>> {
+  ): CancelablePromise<Array<HouseholdRead_Output>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/household/twinworld/{twinworld_id}",

@@ -96,14 +96,35 @@ async def delete_appliance(
     appliance_crud.remove(session=session, id=id)
 
 
+# For some reason I need to add a trailing slash to the path for *only* this
+# function in order to get it to work. It probably has something to do with
+# the way fastapi handles endpoints.
 @router.get(
-    "/timewindow",
+    "/timewindow/",
     response_model=list[appliance_model.ApplianceTimeWindowRead],
 )
 async def get_appliance_timewindows(
     *, session: Session = Depends(get_session)
 ) -> Sequence[appliance_model.ApplianceTimeWindow]:
     return appliance_time_window_crud.get_multi(session=session)
+
+
+@router.get(
+    "/timewindow/{id}",
+    response_model=appliance_model.ApplianceTimeWindowRead,
+)
+async def get_appliance_timewindow(
+    *, id: int, session: Session = Depends(get_session)
+) -> appliance_model.ApplianceTimeWindow:
+    timewindow = appliance_time_window_crud.get(session=session, id=id)
+
+    if not timewindow:
+        Logger.exception(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"timewindow with id: {id} not found.",
+        )
+
+    return timewindow
 
 
 @router.post("/timewindow", status_code=status.HTTP_201_CREATED)

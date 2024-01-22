@@ -4,12 +4,10 @@
 /* eslint-disable */
 import type { CostModelCreate } from "../models/CostModelCreate";
 import type { CostModelRead } from "../models/CostModelRead";
-
 import type { CancelablePromise } from "../core/CancelablePromise";
 import { OpenAPI } from "../core/OpenAPI";
 import { request as __request } from "../core/request";
-
-export class CostmodelService {
+export class CostModelService {
   /**
    * Get Costmodels
    * @returns CostModelRead Successful Response
@@ -21,7 +19,6 @@ export class CostmodelService {
       url: "/api/costmodel/",
     });
   }
-
   /**
    * Post Costmodel
    * @param requestBody
@@ -41,7 +38,6 @@ export class CostmodelService {
       },
     });
   }
-
   /**
    * Get Costmodel
    * @param id
@@ -60,7 +56,6 @@ export class CostmodelService {
       },
     });
   }
-
   /**
    * Delete Costmodel
    * @param id

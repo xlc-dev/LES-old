@@ -14,10 +14,8 @@ class CostModelBase(SQLModel):
     description: str = Field(nullable=False)
     price_network_buy_consumer: float = Field(nullable=False)
     price_network_sell_consumer: float = Field(nullable=False)
-    fixed_division: Optional[float] = Field(nullable=True)
-    stock_time_delta: Optional[int] = Field(nullable=True)
-    algo_1: str = Field(nullable=False)
-    algo_2: Optional[str] = Field(nullable=True)
+    fixed_price_ratio: Optional[float] = Field(nullable=True)
+    algorithm: str = Field(nullable=False)
 
 
 class CostModel(CostModelBase, table=True):

@@ -4,11 +4,9 @@
 /* eslint-disable */
 import type { AlgorithmCreate } from "../models/AlgorithmCreate";
 import type { AlgorithmRead } from "../models/AlgorithmRead";
-
 import type { CancelablePromise } from "../core/CancelablePromise";
 import { OpenAPI } from "../core/OpenAPI";
 import { request as __request } from "../core/request";
-
 export class AlgorithmService {
   /**
    * Get Algorithms
@@ -21,7 +19,6 @@ export class AlgorithmService {
       url: "/api/algorithm/",
     });
   }
-
   /**
    * Post Algorithm
    * @param requestBody
@@ -41,7 +38,6 @@ export class AlgorithmService {
       },
     });
   }
-
   /**
    * Get Algorithm
    * @param id
@@ -60,7 +56,6 @@ export class AlgorithmService {
       },
     });
   }
-
   /**
    * Delete Algorithm
    * @param id

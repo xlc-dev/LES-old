@@ -7,18 +7,19 @@
   household view is displayed.
   */
 
-  import type { HouseholdRead } from "../lib/client";
   import { stepperData } from "../lib/stores";
+
+  import type { HouseholdRead_Output } from "../lib/client";
 
   import Household from "./household.svelte";
 
-  let household: HouseholdRead;
+  let household: HouseholdRead_Output;
   let sizeFilter = "";
   let solarPanelFilter = "";
   let searchQuery = "";
 
   // Loads the view for a specific household if it has been clicked in the simulation view
-  const showHome = (data: HouseholdRead) => {
+  const showHome = (data: HouseholdRead_Output) => {
     household = data;
   };
 

@@ -3,29 +3,26 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApplianceCreate } from "../models/ApplianceCreate";
-import type { ApplianceRead } from "../models/ApplianceRead";
+import type { ApplianceRead_Output } from "../models/ApplianceRead_Output";
 import type { ApplianceTimeWindowCreate } from "../models/ApplianceTimeWindowCreate";
 import type { ApplianceTimeWindowRead } from "../models/ApplianceTimeWindowRead";
 import type { ApplianceTimeWindowUpdate } from "../models/ApplianceTimeWindowUpdate";
 import type { ApplianceUpdate } from "../models/ApplianceUpdate";
-
 import type { CancelablePromise } from "../core/CancelablePromise";
 import { OpenAPI } from "../core/OpenAPI";
 import { request as __request } from "../core/request";
-
 export class ApplianceService {
   /**
    * Get Appliances
-   * @returns ApplianceRead Successful Response
+   * @returns ApplianceRead_Output Successful Response
    * @throws ApiError
    */
-  public static getAppliancesApiApplianceGet(): CancelablePromise<Array<ApplianceRead>> {
+  public static getAppliancesApiApplianceGet(): CancelablePromise<Array<ApplianceRead_Output>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/appliance/",
     });
   }
-
   /**
    * Post Appliance
    * @param requestBody
@@ -45,14 +42,15 @@ export class ApplianceService {
       },
     });
   }
-
   /**
    * Get Appliance
    * @param id
-   * @returns ApplianceRead Successful Response
+   * @returns ApplianceRead_Output Successful Response
    * @throws ApiError
    */
-  public static getApplianceApiApplianceIdGet(id: number): CancelablePromise<ApplianceRead> {
+  public static getApplianceApiApplianceIdGet(
+    id: number
+  ): CancelablePromise<ApplianceRead_Output> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/appliance/{id}",
@@ -64,7 +62,6 @@ export class ApplianceService {
       },
     });
   }
-
   /**
    * Update Appliance
    * @param id
@@ -89,7 +86,6 @@ export class ApplianceService {
       },
     });
   }
-
   /**
    * Delete Appliance
    * @param id
@@ -108,7 +104,6 @@ export class ApplianceService {
       },
     });
   }
-
   /**
    * Get Appliance Timewindows
    * @returns ApplianceTimeWindowRead Successful Response
@@ -119,30 +114,29 @@ export class ApplianceService {
   > {
     return __request(OpenAPI, {
       method: "GET",
-      url: "/api/appliance/timewindow",
+      url: "/api/appliance/timewindow/",
     });
   }
-
   /**
-   * Post Appliance Timewindow
-   * @param requestBody
-   * @returns any Successful Response
+   * Get Appliance Timewindow
+   * @param id
+   * @returns ApplianceTimeWindowRead Successful Response
    * @throws ApiError
    */
-  public static postApplianceTimewindowApiApplianceTimewindowPost(
-    requestBody: ApplianceTimeWindowCreate
-  ): CancelablePromise<any> {
+  public static getApplianceTimewindowApiApplianceTimewindowIdGet(
+    id: number
+  ): CancelablePromise<ApplianceTimeWindowRead> {
     return __request(OpenAPI, {
-      method: "POST",
-      url: "/api/appliance/timewindow",
-      body: requestBody,
-      mediaType: "application/json",
+      method: "GET",
+      url: "/api/appliance/timewindow/{id}",
+      path: {
+        id: id,
+      },
       errors: {
         422: `Validation Error`,
       },
     });
   }
-
   /**
    * Update Appliance Timewindow
    * @param id
@@ -167,7 +161,25 @@ export class ApplianceService {
       },
     });
   }
-
+  /**
+   * Post Appliance Timewindow
+   * @param requestBody
+   * @returns any Successful Response
+   * @throws ApiError
+   */
+  public static postApplianceTimewindowApiApplianceTimewindowPost(
+    requestBody: ApplianceTimeWindowCreate
+  ): CancelablePromise<any> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/appliance/timewindow",
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: `Validation Error`,
+      },
+    });
+  }
   /**
    * Delete Appliance Timewindow
    * @param id
