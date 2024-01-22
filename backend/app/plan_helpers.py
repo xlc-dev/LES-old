@@ -134,6 +134,11 @@ def _energy_efficiency_day(
         sum(current_total_usage) / sum_produced if sum_produced > 0 else 0
     )
 
+    ratio = previous_efficiency
+
+    if costmodel.name == "Fixed Price":
+        ratio = costmodel.fixed_price_ratio
+
     energy_price_code = costmodel.algorithm
 
     # Remove trailing parentheses if they exist
@@ -143,10 +148,10 @@ def _energy_efficiency_day(
     energy_price_code_with_params = f"""{energy_price_code}(
     buy_consumer={costmodel.price_network_buy_consumer},
     sell_consumer={costmodel.price_network_sell_consumer},
-    ratio={previous_efficiency})"""
+    ratio={ratio})"""
 
     # Execute the modified code using eval
-    from app.plan_defaults import cost_static, cost_variable  # noqa: F401
+    from app.plan_defaults import cost_default  # noqa: F401
 
     energy_price = eval(energy_price_code_with_params)
 
@@ -214,9 +219,6 @@ def check_appliance_time(
     has_energy: bool,
     appliance_bitmap_plan: int,
 ) -> bool:
-    if appliance_bitmap_plan == 0:
-        return True
-
     hour = unix_to_hour(unix)
     current_day = day_name[(floor(unix / SECONDS_IN_DAY + 4) % 7)]
     day_number = ApplianceDays[current_day.upper()].value
@@ -230,26 +232,16 @@ def check_appliance_time(
         None,
     )
 
-    if bitmap_window is None:
-        return True
-
-    appliance_duration = appliance.duration
-    appliance_duration_bit = 2**appliance_duration - 1
-    shift = 24 - hour - appliance_duration
+    appliance_duration_bit = 2**appliance.duration - 1
+    shift = 24 - hour - appliance.duration
     current_time_window = (
-        bitmap_window >> shift if shift >= 0 else bitmap_window << -shift
+        appliance_duration_bit << shift if shift >= 0 else appliance_duration_bit >> -shift
     )
 
-    if appliance_duration_bit & current_time_window:
+    if bitmap_window & current_time_window:
         return False
 
-    current_appliance_task = (
-        appliance_bitmap_plan >> shift
-        if shift >= 0
-        else appliance_bitmap_plan << -shift
-    )
-
-    if appliance_duration_bit & current_appliance_task:
+    if current_time_window & appliance_bitmap_plan:
         return False
 
     return True
@@ -279,7 +271,7 @@ def setup_planning(
 
     if len(energyflow_data) == 0:
         Logger.exception(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=status.HTTP_204_NO_CONTENT,
             detail="Energyflow data not found",
         )
 
