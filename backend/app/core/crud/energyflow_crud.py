@@ -23,7 +23,7 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
             .where(EnergyFlow.solar_produced > 0)
             .where(EnergyFlow.id >= offset)
             .where(EnergyFlow.id < offset + limit)
-            .order_by(EnergyFlow.solar_produced.desc())
+            .order_by(EnergyFlow.solar_produced.desc())  # type: ignore
         ).all()
 
     def get_all_sorted_by_timestamp(
@@ -31,18 +31,18 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
     ):
         return session.exec(
             select(EnergyFlow)
-            .order_by(EnergyFlow.timestamp.asc())
+            .order_by(EnergyFlow.timestamp.asc())  # type: ignore
             .limit(limit)
             .offset(offset)
         ).all()
 
     def get_start_end_date(self, *, session: Session):
         min_timestamp_query = select(EnergyFlow).filter(
-            EnergyFlow.timestamp
+            EnergyFlow.timestamp  # type: ignore
             == session.execute(select(func.min(EnergyFlow.timestamp))).scalar()
         )
         max_timestamp_query = select(EnergyFlow).filter(
-            EnergyFlow.timestamp
+            EnergyFlow.timestamp  # type: ignore
             == session.execute(select(func.max(EnergyFlow.timestamp))).scalar()
         )
 
@@ -52,7 +52,9 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
 
     def get_sorted_by_timestamp(self, *, session: Session):
         return session.exec(
-            select(EnergyFlow).order_by(EnergyFlow.timestamp.asc())
+            select(EnergyFlow).order_by(
+                EnergyFlow.timestamp.asc()  # type: ignore
+            )
         ).first()
 
 
