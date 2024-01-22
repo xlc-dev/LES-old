@@ -144,7 +144,6 @@ class ApplianceTimeWindowUpdate(ApplianceTimeWindowBase):
 class ApplianceRead(ApplianceBase):
     id: int
     appliance_windows: list[ApplianceTimeWindowRead] = []
-    # appliance_time_daily: list[ApplianceTimeDaily] = []
 
 
 class ApplianceCreate(ApplianceBase):
