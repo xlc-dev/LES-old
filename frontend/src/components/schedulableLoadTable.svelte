@@ -241,7 +241,7 @@
 
   {#if showCard}
     <div class="fixed inset-0 flex justify-center items-center">
-      <div class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10">
+      <div class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10 dark:bg-dark-sidebar dark:text-les-white">
         <button
           class="text-xl text-gray-600 hover:text-gray-800 p-2"
           on:click={closeCard}
