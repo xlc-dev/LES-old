@@ -69,6 +69,10 @@
     showCard = !showCard;
   }
 
+  function closeCard() {
+    showCard = false;
+  }
+
   function handleDateChange(newDate) {
     selectedDateStore.set(newDate);
     selectedDate = newDate;
@@ -231,14 +235,20 @@
       class="ml-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
       on:click={toggleCard}
     >
-      Toggle Card
+      Legend
     </button>
   </div>
 
   {#if showCard}
     <div class="fixed inset-0 flex justify-center items-center">
       <div class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10">
-        <h2>Legend: </h2>
+        <button
+          class="text-xl text-gray-600 hover:text-gray-800 p-2"
+          on:click={closeCard}
+        >
+          &#10005;
+        </button>
+        <h2><b>Legend: </b></h2>
         <div class="flex items-center mb-2">
           <div class="h-4 w-4 bg-gray-500 mr-2"></div>
           <p>The gray boxes contain the time slots that are unavailable to plan appliances in.</p>
