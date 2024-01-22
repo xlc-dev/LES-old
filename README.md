@@ -12,7 +12,7 @@ On windows, in order to get all the packages for the backend to compile, you als
 
 ### Backend
 
-First create a virtual environment and activate it. Make sure you're in the root of the repository.
+First create a virtual environment and activate it. In order to do that, make sure you're in the `backend` directory with your terminal of choice.
 
 On Linux/Mac:
 ```sh
@@ -34,14 +34,12 @@ py -m venv venv
 
 Then, install the dependencies:
 ```sh
-pip install pip-tools && pip install -r requirements.txt && pip install -r requirements.dev.txt
+pip install -r requirements.txt && pip install -r requirements.dev.txt
 ```
 
 ### Frontend
 
-`cd` to the frontend folder, and run `npm i --legacy-peer-deps`.
-
-The `--legacy-peer-deps` is a workaround to get `svelte-chartjs` working with the latest version of `svelte`.
+`cd` to the frontend folder, and run `npm i`.
 
 ## Development
 
@@ -49,6 +47,8 @@ The `--legacy-peer-deps` is a workaround to get `svelte-chartjs` working with th
 
 To run the backend server, make sure you have the virtual environment activated (see installation).
 Then `cd` into the backend folder, and run `python run.py` for a dev server, and navigate to `http://localhost:8000/`.
+
+When `development mode` is enabled, you can go to `http://localhost:8000/docs` to find the API documentation.
 
 ### Frontend
 

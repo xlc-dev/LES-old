@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type TwinWorldRead = {
-  name: string;
-  description: string;
-  id: number;
+export type EnergyFlowCreate = {
+  timestamp: number;
+  energy_used: number;
+  solar_produced: number;
 };

@@ -15,12 +15,23 @@ from sqlmodel import SQLModel, Session
 from app.config import engine
 
 
+SECONDS_IN_DAY = 86400
+HOURS_IN_WEEK = 168
+
+
 def timestamp_to_unix(timestamp: float) -> int:
-    return round((timestamp - 25569) * 86400)
+    "Convert excel timestamp to unix timestamp"
+    return round((timestamp - 25569) * SECONDS_IN_DAY)
+
+
+def unix_to_hour(unix: int) -> int:
+    "Convert unix timestamp to hour"
+    return unix // 3600 % 24
 
 
 def unix_to_timestamp(unix: int) -> float:
-    return unix / 86400 + 25569
+    "Convert unix timestamp to excel timestamp"
+    return unix / SECONDS_IN_DAY + 25569
 
 
 def set_sec_headers(*, response: Response):
@@ -57,7 +68,16 @@ def get_session() -> Generator:
 
 
 class Logger(logging.Formatter):
-    "Logging class to format logs with color"
+    """Custom logger class that formats the log messages with colors.
+
+    This class inherits from logging.Formatter and overrides the
+    format method to add colors to the log messages. It also
+    provides static methods to log messages with different
+    log levels.
+
+    It also provides a static method to raise an HTTPException
+    from FastAPI and log the exception with the traceback.
+    """
 
     grey = "\x1b[38;20m"
     yellow = "\x1b[33;20m"

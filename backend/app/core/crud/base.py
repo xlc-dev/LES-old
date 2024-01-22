@@ -35,19 +35,21 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return session.get(self.model, id)
 
     def get_multi(
-        self, *, session: Session, skip: int = 0, limit: int = 5000
+        self, *, session: Session, offset: int = 0, limit: int = 1000000
     ) -> Sequence[ModelType]:
         """Get multiple objects
 
         :param session:
             A SQLModel session
-        :param skip:
+        :param offset:
             The number of objects to skip
         :param limit:
             The number of objects to limit to
         """
 
-        return session.exec(select(self.model).offset(skip).limit(limit)).all()
+        return session.exec(
+            select(self.model).offset(offset).limit(limit)
+        ).all()
 
     def create(
         self, *, session: Session, obj_in: CreateSchemaType

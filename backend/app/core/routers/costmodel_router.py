@@ -60,18 +60,19 @@ async def delete_costmodel(
     id: int,
     session: Session = Depends(get_session),
 ) -> None:
+    # Don't allow the user to delete the default costmodels
+    if id == 1 or id == 2:
+        Logger.exception(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"costmodel with ID: {id} is not allowed to be deleted.",
+        )
+
     costmodel = costmodel_crud.get(session=session, id=id)
 
     if not costmodel:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"costmodel with ID: {id} not found",
-        )
-
-    if costmodel.id == 1 or costmodel.id == 2:
-        Logger.exception(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"costmodel with ID: {id} is not allowed to be deleted.",
         )
 
     costmodel_crud.remove(session=session, id=id)

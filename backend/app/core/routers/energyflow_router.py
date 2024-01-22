@@ -19,7 +19,7 @@ async def get_energyflows(
     return energyflow_crud.get_multi(session=session)
 
 
-@router.get("/{id}/", response_model=energyflow_model.EnergyFlowRead)
+@router.get("/{id}", response_model=energyflow_model.EnergyFlowRead)
 async def get_energyflow(
     *, id: int, session: Session = Depends(get_session)
 ) -> energyflow_model.EnergyFlow:
