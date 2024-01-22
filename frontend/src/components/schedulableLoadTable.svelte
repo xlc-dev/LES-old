@@ -12,7 +12,7 @@
   import { slide } from "svelte/transition";
   import { DatePicker } from "date-picker-svelte";
 
-  import { activatedHousehold, selectedDateStore, stepperData } from "../lib/stores";
+  import { activatedHousehold, stepperData, startDate, endDate } from "../lib/stores";
 
   import SchedulableLoadGrid from "./schedulableLoadGrid.svelte";
   import SortIcon from "./sortIcon.svelte";
@@ -44,8 +44,10 @@
   let filteredData = [];
   let showDatePicker = false;
   let selectedDate = new Date();
+  let formattedDate: string;
 
-  $: $selectedDateStore, fetchDataForSelectedDate();
+  $: setMinDate = new Date($startDate * 1000);
+  $: setMaxDate = new Date($endDate * 1000);
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
@@ -54,20 +56,8 @@
     showDropdown = showDropdown === filterName ? null : filterName;
   };
 
-  async function fetchDataForSelectedDate() {
-    const selectedDate = $selectedDateStore;
-    // Fetch data based on the selected date
-    console.log("Data for selected date:", filteredData);
-  }
-
   function toggleDatePicker() {
     showDatePicker = !showDatePicker;
-  }
-
-  function handleDateChange(newDate) {
-    selectedDateStore.set(newDate);
-    selectedDate = newDate;
-    showDatePicker = false;
   }
 
   // Retracts the displayed dropdown menu when an area outside of the dropdown menu has been clicked
@@ -165,6 +155,10 @@
       );
     });
   }
+
+  $: if (selectedDate) {
+    formattedDate = new Date(selectedDate).toLocaleDateString("en-US");
+  }
 </script>
 
 <div
@@ -218,7 +212,7 @@
       {#if showDatePicker}
         <div
           class="date-picker-popup absolute z-10 mt-2 bg-white border border-gray-300 rounded shadow-lg p-4">
-          <DatePicker bind:value={selectedDate} on:change={handleDateChange} />
+          <DatePicker bind:value={selectedDate} min={setMinDate} max={setMaxDate} />
         </div>
       {/if}
     </button>
@@ -338,7 +332,9 @@
           class="bg-white hover:bg-white text-sm dark:bg-dark-table-row border-b border-gray-200 dark:border-les-white">
           <td colspan={7}>
             <div transition:slide class="p-4 flex justify-center">
-              <SchedulableLoadGrid appliances={data.appliances} {hours} />
+              {#key formattedDate}
+                <SchedulableLoadGrid appliances={data.appliances} date={formattedDate} dateNoFormat={selectedDate} {hours} />
+              {/key}
             </div>
           </td>
         </tr>
