@@ -38,11 +38,11 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
 
     def get_start_end_date(self, *, session: Session):
         min_timestamp_query = select(EnergyFlow).filter(
-            EnergyFlow.timestamp
+            EnergyFlow.timestamp  # type: ignore
             == session.execute(select(func.min(EnergyFlow.timestamp))).scalar()
         )
         max_timestamp_query = select(EnergyFlow).filter(
-            EnergyFlow.timestamp
+            EnergyFlow.timestamp  # type: ignore
             == session.execute(select(func.max(EnergyFlow.timestamp))).scalar()
         )
 
