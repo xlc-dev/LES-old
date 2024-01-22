@@ -96,7 +96,8 @@
 
   let costmodelEditor: monaco.editor.IStandaloneCodeEditor;
   let algorithmEditor: monaco.editor.IStandaloneCodeEditor;
-  let costmodelCode = "";
+  let costmodelCode = "return buy_consumer * ratio + sell_consumer * (1 - ratio)";
+
   let algorithmCode =
     "import pandas\nimport numpy\nimport scipy\nimport math\nimport random\n\ndef run():\n    pass\n";
 
@@ -238,7 +239,7 @@
   const selectOption = (optionId: number, category: string, optionName: string) => {
     selectedIDs[category] = optionId;
     stepperData.update((data) => ({ ...data, [category]: optionName }));
-    if (optionName === "twinworld") {
+    if (category === "twinworld") {
       fetchHouseholds();
     }
   };
@@ -585,7 +586,9 @@
     twinWorlds = await TwinWorldService.getTwinworldsApiTwinworldGet();
 
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
-    currentDescription = simulationData[keys[currentStep - 1]][0]?.description || "";
+    if (keys.length > 0) {
+      currentDescription = simulationData[keys[0]][0]?.description || "";
+    }
 
     costmodelEditor = monaco.editor.create(document.getElementById("algo1-editor"), {
       value: "",
@@ -631,12 +634,6 @@
 </script>
 
 <div class="max-w-3xl mx-auto pt-8">
-  <h1 class="font-bold text-white text-4xl text-center">Local Energy System Simulation</h1>
-
-  <p class="text-white text-xl text-center py-4">
-    Welcome to the Local Energy System simulation. Explaination here.
-  </p>
-
   {#if applianceCheck.length > 0}
     <div
       class="bg-les-white p-8 border-2 border-gray-400 rounded-lg flex flex-col justify-center items-center">
@@ -654,67 +651,74 @@
     </div>
   {/if}
 
-  <div class="flex items-center justify-between mt-16">
-    {#key selectedIDs}
-      {#each Object.keys(simulationData) as stepName, index}
-        <div class="relative flex items-center pb-8">
-          <button
-            class={`h-8 w-8 flex items-center justify-center rounded-full border-2
-            ${
-              currentStep === index + 1
-                ? "bg-les-red-dark border-les-red text-white"
-                : isStepCompleted(index + 1)
-                  ? "bg-les-highlight border-les-blue hover:bg-les-blue text-white transition-colors duration-200"
-                  : "border-gray-300 text-gray-400 hover:bg-les-blue transition-colors duration-200"
-            }`}
-            on:click={() => goToStep(index + 1)}>
-            <span class="text-sm font-bold">
-              {#if isStepCompleted(index + 1)}✔{:else}{index + 1}{/if}
-            </span>
+  {#if !isStepZero}
+    <div class="flex items-center justify-between mt-16">
+      {#key selectedIDs}
+        {#each Object.keys(simulationData) as stepName, index}
+          <div class="relative flex items-center pb-8">
+            <button
+              class={`h-8 w-8 flex items-center justify-center rounded-full border-2
+              ${
+                currentStep === index + 1
+                  ? "bg-les-red-dark border-les-red text-white"
+                  : isStepCompleted(index + 1)
+                    ? "bg-les-highlight border-les-blue hover:bg-les-blue text-white transition-colors duration-200"
+                    : "border-gray-300 text-gray-400 hover:bg-les-blue transition-colors duration-200"
+              }`}
+              on:click={() => goToStep(index + 1)}>
+              <span class="text-sm font-bold">
+                {#if isStepCompleted(index + 1)}✔{:else}{index + 1}{/if}
+              </span>
 
-            <span class="absolute bottom-20 text-xs font-semibold w-20">
-              {stepName.charAt(0).toUpperCase() + stepName.slice(1).replace("_", " ")}
-            </span>
-          </button>
+              <span class="absolute bottom-20 text-xs font-semibold w-20">
+                {stepName.charAt(0).toUpperCase() + stepName.slice(1).replace("_", " ")}
+              </span>
+            </button>
 
-          {#if index < Object.keys(simulationData).length - 1}
-            <div
-              class={`absolute top-4 left-8 border-t-2 w-[21rem] transition-colors duration-200 ${
-                isStepCompleted(index + 1) ? "border-les-blue" : "border-gray-300"
-              }`}>
-            </div>
-          {/if}
-
-          <p class="text-white absolute top-10 transform -translate-x-28 w-64 text-center">
-            {#if selectedIDs.twinworld !== 0 && stepName === "twinworld"}
-              {#if applianceCheck.length > 0}
-                <span class="!text-les-red">{$stepperData.twinworld}</span>
-              {:else}
-                {$stepperData.twinworld}
-              {/if}
-            {:else if selectedIDs.costmodel !== 0 && stepName === "costmodel"}
-              {$stepperData.costmodel}
-            {:else if selectedIDs.algorithm !== 0 && stepName === "algorithm"}
-              {$stepperData.algorithm}
-            {:else}
-              -
+            {#if index < Object.keys(simulationData).length - 1}
+              <div
+                class={`absolute top-4 left-8 border-t-2 w-[21rem] transition-colors duration-200 ${
+                  isStepCompleted(index + 1) ? "border-les-blue" : "border-gray-300"
+                }`}>
+              </div>
             {/if}
-          </p>
-        </div>
-      {/each}
-    {/key}
-  </div>
+
+            <p class="text-white absolute top-10 transform -translate-x-28 w-64 text-center">
+              {#if selectedIDs.twinworld !== 0 && stepName === "twinworld"}
+                {#if applianceCheck.length > 0}
+                  <span class="!text-les-red">{$stepperData.twinworld}</span>
+                {:else}
+                  {$stepperData.twinworld}
+                {/if}
+              {:else if selectedIDs.costmodel !== 0 && stepName === "costmodel"}
+                {$stepperData.costmodel}
+              {:else if selectedIDs.algorithm !== 0 && stepName === "algorithm"}
+                {$stepperData.algorithm}
+              {:else}
+                -
+              {/if}
+            </p>
+          </div>
+        {/each}
+      {/key}
+    </div>
+  {/if}
 
   {#if isStepZero}
-    <div class="max-w-3xl mx-auto pt-8">
-      <div
-        class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
-        <div class="step-zero">
-          <h2>Local Energy System Research Application</h2>
-          <p>Welcome to the LES Research application! In this application you can lorem ipsum.</p>
-          <button on:click={nextStep}>Get started</button>
-        </div>
-      </div>
+    <div class="max-w-3xl mx-auto pt-8 mt-48">
+      <img src="/favicon.png" class="w-48 mx-auto rounded-lg" alt="LES Logo" />
+      <h1 class="font-bold text-4xl text-center text-white pt-4">
+        Local Energy System Simulation
+      </h1>
+      <p class="text-lg text-center py-4 text-white">
+        Welcome to the LES Research application. You can determine the efficiency of algorithms and
+        cost models by creating your own simulations. Please continue with the following steps to
+        set up the environment you would like to research.
+      </p>
+      <button
+        on:click={nextStep}
+        class="block w-full py-3 rounded-lg text-white transition duration-200 bg-les-blue hover:brightness-110"
+        >Get started</button>
     </div>
   {:else}
     {#each Object.keys(simulationData) as key, index (key)}
@@ -772,7 +776,7 @@
               </div>
             </div>
           </div>
-          <div class="flex justify-between mt-8">
+          <div class="flex justify-between mt-8 relative">
             {#if currentStep !== 1}
               <button
                 class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-dark-les-bg"
@@ -781,19 +785,21 @@
               </button>
             {/if}
 
-            {#if currentStep !== 3}
+            {#if selectedIDs.algorithm !== 0 && selectedIDs.twinworld !== 0 && selectedIDs.costmodel !== 0}
               <button
-                class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-blue hover:brightness-110"
-                on:click={nextStep}
-                >Next
+                class="{currentStep === 3
+                  ? 'ml-auto'
+                  : 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'} px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-red hover:brightness-110"
+                on:click={startSimulation}>
+                Start
               </button>
             {/if}
 
-            {#if selectedIDs.algorithm !== 0 && selectedIDs.twinworld !== 0 && selectedIDs.costmodel !== 0}
+            {#if currentStep !== 3}
               <button
-                class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-red hover:brightness-110"
-                on:click={startSimulation}
-                >Start
+                class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-blue hover:brightness-110 ml-auto"
+                on:click={nextStep}
+                >Next
               </button>
             {/if}
           </div>
@@ -810,32 +816,63 @@
       </p>
 
       {#if currentStep === 1}
-        <form method="post" on:submit|preventDefault={uploadTwinWorld} class="flex flex-col gap-6">
-          <label for="name" class="font-bold pt-4">Name:</label>
+        <form
+          method="post"
+          on:submit|preventDefault={uploadTwinWorld}
+          class="flex flex-col space-y-3">
+          <div>
+            <label for="name" class="font-bold pt-4">Name:</label>
+            <p class="text-sm text-gray-500">Name of the twinworld</p>
+          </div>
+
           <input
             type="text"
             name="name"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            placeholder="Custom Twinworld"
             required />
 
-          <label for="description" class="font-bold">Description:</label>
+          <div>
+            <label for="description" class="font-bold">Description:</label>
+            <p class="text-sm text-gray-500">Description of the twinworld</p>
+          </div>
+
           <textarea
             name="description"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            placeholder="My own twinworld"
             required></textarea>
 
-          <label for="solar_panels_factor" class="font-bold pt-4">Solar Panels Factor:</label>
+          <div>
+            <label for="solar_panels_factor" class="font-bold pt-4">Solar Panels Factor:</label>
+            <p class="text-sm text-gray-500">
+              Amount of solar panels for the household in the supplied energy table
+            </p>
+          </div>
+
           <input
-            type="text"
+            type="number"
             name="solar_panels_factor"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            step="1"
+            min="1"
+            placeholder="25"
             required />
 
-          <label for="energy_usage_factor" class="font-bold pt-4">Energy Usage Factor:</label>
+          <div>
+            <label for="energy_usage_factor" class="font-bold pt-4">Energy Usage Factor:</label>
+            <p class="text-sm text-gray-500">
+              Amount of yearly energy used for the household in the supplied energy table
+            </p>
+          </div>
+
           <input
-            type="text"
+            type="number"
             name="energy_usage_factor"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            step="1"
+            min="1"
+            placeholder="7000"
             required />
 
           <button
@@ -849,7 +886,7 @@
           <hr class="my-8 bg-les-highlight" />
 
           <h2 class="font-bold text-lg mb-4">
-            Add household for Twin World id: {selectedIDs.twinworld}
+            Add household for Twin World: {$stepperData.twinworld}
           </h2>
 
           <div class="flex flex-wrap">
@@ -861,8 +898,7 @@
                 type="text"
                 minlength="1"
                 required
-                bind:value={newHousehold.name}
-                placeholder="Name" />
+                placeholder="Household 10" />
             </div>
 
             <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
@@ -885,7 +921,7 @@
                 type="number"
                 min="0"
                 bind:value={newHousehold.energy_usage}
-                placeholder="Energy usage" />
+                placeholder="3100" />
             </div>
 
             <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
@@ -896,7 +932,7 @@
                 type="number"
                 min="0"
                 bind:value={newHousehold.solar_panels}
-                placeholder="Solar panels" />
+                placeholder="10" />
             </div>
 
             <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
@@ -907,7 +943,7 @@
                 type="number"
                 min="0"
                 bind:value={newHousehold.solar_yield_yearly}
-                placeholder="Solar yield yearly" />
+                placeholder="3400" />
             </div>
             <div class="flex items-end">
               <button
@@ -1318,6 +1354,7 @@
             type="text"
             name="name"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            placeholder="custom Costmodel"
             required />
 
           <div>
@@ -1329,6 +1366,7 @@
             name="description"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
             required
+            placeholder="My own costmodel"
             rows="8"></textarea>
 
           <div>
@@ -1344,7 +1382,9 @@
             type="number"
             name="price_network_buy_consumer"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            placeholder="0.4"
             required />
+
           <div>
             <label for="price_network_sell_consumer" class="font-bold"
               >Price Network Sell Consumer:</label>
@@ -1358,7 +1398,9 @@
             type="number"
             name="price_network_sell_consumer"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            placeholder="0.1"
             required />
+
           <div>
             <label for="fixed_price_ratio" class="font-bold">Fixed Price Ratio:</label>
             <p class="text-sm text-gray-500">
@@ -1371,6 +1413,7 @@
             step="any"
             type="number"
             name="fixed_price_ratio"
+            placeholder="0.5"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
 
           <div>
@@ -1400,7 +1443,10 @@
           </button>
         </form>
       {:else if currentStep === 3}
-        <form method="post" on:submit|preventDefault={uploadAlgorithm} class="flex flex-col gap-6">
+        <form
+          method="post"
+          on:submit|preventDefault={uploadAlgorithm}
+          class="flex flex-col space-y-3">
           <div>
             <label for="name" class="font-bold pt-4">Name:</label>
             <p class="text-sm text-gray-500">Name for the new algorithm</p>
@@ -1410,6 +1456,7 @@
             type="text"
             name="name"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            placeholder="Custom Algorithm"
             required />
 
           <div>
@@ -1420,6 +1467,7 @@
           <textarea
             name="description"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            placeholder="My own algorithm"
             required></textarea>
 
           <div>
@@ -1428,10 +1476,11 @@
           </div>
 
           <input
-            type="text"
+            step="any"
+            type="number"
             name="max_temperature"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-            required />
+            placeholder="10000" />
 
           <div>
             <label for="algorithm" class="font-bold">Algorithm:</label>
