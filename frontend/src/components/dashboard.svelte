@@ -5,6 +5,7 @@
   current session. This component consists of graphs that are updated in realtime and other
   visualisations of the live data that the application collects and generates.
   */
+  import { Chart } from "svelte-chartjs";
 
   import { onMount, onDestroy } from "svelte";
   import Chart from "chart.js/auto";

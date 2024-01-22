@@ -1,4 +1,8 @@
 <script lang="ts">
+  /*
+  The titleBar component contains the title bar that is displayed in various components.
+  */
+
   export let title;
 </script>
 

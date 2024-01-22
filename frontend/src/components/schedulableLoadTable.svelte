@@ -1,4 +1,12 @@
 <script lang="ts">
+  /*
+  The schedulableLoadTable component contians the table of the schedulable load view that
+  consists of the table and cards of the households that are included in the selected or
+  created twin world of the current session and filters that can be used to only display
+  specific items of the table. Each card in the table contains data about its' corresponding
+  household and can be expanded to view its' schedulable load grid raster.
+  */
+
   import { onMount } from "svelte";
   import { get } from "svelte/store";
   import { slide } from "svelte/transition";
@@ -36,10 +44,12 @@
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
+  // Displays a dropdown menu of a filter when its' corresponding button is clicked
   const toggleDropdown = (filterName: string) => {
     showDropdown = showDropdown === filterName ? null : filterName;
   };
 
+  // Retracts the displayed dropdown menu when an area outside of the dropdown menu has been clicked
   const createHandleClickOutside = (filterName: string) => {
     return (event: any) => {
       if (!event.target.closest(`#${filterName}-dropdown`)) {
@@ -48,14 +58,17 @@
     };
   };
 
+  // Modifies the name of a filter so that it's written in camel case
   const toReadableName = (camelCase: string) => {
     return camelCase.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
   };
 
+  // Expands a card of a household in the schedulable load table when its' row has been clicked
   const toggleRow = (id: number) => {
     expandedRow = expandedRow === id ? null : id;
   };
 
+  // Sorts certain columns of the schedulable load table by ascending or descending based on how often a sort button has been clicked
   const sortData = (column: string) => {
     if (sortColumn === column) {
       sortOrder = sortOrder === "asc" ? "desc" : "asc";
@@ -71,6 +84,7 @@
     });
   };
 
+  // Initializes the event listener that handles button clicks of filters in the schedulable load table
   onMount(() => {
     document.addEventListener("click", (event: any) => {
       for (const filterName in filters) {
@@ -82,6 +96,7 @@
     });
   });
 
+  // Applies the filter logic on the schedulable load table
   $: {
     let data = get(stepperData);
     filteredData = data.filter((item) => {

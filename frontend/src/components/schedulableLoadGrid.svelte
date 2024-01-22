@@ -1,9 +1,20 @@
 <script lang="ts">
+  /*
+  The schedulableLoadGrid component contains the grid raster that is used in each card of the
+  schedulable load table and in the view of each individual household. The x-axis of the grid
+  raster contains the hours of the day and the y-axis contains the appliances of a household.
+  The gray boxes contain the time slots that are unavailable to plan appliances in. The blue
+  boxes contain the time slots that are available. The red and green boxes contain the time
+  slots that are planned in. The green boxes indicate that the energy used is drawn from solar
+  panels, while the red boxes indicate that the energy used is drawn from the national grid.
+  */
+
   import type { ApplianceRead_Output } from "../lib/client";
 
   export let appliances: ApplianceRead_Output[];
   export let hours: number[];
 
+  // Determines the color of a box in a schedulable load grid raster based on a bitmap value
   const getCellColor = (bitmap: number, hour: number) => {
     const bitmapString = bitmap.toString(2).padStart(24, "0");
     return bitmapString[hour] === "1" ? "bg-blue-600" : "bg-gray-700";

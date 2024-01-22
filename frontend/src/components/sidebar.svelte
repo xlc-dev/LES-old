@@ -1,4 +1,11 @@
 <script lang="ts">
+  /*
+  The sidebar component contains the sidebar that is displayed in various other views.
+  The researcher can switch between the dashboard, simulation, and schedulable load views,
+  toggle the dark mode on or off, view the session options that were selected in the stepper,
+  and end the current session.
+  */
+
   import { onMount, createEventDispatcher } from "svelte";
 
   import { twdata } from "../lib/stores";
@@ -9,16 +16,19 @@
 
   let isDarkMode = false;
 
+  // Registers and handles button clicks by dispatching the corresponding event
   const handleButtonClick = (action: string) => {
     dispatch("click", { action });
     currentComponent = action;
   };
 
+  // Triggers the function that turns dark mode on or off
   const toggleDarkMode = () => {
     isDarkMode = !isDarkMode;
     updateDarkMode();
   };
 
+  // Turns dark mode on or off
   const updateDarkMode = () => {
     // Save the dark mode setting to local storage
     localStorage.setItem("darkMode", isDarkMode.toString());
@@ -30,6 +40,7 @@
     }
   };
 
+  // Initializes the dark mode state at the start of a session based on the last saved state of a previous session
   onMount(() => {
     const savedDarkMode = localStorage.getItem("darkMode");
     isDarkMode = savedDarkMode === "true";
