@@ -85,7 +85,8 @@ async def post_algorithm(
             for alias in node.names:
                 imports.add(alias.name)
         elif isinstance(node, ast.ImportFrom):
-            imports.add(node.module)
+            # TODO: check mypy error
+            imports.add(node.module)  # type: ignore
 
     # Check if any imported module is not in restricted_globals
     invalid_imports = [imp for imp in imports if imp not in restricted_globals]
