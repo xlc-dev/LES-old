@@ -503,7 +503,7 @@ def seed(session: Session = Depends(get_session)) -> None:
     session.add(costmodel_temo)
 
     twinworld_1 = twinworld_model.TwinWorld(
-        name="TwinWorld Large",
+        name="Twinworld Large",
         description="A larger twin world consisting of roughly 75 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
         solar_panels_factor=25,
         energy_usage_factor=7000,
@@ -512,7 +512,7 @@ def seed(session: Session = Depends(get_session)) -> None:
     session.add(twinworld_1)
 
     twinworld_2 = twinworld_model.TwinWorld(
-        name="TwinWorld Small",
+        name="Twinworld Small",
         description="A smaller twin world consisting of roughly 25 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
         solar_panels_factor=25,
         energy_usage_factor=7000,
@@ -543,7 +543,25 @@ def seed(session: Session = Depends(get_session)) -> None:
         washingmachine = create_washingmachine(
             household.size, inv_norm, household.id
         )
+
+        # Simple trick to make sure at least one appliance is created
+        while (
+            dishwasher is None
+            and vehicle is None
+            and stove is None
+            and washingmachine is None
+        ):
+            dishwasher = create_dishwasher(
+                household.size, inv_norm, household.id
+            )
+            vehicle = create_electricvehicle(household.size, household.id)
+            stove = create_stove(household.size, household.id)
+            washingmachine = create_washingmachine(
+                household.size, inv_norm, household.id
+            )
+
         session.flush()
+
         if vehicle is not None:
             add_appliance_to_session(session, vehicle)
         if dishwasher is not None:
