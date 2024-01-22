@@ -18,7 +18,7 @@
   import Household from "./household.svelte";
 
   let selectedComponent = null;
-  let title = "Schedulable Loads";
+  let title = "Dashboard";
   let stop = false;
 
   let unsubscribe: () => void;
@@ -72,7 +72,7 @@
         {/key}
       </div>
     {:else}
-      <SchedulableLoadTable />
+      <Dashboard />
     {/if}
   </main>
 {:else}

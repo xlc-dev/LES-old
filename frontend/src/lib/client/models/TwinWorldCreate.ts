@@ -5,4 +5,6 @@
 export type TwinWorldCreate = {
   name: string;
   description: string;
+  solar_panels_factor: number;
+  energy_usage_factor: number;
 };

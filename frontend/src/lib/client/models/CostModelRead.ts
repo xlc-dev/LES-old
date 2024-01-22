@@ -8,6 +8,6 @@ export type CostModelRead = {
   price_network_buy_consumer: number;
   price_network_sell_consumer: number;
   fixed_price_ratio: number | null;
-  costmodel_algorithm: string | null;
+  algorithm: string;
   id: number;
 };

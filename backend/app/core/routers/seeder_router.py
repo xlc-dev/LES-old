@@ -463,7 +463,7 @@ def seed(session: Session = Depends(get_session)) -> None:
     greedy = algorithm_model.Algorithm(
         name="Greedy planning",
         description="An initial planning that puts appliances in their local optimum through a greedy algorithm. Will not optimize further than one pass through all appliances.",  # noqa: E501
-        algorithm="greedy()",
+        algorithm=" ",
     )
 
     session.add(greedy)
@@ -471,7 +471,7 @@ def seed(session: Session = Depends(get_session)) -> None:
     simulated_annealing = algorithm_model.Algorithm(
         name="Simulated Annealing",
         description="An algorithm that improves on a given algorithm by randomly changing the time of planned in appliances. The conditions for what changes becomes stricter over time, resulting in a further optimized solution.",  # noqa: E501
-        algorithm="simmulated_annealing()",
+        algorithm=" ",
         max_temperature=10000,
     )
 

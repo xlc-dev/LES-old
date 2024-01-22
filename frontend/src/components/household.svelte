@@ -5,10 +5,29 @@
   data about the selected household and its' appliances, which is regularly updated and
   translated into a part of the visualisations in the dashboard component.
   */
-
   import type { HouseholdRead_Output } from "../lib/client";
+  import SchedulableLoadGrid from "./schedulableLoadGrid.svelte";
+  import { DatePicker } from "date-picker-svelte";
 
   export let household: HouseholdRead_Output;
+  let selectedDate = new Date();
+  let currentDate = new Date();
+
+  // Checks if the selected date is in the past
+  const isPastDate = (date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  };
+
+  // Fetches data for the selected date
+  // This function needs to be supplemented with logic that fetches the required data
+  const fetchDataForDate = async (date) => {};
+
+  // Updates the displayed data when a new data has been selected
+  $: if (isPastDate(selectedDate)) {
+    fetchDataForDate(selectedDate);
+  }
 </script>
 
 <h1 class="font-bold text-4xl pb-4 flex items-center gap-4 dark:text-les-white">
@@ -21,23 +40,28 @@
       <tr class="text-xs text-left uppercase tracking-wider">
         <th
           class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-          >Name</th>
+          >Name
+        </th>
 
         <th
           class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-          >Size</th>
+          >Size
+        </th>
 
         <th
           class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-          >Energy Usage</th>
+          >Energy Usage
+        </th>
 
         <th
           class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-          >Solar Panels</th>
+          >Solar Panels
+        </th>
 
         <th
           class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-          >Solar Yield Yearly</th>
+          >Solar Yield Yearly
+        </th>
       </tr>
     </thead>
 
@@ -67,19 +91,23 @@
       <tr class="text-xs text-left uppercase tracking-wider">
         <th
           class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-          >Name</th>
+          >Name
+        </th>
 
         <th
           class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-          >Power</th>
+          >Power
+        </th>
 
         <th
           class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-          >Duration</th>
+          >Duration
+        </th>
 
         <th
           class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-          >Daily Usage</th>
+          >Daily Usage
+        </th>
       </tr>
     </thead>
 
@@ -107,5 +135,13 @@
 <hr class="my-8 border-black dark:border-les-white" />
 
 <div>
-  <h2 class="font-bold text-4xl dark:text-les-white">SL View</h2>
+  <h2 class="font-bold text-4xl dark:text-les-white">Schedulable Load Grid</h2>
+  <DatePicker bind:value={selectedDate} />
+  {#if isPastDate(selectedDate)}
+    <SchedulableLoadGrid
+      appliances={household.appliances}
+      hours={Array.from({ length: 24 }, (_, i) => i)} />
+  {:else}
+    <p>Select a date to view the corresponding schedulable load grid raster.</p>
+  {/if}
 </div>

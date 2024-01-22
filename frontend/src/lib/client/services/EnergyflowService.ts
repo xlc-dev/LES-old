@@ -47,7 +47,7 @@ export class EnergyflowService {
   public static getEnergyflowApiEnergyflowIdGet(id: number): CancelablePromise<EnergyFlowRead> {
     return __request(OpenAPI, {
       method: "GET",
-      url: "/api/energyflow/{id}/",
+      url: "/api/energyflow/{id}",
       path: {
         id: id,
       },

@@ -7,37 +7,73 @@
   household view is displayed.
   */
 
-  import { stepperData } from "../lib/stores";
-
   import type { HouseholdRead_Output } from "../lib/client";
-
+  import { stepperData } from "../lib/stores";
   import Household from "./household.svelte";
+  import { onMount } from "svelte";
+  import { slide } from "svelte/transition";
 
   let household: HouseholdRead_Output;
   let sizeFilter = "";
   let solarPanelFilter = "";
   let searchQuery = "";
 
+  let filters = {
+    size: Array.from({ length: 10 }, (_, i) => i + 1),
+    solarPanels: ["Yes", "No"],
+  };
+
+  let selectedFilters = {
+    size: [],
+    solarPanels: [],
+  };
+
+  let showDropdown = null;
+
+  const toggleDropdown = (filterName: string) => {
+    showDropdown = showDropdown === filterName ? null : filterName;
+  };
+
+  const createHandleClickOutside = (filterName: string) => {
+    return (event: any) => {
+      if (!event.target.closest(`#${filterName}-dropdown`)) {
+        showDropdown = null;
+      }
+    };
+  };
+
   // Loads the view for a specific household if it has been clicked in the simulation view
   const showHome = (data: HouseholdRead_Output) => {
     household = data;
   };
 
-  // Determines whether or not a household in the simulation view has solar panels
+  // Determines whether a household in the simulation view has solar panels
   const hasSolarPanels = (household) => household.solar_panels > 0;
 
   // Sets the selected household as the household that is used when displaying the individual househould view
   $: selectedHousehold = household;
 
   // Contains the logic of the filters in the simulation view
-  $: filteredHouseholds = $stepperData.filter(
-    (h) =>
-      (sizeFilter === "" || h.size === parseInt(sizeFilter, 10)) &&
-      (solarPanelFilter === "" ||
-        (solarPanelFilter === "yes" && h.solar_panels > 0) ||
-        (solarPanelFilter === "no" && h.solar_panels === 0)) &&
-      (searchQuery === "" || h.name.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  $: filteredHouseholds = $stepperData.households.filter((h) => {
+    const matchesSearch = !searchQuery || h.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSize = selectedFilters.size.length === 0 || selectedFilters.size.includes(h.size);
+    const matchesSolarPanels =
+      selectedFilters.solarPanels.length === 0 ||
+      (selectedFilters.solarPanels.includes("Yes") && hasSolarPanels(h)) ||
+      (selectedFilters.solarPanels.includes("No") && !hasSolarPanels(h));
+    return matchesSearch && matchesSize && matchesSolarPanels;
+  });
+
+  onMount(() => {
+    document.addEventListener("click", (event: any) => {
+      for (const filterName in filters) {
+        const filterDropdown = document.getElementById(`${filterName}-dropdown`);
+        if (filterDropdown && !filterDropdown.contains(event.target)) {
+          showDropdown = null;
+        }
+      }
+    });
+  });
 </script>
 
 {#if !selectedHousehold}
@@ -49,22 +85,40 @@
         class="px-3 py-2 border border-gray-300 rounded-md dark:bg-dark-table-row dark:text-les-white"
         placeholder="Search by ID or NAME"
         bind:value={searchQuery} />
-      <select
-        bind:value={sizeFilter}
-        class="px-3 py-2 border border-gray-300 rounded-md dark:bg-dark-table-row dark:text-les-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 appearance-none cursor-pointer">
-        <option value="">Size</option>
-        {#each Array.from({ length: 10 }, (_, i) => i + 1) as size}
-          <option value={size}>{size}</option>
-        {/each}
-      </select>
 
-      <select
-        bind:value={solarPanelFilter}
-        class="px-3 py-2 border border-gray-300 rounded-md dark:bg-dark-table-row dark:text-les-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 appearance-none cursor-pointer">
-        <option value="">Solar Panels</option>
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
-      </select>
+      {#each Object.entries(filters) as [filterName, options]}
+        <button
+          class="relative"
+          id={`${filterName}-dropdown`}
+          on:click|stopPropagation={createHandleClickOutside(filterName)}>
+          <button
+            class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white"
+            on:click={() => toggleDropdown(filterName)}>
+            {filterName}
+          </button>
+
+          {#if showDropdown === filterName}
+            <div
+              class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 dark:bg-dark-table-row"
+              in:slide={{ duration: 500 }}
+              out:slide={{ duration: 500 }}>
+              <div class="py-1">
+                {#each options as option}
+                  <label
+                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-les-white hover:dark:bg-dark-table-header">
+                    <input
+                      type="checkbox"
+                      class="mr-2"
+                      bind:group={selectedFilters[filterName]}
+                      value={option} />
+                    {option}
+                  </label>
+                {/each}
+              </div>
+            </div>
+          {/if}
+        </button>
+      {/each}
     </div>
   </div>
 

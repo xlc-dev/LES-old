@@ -8,7 +8,7 @@
 
   import { onMount, createEventDispatcher } from "svelte";
 
-  import { twdata } from "../lib/stores";
+  import { stepperData, runtime } from "../lib/stores";
 
   export let currentComponent: string;
 
@@ -18,6 +18,9 @@
 
   // Registers and handles button clicks by dispatching the corresponding event
   const handleButtonClick = (action: string) => {
+    if (action === "Stop") {
+      runtime.stop();
+    }
     dispatch("click", { action });
     currentComponent = action;
   };
@@ -92,9 +95,9 @@
     <div class="px-4">
       <h3 class="text-lg font-semibold text-les-white pb-4">Selected Options:</h3>
 
-      <p class="text-gray-400">Twin World: {$twdata.twin_world}</p>
-      <p class="text-gray-400">Cost Model: {$twdata.cost_model}</p>
-      <p class="text-gray-400">Algorithm: {$twdata.algorithm}</p>
+      <p class="text-gray-400">Twin World: {$stepperData.twinworld.name}</p>
+      <p class="text-gray-400">Cost Model: {$stepperData.costmodel.name}</p>
+      <p class="text-gray-400">Algorithm: {$stepperData.algorithm.name}</p>
 
       <hr class="border-gray-800 my-4" />
 
