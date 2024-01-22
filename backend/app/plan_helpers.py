@@ -147,6 +147,7 @@ def _energy_efficiency_day(
 
     # Execute the modified code using eval
     from app.plan_defaults import cost_static, cost_variable  # noqa: F401
+
     energy_price = eval(energy_price_code_with_params)
 
     if sum(solar_energy_used_self) <= 0:
@@ -294,9 +295,7 @@ def setup_planning(
     start_date = energyflow_data_sim[0].timestamp
     end_date = energyflow_data_sim[-1].timestamp
 
-    days_in_chunk = (
-        end_date - start_date
-    ) // SECONDS_IN_DAY + 1
+    days_in_chunk = (end_date - start_date) // SECONDS_IN_DAY + 1
 
     days_in_planning = (
         total_end_date - total_start_date
