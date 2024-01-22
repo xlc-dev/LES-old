@@ -44,6 +44,7 @@
   let filteredData = [];
   let showDatePicker = false;
   let selectedDate = new Date();
+  let showCard = false;
 
   $: $selectedDateStore, fetchDataForSelectedDate();
 
@@ -62,6 +63,10 @@
 
   function toggleDatePicker() {
     showDatePicker = !showDatePicker;
+  }
+
+  function toggleCard() {
+    showCard = !showCard;
   }
 
   function handleDateChange(newDate) {
@@ -222,7 +227,37 @@
         </div>
       {/if}
     </button>
+    <button
+      class="ml-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      on:click={toggleCard}
+    >
+      Toggle Card
+    </button>
   </div>
+
+  {#if showCard}
+    <div class="fixed inset-0 flex justify-center items-center">
+      <div class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10">
+        <h2>Legend: </h2>
+        <div class="flex items-center mb-2">
+          <div class="h-4 w-4 bg-gray-500 mr-2"></div>
+          <p>The gray boxes contain the time slots that are unavailable to plan appliances in.</p>
+        </div>
+        <div class="flex items-center mb-2">
+          <div class="h-4 w-4 bg-blue-500 mr-2"></div>
+          <p>The blue boxes contain the time slots that are available.</p>
+        </div>
+        <div class="flex items-center mb-2">
+          <div class="h-4 w-4 bg-green-500 mr-2"></div>
+          <p>The green boxes indicate that the planned energy used is drawn from solar panels.</p>
+        </div>
+        <div class="flex items-center">
+          <div class="h-4 w-4 bg-red-500 mr-2"></div>
+          <p>The red boxes indicate that the planned energy used is drawn from the national grid.</p>
+        </div>
+      </div>
+    </div>
+  {/if}
 </div>
 
 <table class="min-w-full leading-normal rounded-lg overflow-hidden">
