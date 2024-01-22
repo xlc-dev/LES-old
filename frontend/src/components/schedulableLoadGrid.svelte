@@ -1,24 +1,67 @@
 <script lang="ts">
   /*
-  The schedulableLoadGrid component contains the grid raster that is used in each card of the
-  schedulable load table and in the view of each individual household. The x-axis of the grid
-  raster contains the hours of the day and the y-axis contains the appliances of a household.
-  The gray boxes contain the time slots that are unavailable to plan appliances in. The blue
-  boxes contain the time slots that are available. The red and green boxes contain the time
-  slots that are planned in. The green boxes indicate that the energy used is drawn from solar
-  panels, while the red boxes indicate that the energy used is drawn from the national grid.
-  */
+   * The schedulableLoadGrid component contains the grid raster that is used in each card of the
+   * schedulable load table and in the view of each individual household. The x-axis of the grid
+   * raster contains the hours of the day and the y-axis contains the appliances of a household.
+   * The gray boxes contain the time slots that are unavailable to plan appliances in. The blue
+   * boxes contain the time slots that are available. The red and green boxes contain the time
+   * slots that are planned in. The green boxes indicate that the energy used is drawn from solar
+   * panels, while the red boxes indicate that the energy used is drawn from the national grid.
+   */
 
   import type { ApplianceRead_Output } from "../lib/client";
 
+  import { timeDailies, startDate } from "../lib/stores";
+
   export let appliances: ApplianceRead_Output[];
   export let hours: number[];
+  export let date: string;
+  export let dateNoFormat: Date;
 
-  // Determines the color of a box in a schedulable load grid raster based on a bitmap value
-  const getCellColor = (bitmap: number, hour: number) => {
+  /**
+   * Determines the color of a box in a schedulable load grid raster based on a bitmap value.
+   *
+   * @param {number} bitmap - The bitmap value to determine the color from.
+   * @param {number} hour - The hour for which the color is being determined.
+   * @param {Date} selectedDate - The selected date for which the color is being determined.
+   * @returns {string} - The background color class name ("bg-blue-600", "bg-green-500", or "bg-red-500").
+   */
+  const getCellColor = (bitmap, hour, selectedDate) => {
     const bitmapString = bitmap.toString(2).padStart(24, "0");
+
+    // Convert the startDate from Unix timestamp to Date
+    const baseDate = new Date($startDate * 1000);
+
+    // Ensure selectedDate is a Date object
+    const dateObj = new Date(selectedDate);
+    // Set the time to midnight
+    dateObj.setHours(0, 0, 0, 0);
+
+    // Calculate the day number based on the selected date and start date
+    const dayNumber =
+      Math.floor((dateObj.getTime() - baseDate.getTime()) / (24 * 60 * 60 * 1000)) + 2;
+
+    // Find the corresponding day in timeDailies based on the calculated day number
+    const dayData = $timeDailies.filter((entry) => entry.day === dayNumber);
+
+    if (dayData.length > 0) {
+      for (const entry of dayData) {
+        const planEnergyBit = (entry.bitmap_plan_energy >> (23 - hour)) & 1;
+        const planNoEnergyBit = (entry.bitmap_plan_no_energy >> (23 - hour)) & 1;
+
+        if (planEnergyBit === 1) {
+          return "bg-green-500"; // Green for energy from solar panels
+        } else if (planNoEnergyBit === 1) {
+          return "bg-red-500"; // Red for energy from the national grid
+        }
+      }
+    }
+
+    // Default to gray for unavailable time slots
     return bitmapString[hour] === "1" ? "bg-blue-600" : "bg-gray-700";
   };
+
+  $: unixTimestamp = Math.floor(dateNoFormat.getTime() / 1000);
 </script>
 
 <div class="flex flex-col items-center">
@@ -38,8 +81,9 @@
       {#each hours as hour}
         <div
           class={`w-6 h-6 border border-white ${getCellColor(
-            appliance.appliance_windows[0].bitmap_window,
-            hour
+            appliance.appliance_windows[(Math.floor(unixTimestamp / 86400) + 3) % 7].bitmap_window,
+            hour,
+            date
           )}`}>
         </div>
       {/each}

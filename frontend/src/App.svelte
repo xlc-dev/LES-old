@@ -2,10 +2,13 @@
   import {
     stepperData,
     efficiencyresultstore,
-    type EfficiencyResult,
     isStarted,
     runtime,
+    timeDailies,
+    startDate,
+    endDate,
   } from "./lib/stores";
+
   import { OpenAPI, SimulateService } from "./lib/client";
 
   import Stepper from "./components/stepper.svelte";
@@ -15,10 +18,6 @@
 
   async function fetchData(chunkoffset = 0) {
     if (!$isStarted) return;
-    if (chunkoffset === 308) {
-      chunkoffset = 303;
-      return;
-    }
     try {
       const response = await SimulateService.planApiSimulatePlanPost({
         chunkoffset: chunkoffset,
@@ -44,10 +43,19 @@
         };
       });
       efficiencyresultstore.update((store) => [...store, ...transformedResults]);
-      setTimeout(() => fetchData(chunkoffset + 7), 50);
+      timeDailies.update((store) => [...store, ...response.timedaily]);
+      $startDate = response.start_date;
+      $endDate = response.end_date;
+      setTimeout(() => {
+        if (!$isStarted) return;
+        fetchData(chunkoffset + 7);
+      }),
+        50;
     } catch (err) {
-      console.error("Error fetching data:", err);
-      if (err.status !== 500) {
+      if (err.status === 204) {
+        runtime.stop();
+        return;
+      } else if (err.status !== 500) {
         return;
       } else {
         console.error("Server error:", err);
@@ -60,6 +68,7 @@
     fetchData();
   } else {
     runtime.stop();
+    $isStarted = false;
   }
 
   // $: $isStarted && fetchData();

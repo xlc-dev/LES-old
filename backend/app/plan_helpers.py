@@ -83,7 +83,7 @@ def _energy_efficiency_day(
     planning: list[HouseholdRead],
     appliance_bitmap_plan: list[ApplianceTimeDaily],
     costmodel: CostModelRead,
-) -> tuple[float, float, float, float]:
+) -> tuple[float, float, float, float, float]:
     total_panels = sum(household.solar_panels for household in planning)
     solar_energy_produced = [
         ef.solar_produced * total_panels / solar_panels_factor
@@ -134,6 +134,11 @@ def _energy_efficiency_day(
         sum(current_total_usage) / sum_produced if sum_produced > 0 else 0
     )
 
+    ratio = previous_efficiency
+
+    if costmodel.name == "Fixed Price":
+        ratio = costmodel.fixed_price_ratio
+
     energy_price_code = costmodel.algorithm
 
     # Remove trailing parentheses if they exist
@@ -143,10 +148,10 @@ def _energy_efficiency_day(
     energy_price_code_with_params = f"""{energy_price_code}(
     buy_consumer={costmodel.price_network_buy_consumer},
     sell_consumer={costmodel.price_network_sell_consumer},
-    ratio={previous_efficiency})"""
+    ratio={ratio})"""
 
     # Execute the modified code using eval
-    from app.plan_defaults import cost_static, cost_variable  # noqa: F401
+    from app.plan_defaults import cost_default  # noqa: F401
 
     energy_price = eval(energy_price_code_with_params)
 
@@ -157,7 +162,13 @@ def _energy_efficiency_day(
         costmodel.price_network_buy_consumer - energy_price
     )
 
-    return previous_efficiency, current_efficiency, energy_price, cost_savings
+    return (
+        previous_efficiency,
+        current_efficiency,
+        energy_price,
+        cost_savings,
+        sum_produced,
+    )
 
 
 def plan_energy(
@@ -208,9 +219,6 @@ def check_appliance_time(
     has_energy: bool,
     appliance_bitmap_plan: int,
 ) -> bool:
-    if appliance_bitmap_plan == 0:
-        return True
-
     hour = unix_to_hour(unix)
     current_day = day_name[(floor(unix / SECONDS_IN_DAY + 4) % 7)]
     day_number = ApplianceDays[current_day.upper()].value
@@ -224,26 +232,18 @@ def check_appliance_time(
         None,
     )
 
-    if bitmap_window is None:
-        return True
-
-    appliance_duration = appliance.duration
-    appliance_duration_bit = 2**appliance_duration - 1
-    shift = 24 - hour - appliance_duration
+    appliance_duration_bit = 2**appliance.duration - 1
+    shift = 24 - hour - appliance.duration
     current_time_window = (
-        bitmap_window >> shift if shift >= 0 else bitmap_window << -shift
+        appliance_duration_bit << shift
+        if shift >= 0
+        else appliance_duration_bit >> -shift
     )
 
-    if appliance_duration_bit & current_time_window:
+    if bitmap_window & current_time_window:
         return False
 
-    current_appliance_task = (
-        appliance_bitmap_plan >> shift
-        if shift >= 0
-        else appliance_bitmap_plan << -shift
-    )
-
-    if appliance_duration_bit & current_appliance_task:
+    if current_time_window & appliance_bitmap_plan:
         return False
 
     return True
@@ -273,7 +273,7 @@ def setup_planning(
 
     if len(energyflow_data) == 0:
         Logger.exception(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=status.HTTP_204_NO_CONTENT,
             detail="Energyflow data not found",
         )
 
@@ -301,7 +301,7 @@ def setup_planning(
         total_end_date - total_start_date
     ) // SECONDS_IN_DAY + 1
 
-    results = [[0.0 for _ in range(4)] for _ in range(days_in_chunk)]
+    results = [[0.0 for _ in range(7)] for _ in range(days_in_chunk)]
 
     household_planning = planning.households
     length_planning = len(household_planning)
@@ -410,7 +410,22 @@ def write_results(
         costmodel=costmodel,
     )
 
-    for iter in range(4):
+    if day_iterator == 0:
+        results[day_iterator - 1][5] = (
+            temp_result[0] - results[day_iterator - 1][0]
+        ) * temp_result[4]
+        results[day_iterator - 1][6] = (
+            temp_result[1] - results[day_iterator - 1][1]
+        ) * temp_result[4]
+    else:
+        results[day_iterator - 1][5] = (
+            temp_result[0] - results[day_iterator - 1][0]
+        ) * temp_result[4] + results[day_iterator - 2][0]
+        results[day_iterator - 1][6] = (
+            temp_result[1] - results[day_iterator - 1][1]
+        ) * temp_result[4] + results[day_iterator - 2][1]
+
+    for iter in range(5):
         if temp_result[iter] > results[day_iterator - 1][iter]:
             results[day_iterator - 1][iter] = temp_result[iter]
 
