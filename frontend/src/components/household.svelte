@@ -133,15 +133,3 @@
 </div>
 
 <hr class="my-8 border-black dark:border-les-white" />
-
-<div>
-  <h2 class="font-bold text-4xl dark:text-les-white">Schedulable Load Grid</h2>
-  <DatePicker bind:value={selectedDate} />
-  {#if isPastDate(selectedDate)}
-    <SchedulableLoadGrid
-      appliances={household.appliances}
-      hours={Array.from({ length: 24 }, (_, i) => i)} />
-  {:else}
-    <p>Select a date to view the corresponding schedulable load grid raster.</p>
-  {/if}
-</div>
