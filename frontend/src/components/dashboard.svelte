@@ -1,132 +1,125 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
-  import Chart from "chart.js/auto";
-  import { efficiencyresultstore, runtime, stepperData } from "../lib/stores";
+  import { onDestroy } from "svelte";
 
-  let chartContainers = [];
-  let charts = [];
-  const maxDataPoints = 51;
+  import { efficiencyresultstore, stepperData, runtime } from "../lib/stores";
 
-  $: if ($efficiencyresultstore.length > 0) {
-    updateCharts($efficiencyresultstore);
-  }
+  import Chart from "./chart.svelte";
 
-  $: numberOfHouseholds = $stepperData.households.length;
-  $: costModelAlgorithm = $stepperData.costmodel.algorithm;
-  $: costModelFixedPriceRatio = $stepperData.costmodel.fixed_price_ratio;
-  $: costModelPriceNetworkBuyConsumer = $stepperData.costmodel.price_network_buy_consumer;
-  $: costModelPriceNetworkSellConsumer = $stepperData.costmodel.price_network_sell_consumer;
-  $: twinWorldEnergyUsageFactor = $stepperData.twinworld.energy_usage_factor;
-  $: twinWorldSolarPanelsFactor = $stepperData.twinworld.solar_panels_factor;
-  $: algorithmMaxTemperature = $stepperData.algorithm.max_temperature;
+  let sumEfficiencyIndividual: number = 0;
+  let sumEfficiencyTotal: number = 0;
+  let sumTotalMoneySaved: number = 0;
 
-  onMount(() => {
-    initializeCharts();
-    updateCharts($efficiencyresultstore);
-  });
-
-  onDestroy(() => {
-    charts.forEach((chart) => chart?.destroy());
-  });
-
-  function initializeCharts() {
-    chartContainers.forEach((container, index) => {
-      charts[index] = new Chart(container.getContext("2d"), {
-        type: "line",
-        data: {
-          labels: [],
-          datasets: [
-            {
-              label: getChartLabel(index),
-              data: [],
-              backgroundColor: getChartFillColor(index),
-              borderColor: getChartColor(index),
-              fill: true,
-            },
-          ],
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true,
-            },
-          },
-        },
-      });
-    });
-  }
-
-  function updateCharts(data) {
-    console.log("Updating charts with mapped data:", data);
-    charts.forEach((chart, index) => {
-      const latestData = data.slice(-maxDataPoints);
-
-      chart.data.labels = latestData.map((_, i) => `Day ${data.length - maxDataPoints + i + 1}`);
-      chart.data.datasets[0].data = latestData.map((item) => {
-        switch (index) {
-          case 0:
-            return item.solarEnergyIndividual;
-          case 1:
-            return item.solarEnergyTotal;
-          case 2:
-            return item.internalBoughtEnergyPrice;
-          case 3:
-            return item.totalAmountSaved;
-        }
-      });
-      console.log(`Chart ${index} data:`, chart.data.datasets[0].data);
-      chart.update();
-    });
-  }
-
-  function getChartLabel(index) {
-    switch (index) {
-      case 0:
-        return "% Solar Energy (Individual)";
-      case 1:
-        return "% Solar Energy (Total)";
-      case 2:
-        return "Internal Bought Energy Price";
-      case 3:
-        return "Total Amount Saved";
+  // Listener function for individual efficiency updates
+  const sumEfficiencyIndividualListener = efficiencyresultstore.subscribe(
+    ($efficiencyresultstore) => {
+      sumEfficiencyIndividual = $efficiencyresultstore.reduce(
+        (accumulator, result) => accumulator + result.solarEnergyIndividual,
+        0
+      );
     }
-  }
+  );
 
-  function getChartFillColor(index) {
-    const fillColors = [
-      "rgba(255, 0, 0, 0.2)",
-      "rgba(255, 255, 0, 0.2)",
-      "rgba(0, 0, 255, 0.2)",
-      "rgba(0, 128, 0, 0.2)",
-    ];
-    return fillColors[index] || "rgba(0, 0, 0, 0.2)";
-  }
+  // Listener function for total efficiency updates
+  const sumEfficiencyTotalListener = efficiencyresultstore.subscribe(($efficiencyresultstore) => {
+    sumEfficiencyTotal = $efficiencyresultstore.reduce(
+      (accumulator, result) => accumulator + result.solarEnergyTotal,
+      0
+    );
+  });
 
-  function getChartColor(index) {
-    const colors = ["#f23f44", "#cbba07", "#1565c0", "#008000"];
-    return colors[index] || "#000000";
-  }
+  // Listener function for total money saved updates
+  const sumTotalMoneySavedListener = efficiencyresultstore.subscribe(($efficiencyresultstore) => {
+    sumTotalMoneySaved = $efficiencyresultstore.reduce(
+      (accumulator, result) => accumulator + result.totalAmountSaved,
+      0
+    );
+  });
+
+  // Destroy listeners on component destruction
+  onDestroy(() => {
+    sumEfficiencyIndividualListener();
+    sumEfficiencyTotalListener();
+    sumTotalMoneySavedListener();
+  });
+
+  // Computed property: Difference between total and individual efficiency
+  $: sumEfficiencyNoSolar = sumEfficiencyTotal - sumEfficiencyIndividual;
 </script>
 
 <div class="max-w-5xl mx-auto pt-8">
-  <div
-    class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
-    {#each Array(4) as _, index (index)}
-      <div class="chart-container">
-        <canvas bind:this={chartContainers[index]}></canvas>
-      </div>
-    {/each}
-  </div>
-  <div
-    class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
-    <p>Number of Households: {numberOfHouseholds}</p>
-    <p>Cost model algorithm: {costModelAlgorithm}</p>
-    <p>Cost model fixed price ratio: {costModelFixedPriceRatio}</p>
-    <p>Cost model price network buy consumer: {costModelPriceNetworkBuyConsumer}</p>
-    <p>Cost model price network sell consumer: {costModelPriceNetworkSellConsumer}</p>
-    <p>Twin world energy usage factor: {twinWorldEnergyUsageFactor}</p>
-    <p>Twin world solar panels factor: {twinWorldSolarPanelsFactor}</p>
-    <p>Algorithm max temperature: {algorithmMaxTemperature}</p>
-    <p>Runtime: {$runtime} seconds</p>
+  <Chart />
+  <div class="mt-8 bg-white rounded-lg p-4 px-20 mb-8 border-4 border-gray-400 shadow">
+    <table class="w-full">
+      <tr class="border-b border-gray-400">
+        <td class="p-2">Number of Households:</td>
+        <td class="p-2 min-w-40">{$stepperData.households.length}</td>
+      </tr>
+      {#if $stepperData.costmodel.fixed_price_ratio !== null}
+        <tr class="border-b border-gray-400">
+          <td class="p-2">Cost model fixed price ratio:</td>
+          <td class="p-2 min-w-40">{$stepperData.costmodel.fixed_price_ratio}</td>
+        </tr>
+      {/if}
+      {#if $stepperData.costmodel.price_network_buy_consumer !== null}
+        <tr class="border-b border-gray-400">
+          <td class="p-2">Cost model price network buy consumer:</td>
+          <td class="p-2 min-w-40">{$stepperData.costmodel.price_network_buy_consumer}</td>
+        </tr>
+      {/if}
+      {#if $stepperData.costmodel.price_network_sell_consumer !== null}
+        <tr class="border-b border-gray-400">
+          <td class="p-2">Cost model price network sell consumer:</td>
+          <td class="p-2 min-w-40">{$stepperData.costmodel.price_network_sell_consumer}</td>
+        </tr>
+      {/if}
+      {#if $stepperData.twinworld.energy_usage_factor !== null}
+        <tr class="border-b border-gray-400">
+          <td class="p-2">Twin world energy usage factor:</td>
+          <td class="p-2 min-w-40">{$stepperData.twinworld.energy_usage_factor}</td>
+        </tr>
+      {/if}
+      {#if $stepperData.twinworld.solar_panels_factor !== null}
+        <tr class="border-b border-gray-400">
+          <td class="p-2">Twin world solar panels factor:</td>
+          <td class="p-2 min-w-40">{$stepperData.twinworld.solar_panels_factor}</td>
+        </tr>
+      {/if}
+      {#if $stepperData.algorithm.max_temperature !== null}
+        <tr class="border-b border-gray-400">
+          <td class="p-2">Algorithm max temperature:</td>
+          <td class="p-2 min-w-40">{$stepperData.algorithm.max_temperature}</td>
+        </tr>
+      {/if}
+      {#if sumEfficiencyIndividual !== null}
+        <tr class="border-b border-gray-400">
+          <td class="p-2">Total saved by own solar panels:</td>
+          <td class="p-2 min-w-40">{sumEfficiencyIndividual.toFixed(2)} kWh</td>
+        </tr>
+      {/if}
+      {#if sumEfficiencyNoSolar !== null}
+        <tr class="border-b border-gray-400">
+          <td class="p-2">Total saved by other households' solar panels:</td>
+          <td class="p-2 min-w-40">{sumEfficiencyNoSolar.toFixed(2)} kWh</td>
+        </tr>
+      {/if}
+      {#if sumEfficiencyTotal !== null}
+        <tr class="border-b border-gray-400">
+          <td class="p-2">Total saved by the community:</td>
+          <td class="p-2 min-w-40">{sumEfficiencyTotal.toFixed(2)} kWh</td>
+        </tr>
+      {/if}
+      {#if sumTotalMoneySaved !== null}
+        <tr class="border-b border-gray-400">
+          <td class="p-2">Total money saved:</td>
+          <td class="p-2 min-w-40">€{sumTotalMoneySaved.toFixed(2)}</td>
+        </tr>
+      {/if}
+      {#if $runtime !== null}
+        <tr>
+          <td class="p-2">Runtime:</td>
+          <td class="p-2 min-w-40">{$runtime} seconds</td>
+        </tr>
+      {/if}
+    </table>
   </div>
 </div>
