@@ -487,7 +487,7 @@ def seed(session: Session = Depends(get_session)) -> None:
         price_network_buy_consumer=buy_consumer,
         price_network_sell_consumer=sell_consumer,
         fixed_price_ratio=fixed_price_ratio,
-        algorithm="cost_static()",
+        algorithm="cost_default()",
     )
 
     session.add(costmodel_fixed)
@@ -497,7 +497,7 @@ def seed(session: Session = Depends(get_session)) -> None:
         description="A price model based on the TEMO model. The price is determined by a formula that compares the energy needed to the various prices available, and returns an internal buying and selling prices",  # noqa: E501
         price_network_buy_consumer=buy_consumer,
         price_network_sell_consumer=sell_consumer,
-        algorithm="cost_variable()",
+        algorithm="cost_default()",
     )
 
     session.add(costmodel_temo)
