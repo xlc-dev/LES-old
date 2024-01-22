@@ -17,7 +17,7 @@
   let sizeFilter = "";
   let solarPanelFilter = "";
   let searchQuery = "";
-  
+
   // Loads the view for a specific household if it has been clicked in the simulation view
   const showHome = (data: HouseholdRead_Output) => {
     household = data;
