@@ -32,20 +32,6 @@ class CRUDApplianceTimeDaily(
             .where(ApplianceTimeDaily.appliance_id == appliance_id)
         ).first()
 
-    def get_non_empty_timewindow(self, *, session: Session):
-        return session.exec(
-            select(ApplianceTimeDaily).where(
-                ApplianceTimeDaily.bitmap_plan != 0
-            )
-        ).first()
-
-    def get_filled_appliance_time_daily(self, *, session: Session):
-        return session.exec(
-            select(ApplianceTimeDaily).where(
-                ApplianceTimeDaily.bitmap_plan != 0
-            )
-        ).all()
-
 
 class CRUDApplianceTimeWindow(
     CRUDBase[
