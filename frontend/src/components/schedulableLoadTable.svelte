@@ -333,7 +333,11 @@
           <td colspan={7}>
             <div transition:slide class="p-4 flex justify-center">
               {#key formattedDate}
-                <SchedulableLoadGrid appliances={data.appliances} date={formattedDate} dateNoFormat={selectedDate} {hours} />
+                <SchedulableLoadGrid
+                  appliances={data.appliances}
+                  date={formattedDate}
+                  dateNoFormat={selectedDate}
+                  {hours} />
               {/key}
             </div>
           </td>
