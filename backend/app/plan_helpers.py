@@ -137,7 +137,7 @@ def _energy_efficiency_day(
     ratio = previous_efficiency
 
     if costmodel.name == "Fixed Price":
-        ratio = costmodel.fixed_price_ratio
+        ratio = costmodel.fixed_price_ratio  # type: ignore
 
     energy_price_code = costmodel.algorithm
 
