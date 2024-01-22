@@ -2,7 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ApplianceTime } from "../models/ApplianceTime";
 import type { Body_start_api_simulate_start_post } from "../models/Body_start_api_simulate_start_post";
 import type { SelectedModelsInput } from "../models/SelectedModelsInput";
 import type { SelectedModelsOutput } from "../models/SelectedModelsOutput";

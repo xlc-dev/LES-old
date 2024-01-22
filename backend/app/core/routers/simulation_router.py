@@ -144,7 +144,7 @@ async def plan(
         )
 
         if (
-            planning.algorithm.name == "Greedy"
+            planning.algorithm.name == "Greedy planning"
             or planning.algorithm.name == "Simulated Annealing"
         ):
             for household_idx, household in enumerate(household_planning):
@@ -222,8 +222,8 @@ async def plan(
         # If the researcher didn't select the greedy or simulated
         # annealing algorithm, evaluate the algorithm of the researcher
         if (
-            planning.algorithm.name != "Greedy"
-            or planning.algorithm.name != "Simulated Annealing"
+            planning.algorithm.name != "Greedy planning"
+            and planning.algorithm.name != "Simulated Annealing"
         ):
             eval(planning.algorithm.algorithm)
 

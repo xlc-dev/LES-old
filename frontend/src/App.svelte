@@ -4,7 +4,7 @@
     efficiencyresultstore,
     type EfficiencyResult,
     isStarted,
-    runtime
+    runtime,
   } from "./lib/stores";
   import { OpenAPI, SimulateService } from "./lib/client";
 
@@ -37,10 +37,10 @@
 
       // Updates the number of households constantly
       // This may be redundant, as this value isn't supposed to change during a session
-      stepperData.update(data => {
+      stepperData.update((data) => {
         return {
           ...data,
-          households: data.households
+          households: data.households,
         };
       });
       efficiencyresultstore.update((store) => [...store, ...transformedResults]);

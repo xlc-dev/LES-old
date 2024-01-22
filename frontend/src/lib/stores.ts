@@ -29,12 +29,12 @@ function createRuntimeStore() {
     start: () => {
       set(0);
       timer = setInterval(() => {
-        update(n => Math.round((n + 0.01) * 100) / 100);
+        update((n) => Math.round((n + 0.01) * 100) / 100);
       }, 10);
     },
     stop: () => {
       clearInterval(timer);
-    }
+    },
   };
 }
 

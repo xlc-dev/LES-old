@@ -6,8 +6,8 @@ from fastapi import status
 
 from sqlmodel import Session, SQLModel
 
-from app.utils import Logger, SECONDS_IN_DAY, HOURS_IN_WEEK, unix_to_hour
 from app.config import settings
+from app.utils import Logger, SECONDS_IN_DAY, HOURS_IN_WEEK, unix_to_hour
 
 from app.core.models.household_model import HouseholdRead
 from app.core.models.energyflow_model import EnergyFlowRead
@@ -143,9 +143,10 @@ def _energy_efficiency_day(
     energy_price_code_with_params = f"""{energy_price_code}(
     buy_consumer={costmodel.price_network_buy_consumer},
     sell_consumer={costmodel.price_network_sell_consumer},
-    previous_efficiency={previous_efficiency})"""
+    ratio={previous_efficiency})"""
 
     # Execute the modified code using eval
+    from app.plan_defaults import cost_static, cost_variable  # noqa: F401
     energy_price = eval(energy_price_code_with_params)
 
     if sum(solar_energy_used_self) <= 0:
@@ -255,6 +256,7 @@ def setup_planning(
     int,
     int,
     int,
+    int,
     list[EnergyFlowRead],
     list[EnergyFlowRead],
     list[ApplianceTimeDaily],
@@ -289,11 +291,12 @@ def setup_planning(
     total_start_date = total_start_date.timestamp
     total_end_date = total_end_date.timestamp
 
-    days_in_chunk = (
-        energyflow_data_sim[-1].timestamp - energyflow_data_sim[0].timestamp
-    ) // SECONDS_IN_DAY + 1
-
     start_date = energyflow_data_sim[0].timestamp
+    end_date = energyflow_data_sim[-1].timestamp
+
+    days_in_chunk = (
+        end_date - start_date
+    ) // SECONDS_IN_DAY + 1
 
     days_in_planning = (
         total_end_date - total_start_date
@@ -316,6 +319,7 @@ def setup_planning(
         days_in_planning,
         length_planning,
         start_date,
+        end_date,
         total_start_date,
         energyflow_data_sim,
         energyflow_data,

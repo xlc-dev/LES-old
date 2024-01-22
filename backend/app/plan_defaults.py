@@ -23,10 +23,10 @@ def cost_static(
     *,
     buy_consumer: float,
     sell_consumer: float,
-    fixed_price_ratio: float,
+    ratio: float,
 ) -> float:
-    return buy_consumer * fixed_price_ratio + sell_consumer * (
-        1 - fixed_price_ratio
+    return buy_consumer * ratio + sell_consumer * (
+        1 - ratio
     )
 
 
@@ -34,12 +34,11 @@ def cost_variable(
     *,
     buy_consumer: float,
     sell_consumer: float,
-    previous_efficiency: float,
+    ratio: float,
 ) -> float:
-    return buy_consumer * previous_efficiency + sell_consumer * (
-        1 - previous_efficiency
+    return buy_consumer * ratio + sell_consumer * (
+        1 - ratio
     )
-
 
 def plan_greedy(
     *,

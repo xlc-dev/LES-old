@@ -109,22 +109,24 @@
 </script>
 
 <div class="max-w-5xl mx-auto pt-8">
-  <div class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
+  <div
+    class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
     {#each Array(4) as _, index (index)}
       <div class="chart-container">
         <canvas bind:this={chartContainers[index]}></canvas>
       </div>
     {/each}
   </div>
-  <div class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
-  <p>Number of Households: {numberOfHouseholds}</p>
-  <p>Cost model algorithm: {costModelAlgorithm}</p>
-  <p>Cost model fixed price ratio: {costModelFixedPriceRatio}</p>
-  <p>Cost model price network buy consumer: {costModelPriceNetworkBuyConsumer}</p>
-  <p>Cost model price network sell consumer: {costModelPriceNetworkSellConsumer}</p>
-  <p>Twin world energy usage factor: {twinWorldEnergyUsageFactor}</p>
-  <p>Twin world solar panels factor: {twinWorldSolarPanelsFactor}</p>
-  <p>Algorithm max temperature: {algorithmMaxTemperature}</p>
-  <p>Runtime: {$runtime} seconds</p>
+  <div
+    class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4">
+    <p>Number of Households: {numberOfHouseholds}</p>
+    <p>Cost model algorithm: {costModelAlgorithm}</p>
+    <p>Cost model fixed price ratio: {costModelFixedPriceRatio}</p>
+    <p>Cost model price network buy consumer: {costModelPriceNetworkBuyConsumer}</p>
+    <p>Cost model price network sell consumer: {costModelPriceNetworkSellConsumer}</p>
+    <p>Twin world energy usage factor: {twinWorldEnergyUsageFactor}</p>
+    <p>Twin world solar panels factor: {twinWorldSolarPanelsFactor}</p>
+    <p>Algorithm max temperature: {algorithmMaxTemperature}</p>
+    <p>Runtime: {$runtime} seconds</p>
   </div>
 </div>

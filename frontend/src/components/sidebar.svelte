@@ -18,7 +18,7 @@
 
   // Registers and handles button clicks by dispatching the corresponding event
   const handleButtonClick = (action: string) => {
-    if (action === 'Stop') {
+    if (action === "Stop") {
       runtime.stop();
     }
     dispatch("click", { action });

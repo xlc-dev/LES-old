@@ -9,7 +9,7 @@
 
   import { onMount, onDestroy } from "svelte";
   import Chart from "chart.js/auto";
-  import { runtime } from '../lib/stores';
+  import { runtime } from "../lib/stores";
 
   let chartContainer;
   let chartContainerTwo;

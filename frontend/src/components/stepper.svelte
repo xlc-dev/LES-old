@@ -485,7 +485,7 @@
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
       costmodelError = "";
     } catch (error) {
-      costmodelError = error.message
+      costmodelError = error.message;
     }
   };
 
