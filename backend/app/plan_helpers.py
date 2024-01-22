@@ -235,7 +235,9 @@ def check_appliance_time(
     appliance_duration_bit = 2**appliance.duration - 1
     shift = 24 - hour - appliance.duration
     current_time_window = (
-        appliance_duration_bit << shift if shift >= 0 else appliance_duration_bit >> -shift
+        appliance_duration_bit << shift
+        if shift >= 0
+        else appliance_duration_bit >> -shift
     )
 
     if bitmap_window & current_time_window:
