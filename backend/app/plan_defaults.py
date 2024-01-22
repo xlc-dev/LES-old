@@ -19,16 +19,7 @@ from app.core.models.appliance_model import (
 )
 
 
-def cost_static(
-    *,
-    buy_consumer: float,
-    sell_consumer: float,
-    ratio: float,
-) -> float:
-    return buy_consumer * ratio + sell_consumer * (1 - ratio)
-
-
-def cost_variable(
+def cost_default(
     *,
     buy_consumer: float,
     sell_consumer: float,
