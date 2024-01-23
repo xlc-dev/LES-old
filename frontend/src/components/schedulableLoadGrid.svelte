@@ -50,9 +50,9 @@
         const planNoEnergyBit = (entry.bitmap_plan_no_energy >> (23 - hour)) & 1;
 
         if (planEnergyBit === 1) {
-          return "bg-green-500"; // Green for energy from solar panels
+          // return "bg-green-500"; // Green for energy from solar panels
         } else if (planNoEnergyBit === 1) {
-          return "bg-red-500"; // Red for energy from the national grid
+          // return "bg-red-500"; // Red for energy from the national grid
         }
       }
     }

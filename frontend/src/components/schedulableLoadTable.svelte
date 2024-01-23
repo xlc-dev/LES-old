@@ -69,12 +69,6 @@
     showCard = false;
   }
 
-  function handleDateChange(newDate) {
-    selectedDateStore.set(newDate);
-    selectedDate = newDate;
-    showDatePicker = false;
-  }
-
   // Retracts the displayed dropdown menu when an area outside of the dropdown menu has been clicked
   const createHandleClickOutside = (filterName: string) => {
     return (event: any) => {
