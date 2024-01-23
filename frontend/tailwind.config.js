@@ -25,7 +25,7 @@ export default {
 
         "dark-table-header": "#12121b",
         "dark-table-row": "#1a1a26",
-        "dark-sidebar": "#111827"
+        "dark-sidebar": "#111827",
       },
       transitionProperty: {
         width: "width",

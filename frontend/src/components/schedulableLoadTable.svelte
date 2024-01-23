@@ -233,19 +233,16 @@
     </button>
     <button
       class="ml-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-      on:click={toggleCard}
-    >
+      on:click={toggleCard}>
       Legend
     </button>
   </div>
 
   {#if showCard}
     <div class="fixed inset-0 flex justify-center items-center">
-      <div class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10 dark:bg-dark-sidebar dark:text-les-white">
-        <button
-          class="text-xl text-gray-600 hover:text-gray-800 p-2"
-          on:click={closeCard}
-        >
+      <div
+        class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10 dark:bg-dark-sidebar dark:text-les-white">
+        <button class="text-xl text-gray-600 hover:text-gray-800 p-2" on:click={closeCard}>
           &#10005;
         </button>
         <h2><b>Legend: </b></h2>
@@ -263,7 +260,9 @@
         </div>
         <div class="flex items-center">
           <div class="h-4 w-4 bg-red-500 mr-2"></div>
-          <p>The red boxes indicate that the planned energy used is drawn from the national grid.</p>
+          <p>
+            The red boxes indicate that the planned energy used is drawn from the national grid.
+          </p>
         </div>
       </div>
     </div>
