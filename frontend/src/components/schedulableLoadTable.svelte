@@ -242,20 +242,20 @@
         <h2><b>Legend: </b></h2>
         <div class="flex items-center mb-2">
           <div class="h-4 w-4 bg-gray-500 mr-2"></div>
-          <p>The gray boxes contain the time slots that are unavailable to plan appliances in.</p>
+          <p>contain the time slots that are unavailable to plan appliances in.</p>
         </div>
         <div class="flex items-center mb-2">
           <div class="h-4 w-4 bg-blue-500 mr-2"></div>
-          <p>The blue boxes contain the time slots that are available.</p>
+          <p>contain the time slots that are available to plan appliances in.</p>
         </div>
         <div class="flex items-center mb-2">
           <div class="h-4 w-4 bg-green-500 mr-2"></div>
-          <p>The green boxes indicate that the planned energy used is drawn from solar panels.</p>
+          <p>indicate that the planned energy used is drawn from solar panels.</p>
         </div>
         <div class="flex items-center">
           <div class="h-4 w-4 bg-red-500 mr-2"></div>
           <p>
-            The red boxes indicate that the planned energy used is drawn from the national grid.
+            indicate that the planned energy used is drawn from the national grid.
           </p>
         </div>
       </div>
