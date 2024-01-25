@@ -11,6 +11,7 @@
   import { get } from 'svelte/store';
   import Chart from "./chart.svelte";
   import Papa from 'papaparse';
+  import streamSaver from 'streamsaver';
 
   import {
     stepperData,
@@ -45,39 +46,36 @@
     newSession = true;
   }
 
-  function downloadCSV() {
+  export function downloadCSV() {
     const timeDailiesData = get(timeDailies);
     const selectedOptions = get(stepperData);
     const graphData = getGraphData();
-    const csvData = convertToCSV({ timeDailiesData, selectedOptions, graphData });
-    triggerCSVDownload(csvData, 'session-data.csv');
+
+    streamCSV({ timeDailiesData, selectedOptions, graphData }, 'session-data.csv');
   }
 
   function getGraphData() {
     return [];
   }
 
-  function convertToCSV(data) {
+  function streamCSV(data, filename) {
     const { timeDailiesData, selectedOptions, graphData } = data;
-    const csvData = [
-      ["$timeDailies", "Selected Options", "Graph Data"],
-      ...timeDailiesData.map((item, index) => [
+    const fileStream = streamSaver.createWriteStream(filename);
+    const writer = fileStream.getWriter();
+    const encoder = new TextEncoder();
+
+    writer.write(encoder.encode("$timeDailies, Selected Options, Graph Data\n"));
+
+    timeDailiesData.forEach((item, index) => {
+      const row = [
         JSON.stringify(item),
         JSON.stringify(selectedOptions),
         JSON.stringify(graphData[index] || {})
-      ])
-    ];
-    return Papa.unparse(csvData);
-  }
+      ].join(',') + '\n';
+      writer.write(encoder.encode(row));
+    });
 
-  function triggerCSVDownload(csvData, filename) {
-    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(url);
+    writer.close();
   }
 </script>
 
