@@ -123,7 +123,6 @@ async def plan(
         appliance_time,
         household_planning,
         results,
-        energyflow_by_day,
     ) = setup_planning(session=session, planning=planning)
 
     for day_iterator in range(1, days_in_chunk + 1):

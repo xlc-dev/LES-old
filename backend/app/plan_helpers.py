@@ -1,4 +1,3 @@
-from collections import defaultdict
 from calendar import day_name
 from math import floor
 
@@ -262,7 +261,6 @@ def setup_planning(
     list[ApplianceTimeDaily],
     list[HouseholdRead],
     list[list[float]],
-    defaultdict[EnergyFlowRead, list[EnergyFlowRead]],
 ]:
     energyflow_data = energyflow_crud.get_by_solar_produced(
         session=session,
@@ -292,7 +290,7 @@ def setup_planning(
     total_end_date = total_end_date.timestamp
 
     start_date = energyflow_data_sim[0].timestamp
-    end_date = energyflow_data_sim[-1].timestamp
+    end_date = energyflow_data_sim[-1].timestamp - SECONDS_IN_DAY + 3600
 
     days_in_chunk = (end_date - start_date) // SECONDS_IN_DAY + 1
 
@@ -305,14 +303,7 @@ def setup_planning(
     household_planning = planning.households
     length_planning = len(household_planning)
 
-    energyflow_by_day = defaultdict(list)
-
-    for el in energyflow_data:
-        day = (el.timestamp - total_start_date) // SECONDS_IN_DAY
-        energyflow_by_day[day].append(el)
-
-    # TODO: check mypy error
-    return (  # type: ignore
+    return (
         days_in_chunk,
         days_in_planning,
         length_planning,
@@ -324,7 +315,6 @@ def setup_planning(
         appliance_time,
         household_planning,
         results,
-        energyflow_by_day,
     )
 
 
