@@ -216,7 +216,6 @@ def update_energy(
 def check_appliance_time(
     appliance: ApplianceRead,
     unix: int,
-    has_energy: bool,
     appliance_bitmap_plan: int,
 ) -> bool:
     hour = unix_to_hour(unix)
@@ -240,7 +239,7 @@ def check_appliance_time(
         else appliance_duration_bit >> -shift
     )
 
-    if bitmap_window & current_time_window:
+    if (bitmap_window & current_time_window) != current_time_window:
         return False
 
     if current_time_window & appliance_bitmap_plan:

@@ -163,6 +163,7 @@ async def plan(
                         appliance=appliance,
                         appliance_time=appliance_time,
                         energyflow_day=energyflow_day,
+                        total_start_date=total_start_date,
                     )
 
         (
