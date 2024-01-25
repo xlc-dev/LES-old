@@ -8,14 +8,16 @@
    */
 
   import { onMount } from "svelte";
-
+  import { get } from 'svelte/store';
   import Chart from "./chart.svelte";
+  import Papa from 'papaparse';
 
   import {
     stepperData,
     activatedHousehold,
     runtime,
     isStarted,
+    timeDailies,
     efficiencyresultstore,
   } from "../lib/stores";
 
@@ -29,8 +31,6 @@
     runtime.stop();
   });
 
-  function doNothing() {}
-
   const newSessionButton = () => {
     $stepperData = {
       algorithm: {} as any,
@@ -43,7 +43,42 @@
     $efficiencyresultstore = [];
     $runtime = 0;
     newSession = true;
-  };
+  }
+
+  function downloadCSV() {
+    const timeDailiesData = get(timeDailies);
+    const selectedOptions = get(stepperData);
+    const graphData = getGraphData();
+    const csvData = convertToCSV({ timeDailiesData, selectedOptions, graphData });
+    triggerCSVDownload(csvData, 'session-data.csv');
+  }
+
+  function getGraphData() {
+    return [];
+  }
+
+  function convertToCSV(data) {
+    const { timeDailiesData, selectedOptions, graphData } = data;
+    const csvData = [
+      ["$timeDailies", "Selected Options", "Graph Data"],
+      ...timeDailiesData.map((item, index) => [
+        JSON.stringify(item),
+        JSON.stringify(selectedOptions),
+        JSON.stringify(graphData[index] || {})
+      ])
+    ];
+    return Papa.unparse(csvData);
+  }
+
+  function triggerCSVDownload(csvData, filename) {
+    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
 </script>
 
 {#if !newSession}
@@ -58,7 +93,7 @@
           on:click={newSessionButton}>New session</button>
         <button
           class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-blue hover:brightness-110"
-          on:click={doNothing}>Download</button>
+          on:click={downloadCSV}>Download</button>
       </div>
     </div>
   </div>
