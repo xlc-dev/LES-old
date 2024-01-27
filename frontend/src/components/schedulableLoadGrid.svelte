@@ -39,14 +39,13 @@
     dateObj.setHours(0, 0, 0, 0);
 
     // Calculate the day number based on the selected date and start date
-    const dayNumber =
-      Math.floor((dateObj.getTime() - (baseDate.getTime() - 60 * 60 * 1000)) / (24 * 60 * 60 * 1000));
-
-    console.log(dayNumber);
+    const dayNumber = Math.round(
+      (dateObj.getTime() - (baseDate.getTime() - 1 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000)
+    );
 
     // Find the corresponding day in timeDailies based on the calculated day number
     const dayData = $timeDailies.filter(
-      (entry) => entry.id === 304 * (appliance_id - 1) + dayNumber
+      (entry) => entry.id === 304 * (appliance_id - 1) + dayNumber + 1
     );
 
     // Fallback if user hasn't selected a date that has no timeDailies
@@ -93,7 +92,7 @@
       {#each hours as hour}
         <div
           class={`w-6 h-6 border border-white ${getCellColor(
-            appliance.appliance_windows[(Math.floor(unixTimestamp / 86400) + 3) % 7].bitmap_window,
+            appliance.appliance_windows[(Math.round(unixTimestamp / 86400) + 3) % 7].bitmap_window,
             hour,
             date,
             appliance.id

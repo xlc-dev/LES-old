@@ -218,7 +218,7 @@ def check_appliance_time(
     appliance_bitmap_plan: int,
 ) -> bool:
     hour = unix_to_hour(unix)
-    current_day = day_name[(floor(unix / SECONDS_IN_DAY + 4) % 7)]
+    current_day = day_name[(floor(unix / SECONDS_IN_DAY + 3) % 7)]
     day_number = ApplianceDays[current_day.upper()].value
 
     bitmap_window = next(
