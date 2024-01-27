@@ -64,10 +64,10 @@
 
     efficiencyResults.forEach((result, index) => {
       const dayNumber = index + 1;
-      graphData.graph1.push({ x: `Day ${dayNumber}`, y: result.internalBoughtEnergyPrice });
-      graphData.graph2.push({ x: `Day ${dayNumber}`, y: result.solarEnergyIndividual });
-      graphData.graph3.push({ x: `Day ${dayNumber}`, y: result.solarEnergyTotal });
-      graphData.graph4.push({ x: `Day ${dayNumber}`, y: result.totalAmountSaved });
+      graphData.graph1.push(`internalBoughtEnergyPrice x: Day ${dayNumber}, y: ${result.internalBoughtEnergyPrice}`);
+      graphData.graph2.push(`solarEnergyIndividual x: Day ${dayNumber}, y: ${result.solarEnergyIndividual}`);
+      graphData.graph3.push(`solarEnergyTotal x: Day ${dayNumber}, y: ${result.solarEnergyTotal}`);
+      graphData.graph4.push(`totalAmountSaved x: Day ${dayNumber}, y: ${result.totalAmountSaved}`);
     });
     return graphData;
   }
