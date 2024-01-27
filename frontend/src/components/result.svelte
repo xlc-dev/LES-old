@@ -10,7 +10,6 @@
   import { onMount } from "svelte";
   import { get } from 'svelte/store';
   import Chart from "./chart.svelte";
-  import Papa from 'papaparse';
   import streamSaver from 'streamsaver';
 
   import {
@@ -55,7 +54,22 @@
   }
 
   function getGraphData() {
-    return [];
+    const efficiencyResults = get(efficiencyresultstore);
+    let graphData = {
+      graph1: [],
+      graph2: [],
+      graph3: [],
+      graph4: []
+    };
+
+    efficiencyResults.forEach((result, index) => {
+      const dayNumber = index + 1;
+      graphData.graph1.push({ x: `Day ${dayNumber}`, y: result.internalBoughtEnergyPrice });
+      graphData.graph2.push({ x: `Day ${dayNumber}`, y: result.solarEnergyIndividual });
+      graphData.graph3.push({ x: `Day ${dayNumber}`, y: result.solarEnergyTotal });
+      graphData.graph4.push({ x: `Day ${dayNumber}`, y: result.totalAmountSaved });
+    });
+    return graphData;
   }
 
   function streamCSV(data, filename) {
@@ -64,17 +78,19 @@
     const writer = fileStream.getWriter();
     const encoder = new TextEncoder();
 
-    writer.write(encoder.encode("$timeDailies, Selected Options, Graph Data\n"));
+    writer.write(encoder.encode("$timeDailies, Selected Options, Graph 1 Data, Graph 2 Data, Graph 3 Data, Graph 4 Data\n"));
 
     timeDailiesData.forEach((item, index) => {
       const row = [
         JSON.stringify(item),
         JSON.stringify(selectedOptions),
-        JSON.stringify(graphData[index] || {})
+        JSON.stringify(graphData.graph1[index] || {}),
+        JSON.stringify(graphData.graph2[index] || {}),
+        JSON.stringify(graphData.graph3[index] || {}),
+        JSON.stringify(graphData.graph4[index] || {})
       ].join(',') + '\n';
       writer.write(encoder.encode(row));
     });
-
     writer.close();
   }
 </script>
