@@ -10,6 +10,7 @@
   import { onMount } from "svelte";
   import { get } from 'svelte/store';
   import Chart from "./chart.svelte";
+  import * as XLSX from 'xlsx';
   import streamSaver from 'streamsaver';
 
   import {
@@ -45,12 +46,45 @@
     newSession = true;
   }
 
-  export function downloadCSV() {
+  export function downloadExcel() {
     const timeDailiesData = get(timeDailies);
-    const selectedOptions = get(stepperData);
     const graphData = getGraphData();
 
-    streamCSV({ timeDailiesData, selectedOptions, graphData }, 'session-data.csv');
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(timeDailiesData), "Time Dailies");
+    processGraphDataAndAddToWorkbook(graphData, wb);
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+    const blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'session-data.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function processGraphDataAndAddToWorkbook(graphData, workbook) {
+    Object.keys(graphData).forEach(graphKey => {
+      const graphPoints = graphData[graphKey].map(point => {
+        const [xPart, yPart] = point.split(',');
+        return {
+          X: xPart.split(':')[1].trim(),
+          Y: yPart.split(':')[1].trim()
+        };
+      });
+      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(graphPoints), graphKey);
+    });
+  }
+
+  function s2ab(s) {
+    const buffer = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buffer);
+    for (let i = 0; i < s.length; i++) {
+      view[i] = s.charCodeAt(i) & 0xFF;
+    }
+    return buffer;
   }
 
   function getGraphData() {
@@ -71,28 +105,6 @@
     });
     return graphData;
   }
-
-  function streamCSV(data, filename) {
-    const { timeDailiesData, selectedOptions, graphData } = data;
-    const fileStream = streamSaver.createWriteStream(filename);
-    const writer = fileStream.getWriter();
-    const encoder = new TextEncoder();
-
-    writer.write(encoder.encode("$timeDailies, Selected Options, Graph 1 Data, Graph 2 Data, Graph 3 Data, Graph 4 Data\n"));
-
-    timeDailiesData.forEach((item, index) => {
-      const row = [
-        JSON.stringify(item),
-        JSON.stringify(selectedOptions),
-        JSON.stringify(graphData.graph1[index] || {}),
-        JSON.stringify(graphData.graph2[index] || {}),
-        JSON.stringify(graphData.graph3[index] || {}),
-        JSON.stringify(graphData.graph4[index] || {})
-      ].join(',') + '\n';
-      writer.write(encoder.encode(row));
-    });
-    writer.close();
-  }
 </script>
 
 {#if !newSession}
@@ -107,7 +119,7 @@
           on:click={newSessionButton}>New session</button>
         <button
           class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-blue hover:brightness-110"
-          on:click={downloadCSV}>Download</button>
+          on:click={downloadExcel}>Download</button>
       </div>
     </div>
   </div>
