@@ -8,25 +8,39 @@
   import type { HouseholdRead_Output } from "../lib/client";
   import SchedulableLoadGrid from "./schedulableLoadGrid.svelte";
   import { DatePicker } from "date-picker-svelte";
+  import { activatedHousehold, endDate, startDate } from "../lib/stores";
+  import { onDestroy, onMount } from "svelte";
 
   export let household: HouseholdRead_Output;
+  let showDatePicker = false;
   let selectedDate = new Date();
-  let currentDate = new Date();
+  let formattedDate: string;
 
-  // Checks if the selected date is in the past
-  const isPastDate = (date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return date < today;
+  $: setMinDate = new Date($startDate * 1000);
+  $: setMaxDate = new Date($endDate * 1000);
+
+  const hours = Array.from({ length: 24 }, (_, i) => i);
+
+  const toggleDatePicker = () => {
+    showDatePicker = !showDatePicker;
   };
 
-  // Fetches data for the selected date
-  // This function needs to be supplemented with logic that fetches the required data
-  const fetchDataForDate = async (date) => {};
+  const handleClickOutside = (event) => {
+    if (!event.target.closest(".date-picker-container")) {
+      showDatePicker = false;
+    }
+  };
 
-  // Updates the displayed data when a new data has been selected
-  $: if (isPastDate(selectedDate)) {
-    fetchDataForDate(selectedDate);
+  onMount(() => {
+    window.addEventListener("click", handleClickOutside);
+  });
+
+  onDestroy(() => {
+    window.removeEventListener("click", handleClickOutside);
+  });
+
+  $: if (selectedDate) {
+    formattedDate = new Date(selectedDate).toLocaleDateString("en-US");
   }
 </script>
 
@@ -128,6 +142,35 @@
             >{appliance.daily_usage}</td>
         </tr>
       {/each}
+    </tbody>
+  </table>
+  <button class="date-picker-container relative" on:click|stopPropagation>
+    <button
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      on:click={toggleDatePicker}>Select Date</button>
+    {#if showDatePicker}
+      <div
+        class="date-picker-popup absolute z-10 mt-2 bg-white border border-gray-300 rounded shadow-lg p-4">
+        <DatePicker bind:value={selectedDate} min={setMinDate} max={setMaxDate} />
+      </div>
+    {/if}
+  </button>
+  <table>
+    <tbody>
+    <tr
+      class="bg-white hover:bg-white text-sm dark:bg-dark-table-row border-b border-gray-200 dark:border-les-white">
+      <td colspan={7}>
+        <div class="p-4 flex justify-center">
+          {#key formattedDate}
+            <SchedulableLoadGrid
+              appliances={household.appliances}
+              date={formattedDate}
+              dateNoFormat={selectedDate}
+              {hours} />
+          {/key}
+        </div>
+      </td>
+    </tr>
     </tbody>
   </table>
 </div>
