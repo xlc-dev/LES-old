@@ -45,8 +45,8 @@
     newSession = true;
   };
 
-  export function downloadExcel() {
-    const timeDailiesData = get(timeDailies);
+  export const downloadExcel = () => {
+    const timeDailiesData = $timeDailies;
     const graphData = getGraphData();
     const dashboardData = getDashboardData();
 
@@ -64,11 +64,11 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }
+  };
 
   function getDashboardData() {
-    const stepperDataValue = get(stepperData);
-    const efficiencyResults = get(efficiencyresultstore);
+    const stepperDataValue = $stepperData;
+    const efficiencyResults = $efficiencyresultstore;
     const runtimeValue = get(runtime);
 
     let sumEfficiencyIndividual = efficiencyResults.reduce(
@@ -144,7 +144,7 @@
   }
 
   function getGraphData() {
-    const efficiencyResults = get(efficiencyresultstore);
+    const efficiencyResults = $efficiencyresultstore;
     let graphData = {
       graph1: [],
       graph2: [],
