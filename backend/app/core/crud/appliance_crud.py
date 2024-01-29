@@ -23,14 +23,7 @@ class CRUDApplianceTimeDaily(
         ApplianceTimeDaily, ApplianceTimeDailyCreate, ApplianceTimeDailyUpdate
     ]
 ):
-    def get_appliance_time_daily(
-        self, *, session: Session, appliance_id: int, day: int
-    ):
-        return session.exec(
-            select(ApplianceTimeDaily)
-            .where(ApplianceTimeDaily.day == day)
-            .where(ApplianceTimeDaily.appliance_id == appliance_id)
-        ).first()
+    pass
 
 
 class CRUDApplianceTimeWindow(
@@ -41,6 +34,8 @@ class CRUDApplianceTimeWindow(
     ]
 ):
     def get_by_appliance_id(self, *, session: Session, appliance_id: int):
+        "Get all ApplianceTimeWindow by appliance_id"
+
         return session.exec(
             select(ApplianceTimeWindow).where(
                 ApplianceTimeWindow.appliance_id == appliance_id

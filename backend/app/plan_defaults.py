@@ -3,7 +3,7 @@ from random import random, randint, choice
 
 from fastapi import status
 
-from app.utils import Logger, unix_to_hour
+from app.utils import Logger, SECONDS_IN_DAY, unix_to_hour
 from app.plan_helpers import (
     check_appliance_time,
     plan_energy,
@@ -39,7 +39,8 @@ def plan_greedy(
     appliance: ApplianceRead,
     appliance_time: list[ApplianceTimeDaily],
     energyflow_day: list[EnergyFlowRead],
-):
+    total_start_date: int,
+) -> tuple[list[ApplianceTimeDaily], float, list[list[float]]]:
     usage = appliance.daily_usage
 
     index = days_in_planning * (appliance.id - 1) + day_number_in_planning - 1
@@ -50,11 +51,11 @@ def plan_greedy(
             detail=f"Day {day_number_in_planning} not found",
         )
 
-    bitmap_energy = appliance_time[index].bitmap_plan_energy
-    bitmap_no_energy = appliance_time[index].bitmap_plan_no_energy
-
     while usage > (1 - random()):
         plannedin = False
+
+        bitmap_energy = appliance_time[index].bitmap_plan_energy
+        bitmap_no_energy = appliance_time[index].bitmap_plan_no_energy
 
         if total_available_energy > 0:
             for energyflow_day_information in energyflow_day:
@@ -66,7 +67,6 @@ def plan_greedy(
                 if not check_appliance_time(
                     appliance=appliance,
                     unix=unix,
-                    has_energy=True,
                     appliance_bitmap_plan=bitmap_energy,
                 ):
                     continue
@@ -91,11 +91,14 @@ def plan_greedy(
 
         if not plannedin:
             for i in range(24):
-                currenttime = date + 3600 * i
+                currenttime = (
+                    total_start_date
+                    + (day_number_in_planning - 1) * SECONDS_IN_DAY
+                    + i * 3600
+                )
                 if not check_appliance_time(
                     appliance=appliance,
                     unix=currenttime,
-                    has_energy=False,
                     appliance_bitmap_plan=bitmap_no_energy,
                 ):
                     continue
@@ -185,7 +188,6 @@ def plan_simulated_annealing(
         if not check_appliance_time(
             appliance=selected_appliance,
             unix=appliance_new_starttime,
-            has_energy=gets_energy,
             appliance_bitmap_plan=bitmap_energy
             if gets_energy
             else bitmap_no_energy,

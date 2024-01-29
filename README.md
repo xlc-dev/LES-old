@@ -53,3 +53,34 @@ When `development mode` is enabled, you can go to `http://localhost:8000/docs` t
 ### Frontend
 
 `cd` to the frontend folder, and run `npm run dev` for a dev server, and navigate to `http://localhost:5173/`. The application will automatically reload if you change any of the source files.
+
+
+## Project structure
+
+### Backend
+
+The backend is found in the `backend` folder. In the backend folder you can find the default setup files and dependency lists, and the `run.py` entrypoint file that you run with Python.
+
+The `app` folder contains the rest of the application. The application is structured in the following way:
+
+- The `core` folder:
+  - This is the bulk of the app, also separated in multiple directories:
+    - `crud`: This contains all CRUD operations for the specified model/router
+    - `models`: Here are the database models with [SQLModel](https://sqlmodel.tiangolo.com/). Here you can also find the Response and Input classes in the same files.
+    - `routers`: This folder contains all the entrypoints you can call with this API. The router folder will use the model and CRUD for the specified name.
+
+
+- Everything else in `app`:
+  - This contains global helpers, configuration and utilities that don't belong to a specific router, and contains the FastAPI factory in `app.py`
+
+### Frontend
+
+The frontend is found in the `frontend` folder. It is a [Vite](https://vitejs.dev/) project, so it is structured the same way a Vite project get's generated.
+
+Inside the `frontend` folder are all configurations found for Tailwind, Prettier, etc. It also contains a `src` folder which holds the `Svelte` code, and a `public` folder for images, SVGs, etc.
+
+The `src` folder has 2 subfolders:
+  - `lib`: Where imported `.ts` or `.js` files, and where the output of the `openapi-typescript-codegen` library resides.
+  - `components`: Where all svelte components can be found.
+
+Inside the `src` folder is `App.svelte` which is the entrypoint that is getting loaded by `main.ts`.

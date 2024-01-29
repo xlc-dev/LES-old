@@ -1,10 +1,10 @@
 <script lang="ts">
   /*
-  The sidebar component contains the sidebar that is displayed in various other views.
-  The researcher can switch between the dashboard, simulation, and schedulable load views,
-  toggle the dark mode on or off, view the session options that were selected in the stepper,
-  and end the current session.
-  */
+   * The sidebar component contains the sidebar that is displayed in various other views.
+   * The researcher can switch between the dashboard, simulation, and schedulable load views,
+   * toggle the dark mode on or off, view the session options that were selected in the stepper,
+   * and end the current session.
+   */
 
   import { onMount, createEventDispatcher } from "svelte";
 
@@ -123,7 +123,7 @@
     </div>
 
     <button
-      class="flex items-center gap-3 hover:bg-dark-les-bg bg-les-red-dark w-full p-4 py-6 transition-colors duration-200"
+      class="flex items-center gap-3 hover:brightness-110 bg-les-red-dark w-full p-4 py-6 transition-colors duration-200"
       on:click={() => handleButtonClick("Stop")}>
       <img src="/stop.png" alt="" />
       <p class="text-les-white">Stop Simulation</p>

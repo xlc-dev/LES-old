@@ -53,9 +53,10 @@
         50;
     } catch (err) {
       if (err.status === 204) {
-        runtime.stop();
+        $isStarted = false;
         return;
       } else if (err.status !== 500) {
+        $isStarted = false;
         return;
       } else {
         console.error("Server error:", err);
@@ -70,8 +71,6 @@
     runtime.stop();
     $isStarted = false;
   }
-
-  // $: $isStarted && fetchData();
 </script>
 
 {#if $stepperData.households.length !== 0}

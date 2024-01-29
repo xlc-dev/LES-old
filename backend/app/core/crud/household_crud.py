@@ -11,6 +11,8 @@ from app.core.models.household_model import (
 
 class CRUDHousehold(CRUDBase[Household, HouseholdCreate, HouseholdUpdate]):
     def get_by_twinworld(self, *, session: Session, id: int):
+        "Get a single Household by twinworld_id"
+
         return session.exec(
             select(Household).where(Household.twinworld_id == id)
         ).all()
@@ -18,16 +20,17 @@ class CRUDHousehold(CRUDBase[Household, HouseholdCreate, HouseholdUpdate]):
     def get_by_twinworld_sorted_solar_panels(
         self, *, session: Session, id: int
     ):
+        "Get all Household by twinworld_id sorted by solar_panels"
+
         return session.exec(
             select(Household)
             .where(Household.twinworld_id == id)
             .order_by(desc(Household.solar_panels))  # type: ignore
         ).all()
 
-    def count_households(self, *, session: Session):
-        return session.query(Household).count()
-
     def get_by_name(self, *, session: Session, name: str):
+        "Get a single Household by name"
+
         return session.exec(
             select(Household).where(Household.name == name)
         ).first()

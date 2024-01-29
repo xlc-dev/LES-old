@@ -49,8 +49,7 @@
 {#if !newSession}
   <div class="max-w-3xl mx-auto pt-8">
     <Chart />
-    <div
-      class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow grid grid-cols-2 gap-4 relative">
+    <div class="mt-8 bg-white rounded-lg p-4 mb-8 shadow grid grid-cols-2 gap-4 relative">
       <p class="absolute left-1/2 transform -translate-x-1/2 mt-4">Runtime: {$runtime} seconds</p>
       <div class="col-span-2 flex justify-between mt-8">
         <button

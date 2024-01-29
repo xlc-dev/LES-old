@@ -1,4 +1,3 @@
-from collections import defaultdict
 from calendar import day_name
 from math import floor
 
@@ -216,11 +215,10 @@ def update_energy(
 def check_appliance_time(
     appliance: ApplianceRead,
     unix: int,
-    has_energy: bool,
     appliance_bitmap_plan: int,
 ) -> bool:
     hour = unix_to_hour(unix)
-    current_day = day_name[(floor(unix / SECONDS_IN_DAY + 4) % 7)]
+    current_day = day_name[(floor(unix / SECONDS_IN_DAY + 3) % 7)]
     day_number = ApplianceDays[current_day.upper()].value
 
     bitmap_window = next(
@@ -240,7 +238,7 @@ def check_appliance_time(
         else appliance_duration_bit >> -shift
     )
 
-    if bitmap_window & current_time_window:
+    if (bitmap_window & current_time_window) != current_time_window:
         return False
 
     if current_time_window & appliance_bitmap_plan:
@@ -263,7 +261,6 @@ def setup_planning(
     list[ApplianceTimeDaily],
     list[HouseholdRead],
     list[list[float]],
-    defaultdict[EnergyFlowRead, list[EnergyFlowRead]],
 ]:
     energyflow_data = energyflow_crud.get_by_solar_produced(
         session=session,
@@ -293,7 +290,7 @@ def setup_planning(
     total_end_date = total_end_date.timestamp
 
     start_date = energyflow_data_sim[0].timestamp
-    end_date = energyflow_data_sim[-1].timestamp
+    end_date = energyflow_data_sim[-1].timestamp - SECONDS_IN_DAY + 3600
 
     days_in_chunk = (end_date - start_date) // SECONDS_IN_DAY + 1
 
@@ -306,13 +303,6 @@ def setup_planning(
     household_planning = planning.households
     length_planning = len(household_planning)
 
-    energyflow_by_day = defaultdict(list)
-
-    for el in energyflow_data:
-        day = (el.timestamp - total_start_date) // SECONDS_IN_DAY
-        energyflow_by_day[day].append(el)
-
-    # TODO: check mypy error
     return (  # type: ignore
         days_in_chunk,
         days_in_planning,
@@ -325,7 +315,6 @@ def setup_planning(
         appliance_time,
         household_planning,
         results,
-        energyflow_by_day,
     )
 
 

@@ -705,7 +705,7 @@
   {/if}
 
   {#if isStepZero}
-    <div class="max-w-3xl mx-auto pt-8 mt-48">
+    <div class="mx-auto pt-8">
       <img src="/favicon.png" class="w-48 mx-auto rounded-lg" alt="LES Logo" />
       <h1 class="font-bold text-4xl text-center text-white pt-4">
         Local Energy System Simulation

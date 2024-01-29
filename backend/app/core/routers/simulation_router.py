@@ -8,9 +8,8 @@ the options through the stepper, the frontend would call the /start endpoint to
 start the simulation.
 
 Once the simulation is done because the algorithm isn't finding any more
-improvements, or the user has stopped the simulation, the frontend would call
-the /stop endpoint to get the results of the simulation. Where you could
-download the results as a CSV file, and see the results in a graph.
+improvements, or the user has stopped the simulation, the frontend stops
+calling the /plan endpoint, and ends the simulation.
 """
 
 from fastapi import APIRouter, Depends, Body, status
@@ -102,11 +101,6 @@ async def start(
     )
 
 
-@router.post("/stop")
-async def stop(*, session: Session = Depends(get_session)):
-    return {"message": "Simulation ended"}
-
-
 @router.post("/plan", response_model=SelectedModelsOutput)
 async def plan(
     *, planning: SelectedModelsInput, session: Session = Depends(get_session)
@@ -123,7 +117,6 @@ async def plan(
         appliance_time,
         household_planning,
         results,
-        energyflow_by_day,
     ) = setup_planning(session=session, planning=planning)
 
     for day_iterator in range(1, days_in_chunk + 1):
@@ -163,6 +156,7 @@ async def plan(
                         appliance=appliance,
                         appliance_time=appliance_time,
                         energyflow_day=energyflow_day,
+                        total_start_date=total_start_date,
                     )
 
         (

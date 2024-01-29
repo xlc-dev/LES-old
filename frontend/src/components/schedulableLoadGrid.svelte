@@ -23,10 +23,16 @@
    *
    * @param {number} bitmap - The bitmap value to determine the color from.
    * @param {number} hour - The hour for which the color is being determined.
-   * @param {Date} selectedDate - The selected date for which the color is being determined.
-   * @returns {string} - The background color class name ("bg-blue-600", "bg-green-500", or "bg-red-500").
+   * @param {string} selectedDate - The selected date for which the color is being determined.
+   * @param {number} appliance_id - The ID of the appliance for which the color is being determined.
+   * @returns {string} - The background color class name ("bg-blue-600", "bg-gray-700", "bg-green-500", or "bg-red-500").
    */
-  const getCellColor = (bitmap, hour, selectedDate) => {
+  const getCellColor = (
+    bitmap: number,
+    hour: number,
+    selectedDate: string,
+    appliance_id: number
+  ) => {
     const bitmapString = bitmap.toString(2).padStart(24, "0");
 
     // Convert the startDate from Unix timestamp to Date
@@ -38,23 +44,33 @@
     dateObj.setHours(0, 0, 0, 0);
 
     // Calculate the day number based on the selected date and start date
-    const dayNumber =
-      Math.floor((dateObj.getTime() - baseDate.getTime()) / (24 * 60 * 60 * 1000)) + 2;
+    const dayNumber = Math.round(
+      (dateObj.getTime() - (baseDate.getTime() - 1 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000)
+    );
 
     // Find the corresponding day in timeDailies based on the calculated day number
-    const dayData = $timeDailies.filter((entry) => entry.day === dayNumber);
+    const dayData = $timeDailies.filter(
+      (entry) => entry.id === 304 * (appliance_id - 1) + dayNumber + 1
+    );
 
-    if (dayData.length > 0) {
-      for (const entry of dayData) {
-        const planEnergyBit = (entry.bitmap_plan_energy >> (23 - hour)) & 1;
-        const planNoEnergyBit = (entry.bitmap_plan_no_energy >> (23 - hour)) & 1;
+    // Fallback if user hasn't selected a date that has no timeDailies
+    if (dayData.length === 0) {
+      return "bg-gray-700";
+    }
 
-        if (planEnergyBit === 1) {
-          return "bg-green-500"; // Green for energy from solar panels
-        } else if (planNoEnergyBit === 1) {
-          return "bg-red-500"; // Red for energy from the national grid
-        }
+    const planEnergyBit = (dayData[0].bitmap_plan_energy >> (23 - hour)) & 1;
+    const planNoEnergyBit = (dayData[0].bitmap_plan_no_energy >> (23 - hour)) & 1;
+
+    if (planEnergyBit === 1) {
+      if (bitmapString[hour] !== "1") {
+        return "bg-yellow-500";
       }
+      return "bg-green-500"; // Green for energy from solar panels
+    } else if (planNoEnergyBit === 1) {
+      if (bitmapString[hour] !== "1") {
+        return "bg-les-red-dark";
+      }
+      return "bg-red-500"; // Red for energy from the national grid
     }
 
     // Default to gray for unavailable time slots
@@ -81,9 +97,10 @@
       {#each hours as hour}
         <div
           class={`w-6 h-6 border border-white ${getCellColor(
-            appliance.appliance_windows[(Math.floor(unixTimestamp / 86400) + 3) % 7].bitmap_window,
+            appliance.appliance_windows[(Math.round(unixTimestamp / 86400) + 3) % 7].bitmap_window,
             hour,
-            date
+            date,
+            appliance.id
           )}`}>
         </div>
       {/each}
