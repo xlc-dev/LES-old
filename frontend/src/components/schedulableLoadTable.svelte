@@ -44,6 +44,7 @@
   let filteredData = [];
   let showDatePicker = false;
   let selectedDate = new Date();
+  let showCard = false;
   let formattedDate: string;
 
   // Need these reactive values to be set here for later use in file
@@ -57,9 +58,13 @@
     showDropdown = showDropdown === filterName ? null : filterName;
   };
 
-  function toggleDatePicker() {
+  const toggleDatePicker = () => {
     showDatePicker = !showDatePicker;
-  }
+  };
+
+  const toggleCard = () => {
+    showCard = !showCard;
+  };
 
   // Retracts the displayed dropdown menu when an area outside of the dropdown menu has been clicked
   const createHandleClickOutside = (filterName: string) => {
@@ -221,7 +226,40 @@
         </div>
       {/if}
     </button>
+    <button
+      class="ml-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      on:click={toggleCard}>
+      Legend
+    </button>
   </div>
+
+  {#if showCard}
+    <div class="fixed inset-0 flex justify-center items-center">
+      <div
+        class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10 dark:bg-dark-sidebar dark:text-les-white">
+        <button class="text-xl text-gray-600 hover:text-gray-800 p-2" on:click={toggleCard}>
+          &#10005;
+        </button>
+        <h2><b>Legend: </b></h2>
+        <div class="flex items-center mb-2">
+          <div class="h-4 w-4 bg-gray-500 mr-2"></div>
+          <p>contain the time slots that are unavailable to plan appliances in.</p>
+        </div>
+        <div class="flex items-center mb-2">
+          <div class="h-4 w-4 bg-blue-500 mr-2"></div>
+          <p>contain the time slots that are available to plan appliances in.</p>
+        </div>
+        <div class="flex items-center mb-2">
+          <div class="h-4 w-4 bg-green-500 mr-2"></div>
+          <p>indicate that the planned energy used is drawn from solar panels.</p>
+        </div>
+        <div class="flex items-center">
+          <div class="h-4 w-4 bg-red-500 mr-2"></div>
+          <p>indicate that the planned energy used is drawn from the national grid.</p>
+        </div>
+      </div>
+    </div>
+  {/if}
 </div>
 
 <table class="min-w-full leading-normal rounded-lg overflow-hidden">
@@ -347,10 +385,6 @@
             </div>
           </td>
         </tr>
-      {/if}
-
-      {#if expandedRow !== data.id}
-        <tr class="border-b border-gray-200"></tr>
       {/if}
     {/each}
   </tbody>

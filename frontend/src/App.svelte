@@ -16,7 +16,7 @@
 
   OpenAPI.BASE = "http://localhost:8000";
 
-  async function fetchData(chunkoffset = 0) {
+  const fetchData = async (chunkoffset = 0) => {
     if (!$isStarted) return;
     try {
       const response = await SimulateService.planApiSimulatePlanPost({
@@ -62,7 +62,7 @@
         console.error("Server error:", err);
       }
     }
-  }
+  };
 
   $: if ($isStarted) {
     runtime.start();
