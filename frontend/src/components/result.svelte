@@ -49,10 +49,12 @@
   export function downloadExcel() {
     const timeDailiesData = get(timeDailies);
     const graphData = getGraphData();
+    const dashboardData = getDashboardData();
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(timeDailiesData), "Time Dailies");
     processGraphDataAndAddToWorkbook(graphData, wb);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet([dashboardData]), "Dashboard Data");
     const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
     const blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
@@ -63,6 +65,40 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+
+  function getDashboardData() {
+    const stepperDataValue = get(stepperData);
+    const efficiencyResults = get(efficiencyresultstore);
+    const runtimeValue = get(runtime);
+
+    let sumEfficiencyIndividual = efficiencyResults.reduce(
+      (acc, result) => acc + result.solarEnergyIndividual, 0
+    );
+    let sumEfficiencyTotal = efficiencyResults.reduce(
+      (acc, result) => acc + result.solarEnergyTotal, 0
+    );
+    let sumTotalMoneySaved = efficiencyResults.reduce(
+      (acc, result) => acc + result.totalAmountSaved, 0
+    );
+    let sumEfficiencyNoSolar = sumEfficiencyTotal - sumEfficiencyIndividual;
+
+    return {
+      numberOfHouseholds: stepperDataValue.households.length,
+      priceNetworkBuyConsumer: stepperDataValue.costmodel.price_network_buy_consumer,
+      priceNetworkSellConsumer: stepperDataValue.costmodel.price_network_sell_consumer,
+      energyUsageFactor: stepperDataValue.twinworld.energy_usage_factor,
+      solarPanelsFactor: stepperDataValue.twinworld.solar_panels_factor,
+      maxTemperature: stepperDataValue.algorithm.max_temperature,
+      totalSavedByOwnSolarPanels: sumEfficiencyIndividual,
+      totalSavedByOtherHouseholdsSolarPanels: sumEfficiencyNoSolar,
+      totalSavedByTheCommunity: sumEfficiencyTotal,
+      totalMoneySaved: sumTotalMoneySaved,
+      runtime: runtimeValue,
+      selectedTwinWorld: stepperDataValue.twinworld.name,
+      selectedCostModel: stepperDataValue.costmodel.name,
+      selectedAlgorithm: stepperDataValue.algorithm.name
+    };
   }
 
   function processGraphDataAndAddToWorkbook(graphData, workbook) {
