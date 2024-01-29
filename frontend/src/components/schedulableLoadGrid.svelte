@@ -17,7 +17,7 @@
   export let hours: number[];
   export let date: string;
   export let dateNoFormat: Date;
-  
+
   $: unixTimestamp = Math.floor(dateNoFormat.getTime() / 1000);
 
   /**

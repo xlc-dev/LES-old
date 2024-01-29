@@ -1,4 +1,10 @@
-import { type Invalidator, type Subscriber, type Unsubscriber, type Writable, writable } from "svelte/store";
+import {
+  type Invalidator,
+  type Subscriber,
+  type Unsubscriber,
+  type Writable,
+  writable,
+} from "svelte/store";
 
 import type { HouseholdRead_Output, SelectedOptions, ApplianceTimeDailyRead } from "./client";
 
@@ -44,8 +50,12 @@ export const isStarted = writable(false);
 
 export const runtime: {
   stop: () => void;
-  subscribe: (this: void, run: Subscriber<number>, invalidate?: Invalidator<number>) => Unsubscriber;
-  start: () => void
+  subscribe: (
+    this: void,
+    run: Subscriber<number>,
+    invalidate?: Invalidator<number>
+  ) => Unsubscriber;
+  start: () => void;
 } = createRuntimeStore();
 
 export const timeDailies = writable<Array<ApplianceTimeDailyRead>>([]);

@@ -254,9 +254,7 @@
         </div>
         <div class="flex items-center">
           <div class="h-4 w-4 bg-red-500 mr-2"></div>
-          <p>
-            indicate that the planned energy used is drawn from the national grid.
-          </p>
+          <p>indicate that the planned energy used is drawn from the national grid.</p>
         </div>
       </div>
     </div>
@@ -387,8 +385,6 @@
           </td>
         </tr>
       {/if}
-
-
     {/each}
   </tbody>
 </table>
