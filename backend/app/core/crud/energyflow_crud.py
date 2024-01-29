@@ -11,6 +11,8 @@ from app.core.models.energyflow_model import (
 
 class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
     def get_by_timestamp(self, *, session: Session, timestamp: int):
+        "Get a single EnergyFlow by timestamp"
+
         return session.exec(
             select(EnergyFlow).where(EnergyFlow.timestamp == timestamp)
         ).first()
@@ -18,6 +20,8 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
     def get_by_solar_produced(
         self, *, session: Session, limit: int = 10000, offset: int = 0
     ):
+        "Get all EnergyFlow by solar_produced"
+
         return session.exec(
             select(EnergyFlow)
             .where(EnergyFlow.solar_produced > 0)
@@ -29,6 +33,8 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
     def get_all_sorted_by_timestamp(
         self, *, session: Session, limit: int = 10000, offset: int = 0
     ):
+        "Get all EnergyFlow sorted by timestamp"
+
         return session.exec(
             select(EnergyFlow)
             .order_by(EnergyFlow.timestamp.asc())  # type: ignore
@@ -37,6 +43,8 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
         ).all()
 
     def get_start_end_date(self, *, session: Session):
+        "Get the start and end date of the EnergyFlow table"
+
         min_timestamp_query = select(EnergyFlow).filter(
             EnergyFlow.timestamp  # type: ignore
             == session.execute(select(func.min(EnergyFlow.timestamp))).scalar()
@@ -49,13 +57,6 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
         results_min_timestamp = session.exec(min_timestamp_query).first()
         results_max_timestamp = session.exec(max_timestamp_query).first()
         return results_min_timestamp, results_max_timestamp
-
-    def get_sorted_by_timestamp(self, *, session: Session):
-        return session.exec(
-            select(EnergyFlow).order_by(
-                EnergyFlow.timestamp.asc()  # type: ignore
-            )
-        ).first()
 
 
 energyflow_crud = CRUDEnergyFlow(EnergyFlow)
