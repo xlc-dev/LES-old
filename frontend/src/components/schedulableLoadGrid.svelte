@@ -25,11 +25,16 @@
    *
    * @param {number} bitmap - The bitmap value to determine the color from.
    * @param {number} hour - The hour for which the color is being determined.
-   * @param {Date} selectedDate - The selected date for which the color is being determined.
+   * @param {string} selectedDate - The selected date for which the color is being determined.
    * @param {number} appliance_id - The ID of the appliance for which the color is being determined.
    * @returns {string} - The background color class name ("bg-blue-600", "bg-gray-700", "bg-green-500", or "bg-red-500").
    */
-  const getCellColor = (bitmap, hour, selectedDate, appliance_id) => {
+  const getCellColor = (
+    bitmap: number,
+    hour: number,
+    selectedDate: string,
+    appliance_id: number
+  ) => {
     const bitmapString = bitmap.toString(2).padStart(24, "0");
 
     // Convert the startDate from Unix timestamp to Date

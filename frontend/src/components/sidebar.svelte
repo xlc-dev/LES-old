@@ -1,10 +1,10 @@
 <script lang="ts">
   /*
-  The sidebar component contains the sidebar that is displayed in various other views.
-  The researcher can switch between the dashboard, simulation, and schedulable load views,
-  toggle the dark mode on or off, view the session options that were selected in the stepper,
-  and end the current session.
-  */
+   * The sidebar component contains the sidebar that is displayed in various other views.
+   * The researcher can switch between the dashboard, simulation, and schedulable load views,
+   * toggle the dark mode on or off, view the session options that were selected in the stepper,
+   * and end the current session.
+   */
 
   import { onMount, createEventDispatcher } from "svelte";
 

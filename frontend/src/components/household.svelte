@@ -1,10 +1,10 @@
 <script lang="ts">
   /*
-  The household component contains the view that is displayed when an individual household
-  is clicked in the schedulable load table or in the simulation view. It contains additional
-  data about the selected household and its' appliances, which is regularly updated and
-  translated into a part of the visualisations in the dashboard component.
-  */
+   * The household component contains the view that is displayed when an individual household
+   * is clicked in the schedulable load table or in the simulation view. It contains additional
+   * data about the selected household and its' appliances, which is regularly updated and
+   * translated into a part of the visualisations in the dashboard component.
+   */
   import type { HouseholdRead_Output } from "../lib/client";
   import SchedulableLoadGrid from "./schedulableLoadGrid.svelte";
   import { DatePicker } from "date-picker-svelte";
@@ -53,9 +53,28 @@
   }
 </script>
 
-<h1 class="font-bold text-4xl pb-4 flex items-center gap-4 dark:text-les-white">
-  <img src="/house.svg" alt="" class="h-24" />{household.name} Data
-</h1>
+<div class="font-bold pb-4 gap-4 dark:text-les-white">
+  <svg
+    class="h-24 fill-dark dark:fill-white"
+    version="1.1"
+    id="Capa_1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    viewBox="0 0 1000 345.804"
+    xml:space="preserve">
+    <g>
+      <path
+        d="M343.288,159.838L181.905,27.941c-5.242-4.283-12.77-4.283-18.009,0l-41.336,33.79V44.193c0-3.788-3.066-6.848-6.854-6.848
+  H75.928c-3.788,0-6.854,3.063-6.854,6.848v61.251L2.516,159.838c-2.933,2.391-3.36,6.711-0.970,9.641
+  c1.357,1.654,3.33,2.523,5.32,2.523c1.524,0,3.053-0.511,4.328-1.545l34.55-28.245v172.011c0,3.785,3.066,6.852,6.846,6.852
+  h240.626c3.781,0,6.854-3.066,6.854-6.852V142.216l34.55,28.245c1.273,1.037,2.807,1.545,4.326,1.545
+  c1.984,0,3.956-0.87,5.314-2.524C346.648,166.549,346.221,162.235,343.288,159.838z M82.779,51.041h26.071v21.888l-26.071,21.31
+  V51.041z M286.367,307.369H59.44V131.015l107.596-87.939c3.414-2.791,8.316-2.791,11.731,0l107.6,87.939V307.369z" />
+    </g>
+    <text x="33%" y="70%" font-size="60" class="dark:text-white text-black"
+      >{household.name} Data</text>
+  </svg>
+</div>
 
 <div class="flex flex-col gap-12 justify-between">
   <table class="min-w-full leading-normal rounded-lg overflow-hidden">

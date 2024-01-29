@@ -10,6 +10,8 @@ from app.core.models.costmodel_model import (
 
 class CRUDCostModel(CRUDBase[CostModel, CostModelCreate, CostModelUpdate]):
     def get_by_name(self, *, session: Session, name: str):
+        "Get a single CostModel by name"
+
         return session.exec(
             select(CostModel).where(CostModel.name == name)
         ).first()

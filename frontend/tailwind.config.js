@@ -33,13 +33,31 @@ export default {
     },
   },
   plugins: [
-    plugin(function ({ addBase, theme }) {
+    plugin(function ({ addBase, addComponents, theme }) {
       addBase({
         "input[type='checkbox'], input[type='radio']": {
           cursor: "pointer",
           width: theme("width.4"),
           height: theme("height.4"),
           accentColor: theme("colors.les-highlight"),
+        },
+      });
+      addComponents({
+        ".calendar": {
+          "--date-picker-foreground": theme("colors.les-highlight"),
+          "--date-picker-background": theme("colors.les-white"),
+          "--date-picker-highlight-border": theme("colors.les-blue"),
+          "--date-picker-highlight-shadow": theme("colors.les-highlight"),
+          "--date-picker-selected-color": theme("colors.les-white"),
+          "--date-picker-selected-background": theme("colors.les-blue"),
+        },
+        ".calendar-dark": {
+          "--date-picker-foreground": theme("colors.les-white"),
+          "--date-picker-background": theme("colors.dark-les-bg"),
+          "--date-picker-highlight-border": theme("colors.les-blue"),
+          "--date-picker-highlight-shadow": theme("colors.les-sidebar-item"),
+          "--date-picker-selected-color": theme("colors.les-dark"),
+          "--date-picker-selected-background": theme("colors.les-blue"),
         },
       });
     }),

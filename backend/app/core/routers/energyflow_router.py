@@ -1,10 +1,10 @@
 from typing import Sequence
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 
 from sqlmodel import Session
 
-from app.utils import get_session
+from app.utils import Logger, get_session
 
 from app.core.crud.energyflow_crud import energyflow_crud
 from app.core.models import energyflow_model
@@ -26,9 +26,9 @@ async def get_energyflow(
     energyflow = energyflow_crud.get(session=session, id=id)
 
     if not energyflow:
-        raise HTTPException(
+        Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"energyflow with id: {id} not found.",
+            detail=f"energyflow with ID: {id} not found",
         )
 
     return energyflow
@@ -45,9 +45,33 @@ async def post_energyflow(
     )
 
     if check_energyflow:
-        raise HTTPException(
+        Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"energyflow with name: {form_data.timestamp} already exists.",  # noqa: E501
+            detail=f"energyflow with timestamp: {form_data.timestamp} already exists",  # noqa: E501
         )
 
     energyflow_crud.create(session=session, obj_in=form_data)
+
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_energyflow(
+    *,
+    id: int,
+    session: Session = Depends(get_session),
+) -> None:
+    # Don't allow the user to delete the default energyflow
+    if id == 1:
+        Logger.exception(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"eneergyflow with ID: {id} is not allowed to be deleted",
+        )
+
+    eneryflow = energyflow_crud.get(session=session, id=id)
+
+    if not eneryflow:
+        Logger.exception(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"energyflow with ID: {id} not found",
+        )
+
+    energyflow_crud.remove(session=session, id=id)

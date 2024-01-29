@@ -48,11 +48,11 @@ To simulate, you need to call the endpoints inside the tag `Simulate`.
 
 These endpoints need to be called in a specific order:
 
-| Order | Method | Endpoint        | Description                                                                                           |
-|-------|--------|-----------------|-------------------------------------------------------------------------------------------------------|
-| 1     | GET    | `/load-data`    | Get all the options for Algorithm, CostModel, and TwinWorld.                                          |
-| 2     | POST   | `/start`        | Start the simulation based on the body parameters sent. (options are in the response of /load-data)   |
-| 3     | GET    | `/stop`         | Stop the simulation, return the end result to show in graphs.                                         |
+| Order | Method | Endpoint                 | Description                                                                                                                           |
+|-------|--------|--------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| 1     | GET    | `/load-data` (optional)  | Get all the options for Algorithm, CostModel, and TwinWorld.                                                                          |
+| 2     | POST   | `/start`                 | Start the simulation based on the body parameters sent. (options are in the response of /load-data)                                   |
+| 3     | POST   | `/plan`                  | Call plan with offsets of +7 repeatedly until the simulation is done, to get weekly planned data by the selected algorithm of /start  |
     """  # noqa: E501
 
     tags_metadata = [
@@ -82,7 +82,7 @@ These endpoints need to be called in a specific order:
         },
         {
             "name": "Simulate",
-            "description": "Simulate the twinworld. Here are the main endpoints for the simulation.",  # noqa: E501
+            "description": "Simulate the twinworld with various CostModels, Algorithms and Energyflows.",  # noqa: E501
         },
         {
             "name": "Seed",

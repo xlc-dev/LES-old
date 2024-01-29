@@ -47,6 +47,7 @@
   let showCard = false;
   let formattedDate: string;
 
+  // Need these reactive values to be set here for later use in file
   $: setMinDate = new Date($startDate * 1000);
   $: setMaxDate = new Date($endDate * 1000);
 
@@ -121,6 +122,10 @@
         }
       }
     });
+
+    if (setMinDate) {
+      selectedDate = setMinDate;
+    }
   });
 
   onDestroy(() => {
@@ -165,6 +170,7 @@
     });
   }
 
+  // Updates the selected date when a date has been selected in the date picker
   $: if (selectedDate) {
     formattedDate = new Date(selectedDate).toLocaleDateString("en-US");
   }
@@ -219,8 +225,7 @@
         class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         on:click={toggleDatePicker}>Select Date</button>
       {#if showDatePicker}
-        <div
-          class="date-picker-popup absolute z-10 mt-2 bg-white border border-gray-300 rounded shadow-lg p-4">
+        <div class="absolute z-10 rounded mt-2 calendar dark:calendar-dark">
           <DatePicker bind:value={selectedDate} min={setMinDate} max={setMaxDate} />
         </div>
       {/if}

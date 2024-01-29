@@ -123,16 +123,14 @@
   </div>
 
   <div
-    class="grid grid-cols-8 gap-4 justify-between items-center rounded-lg bg-gray-100 p-2 dark:bg-gray-400">
+    class="grid grid-cols-8 gap-4 justify-between items-center rounded-lg bg-gray-100 p-2 dark:bg-dark-table-row">
     {#each filteredHouseholds as data}
       <button
         class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4"
         on:click={() => showHome(data)}>
         <svg
-          class="hover:scale-125 transition-all duration-300"
-          fill="#000000"
+          class="hover:scale-110 transition-all duration-300 dark:fill-white fill-black"
           version="1.1"
-          id="Capa_1"
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           width="90px"
@@ -146,14 +144,14 @@
               dominant-baseline="middle"
               text-anchor="middle"
               font-size="35"
-              fill="black">{data.size}</text>
+              class="dark:text-white text-black">{data.size}</text>
             <text
               x="50%"
               y="80%"
               dominant-baseline="middle"
               text-anchor="middle"
               font-size="35"
-              fill="black">{data.name}</text>
+              class="dark:text-white text-black text-3xl">{data.name}</text>
 
             {#if hasSolarPanels(data)}
               <svg
@@ -168,7 +166,7 @@
                 ><defs
                   ><style>
                     .cls-1 {
-                      fill: #fcdb33;
+                      fill: #cbba07;
                     }
                   </style></defs
                 ><title>sun-color</title><path

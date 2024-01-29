@@ -10,6 +10,8 @@ from app.core.models.twinworld_model import (
 
 class CRUDTwinWorld(CRUDBase[TwinWorld, TwinWorldCreate, TwinWorldUpdate]):
     def get_by_name(self, *, session: Session, name: str):
+        "Get a single TwinWorld by name"
+
         return session.exec(
             select(TwinWorld).where(TwinWorld.name == name)
         ).first()
