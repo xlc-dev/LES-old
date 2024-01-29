@@ -165,6 +165,11 @@
       </div>
     {/if}
   </button>
+  {#if formattedDate}
+    <div class="text-center mt-2">
+      <span class="text-lg font-medium text-les-white">Selected date: {formattedDate}</span>
+    </div>
+  {/if}
   <table>
     <tbody>
     <tr
