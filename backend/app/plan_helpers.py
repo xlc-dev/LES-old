@@ -303,7 +303,7 @@ def setup_planning(
     household_planning = planning.households
     length_planning = len(household_planning)
 
-    return (
+    return (  # type: ignore
         days_in_chunk,
         days_in_planning,
         length_planning,
