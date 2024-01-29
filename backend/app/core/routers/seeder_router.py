@@ -451,7 +451,7 @@ def create_household(
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model="None")
 def seed(
-    seed: int = random.random(), session: Session = Depends(get_session)
+    seed: float = random.random(), session: Session = Depends(get_session)
 ) -> None:
     "Seeds the database with initial data for the twinworld. Deletes all previous in the database before seeding."  # noqa: E501
     delete_db_and_tables()
