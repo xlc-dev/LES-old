@@ -18,8 +18,6 @@
   export let date: string;
   export let dateNoFormat: Date;
 
-  $: unixTimestamp = Math.floor(dateNoFormat.getTime() / 1000);
-
   /**
    * Determines the color of a box in a schedulable load grid raster based on a bitmap value.
    *
