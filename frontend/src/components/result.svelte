@@ -11,7 +11,6 @@
   import { get } from 'svelte/store';
   import Chart from "./chart.svelte";
   import * as XLSX from 'xlsx';
-  import streamSaver from 'streamsaver';
 
   import {
     stepperData,
