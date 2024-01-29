@@ -388,9 +388,7 @@
         </tr>
       {/if}
 
-      {#if expandedRow !== data.id}
-        <tr class="border-b border-gray-200"></tr>
-      {/if}
+
     {/each}
   </tbody>
 </table>

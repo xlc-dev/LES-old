@@ -14,10 +14,19 @@
   export let household: HouseholdRead_Output;
   let showDatePicker = false;
   let selectedDate = new Date();
+  let weekDates = [];
   let formattedDate: string;
 
   $: setMinDate = new Date($startDate * 1000);
   $: setMaxDate = new Date($endDate * 1000);
+  $: if (selectedDate) {
+    weekDates = [new Date(selectedDate)];
+    for (let i = 1; i <= 6; i++) {
+      let nextDay = new Date(selectedDate);
+      nextDay.setDate(nextDay.getDate() + i);
+      weekDates.push(nextDay);
+    }
+  }
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
@@ -161,13 +170,13 @@
       class="bg-white hover:bg-white text-sm dark:bg-dark-table-row border-b border-gray-200 dark:border-les-white">
       <td colspan={7}>
         <div class="p-4 flex justify-center">
-          {#key formattedDate}
+          {#each weekDates as date}
             <SchedulableLoadGrid
               appliances={household.appliances}
-              date={formattedDate}
-              dateNoFormat={selectedDate}
+              date={date.toLocaleDateString("en-US")}
+              dateNoFormat={date}
               {hours} />
-          {/key}
+          {/each}
         </div>
       </td>
     </tr>
