@@ -29,7 +29,7 @@ async def get_household(
     if not household:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"household with id: {id} not found.",
+            detail=f"household with id: {id} not found",
         )
 
     return household
@@ -47,7 +47,7 @@ async def get_households_by_twinworld(
     if not household:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"twinworld with id: {household} not found.",
+            detail=f"twinworld with id: {household} not found",
         )
 
     return household_crud.get_by_twinworld(session=session, id=twinworld_id)
@@ -66,7 +66,7 @@ async def post_household(
     if check_household:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"household with name: {form_data.name} already exists.",
+            detail=f"household with name: {form_data.name} already exists",
         )
 
     household_crud.create(session=session, obj_in=form_data)
@@ -113,7 +113,7 @@ async def delete_household(
     if household.twinworld_id == 1 or household.twinworld_id == 2:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"household with twinworld id: {id} is not allowed to be deleted.",  # noqa: E501
+            detail=f"household with twinworld id: {id} is not allowed to be deleted",  # noqa: E501
         )
 
     household_crud.remove(session=session, id=id)

@@ -29,7 +29,7 @@ async def get_costmodel(
     if not costmodel:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"costmodel with id: {id} not found.",
+            detail=f"costmodel with id: {id} not found",
         )
 
     return costmodel
@@ -48,7 +48,7 @@ async def post_costmodel(
     if check_costmodel:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"costmodel with name: {form_data.name} already exists.",
+            detail=f"costmodel with name: {form_data.name} already exists",
         )
 
     costmodel_crud.create(session=session, obj_in=form_data)
@@ -64,7 +64,7 @@ async def delete_costmodel(
     if id == 1 or id == 2:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"costmodel with ID: {id} is not allowed to be deleted.",
+            detail=f"costmodel with ID: {id} is not allowed to be deleted",
         )
 
     costmodel = costmodel_crud.get(session=session, id=id)

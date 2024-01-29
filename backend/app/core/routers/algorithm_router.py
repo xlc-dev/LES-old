@@ -36,7 +36,7 @@ async def get_algorithm(
     if not algorithm:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"algorithm with id: {id} not found.",
+            detail=f"algorithm with id: {id} not found",
         )
 
     return algorithm
@@ -55,7 +55,7 @@ async def post_algorithm(
     if check_algorithm:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"algorithm with name: {form_data.name} already exists.",
+            detail=f"algorithm with name: {form_data.name} already exists",
         )
 
     # Create a restricted globals dictionary
@@ -110,7 +110,7 @@ async def delete_algorithm(
     if id == 1 or id == 2:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"algorithm with ID: {id} is not allowed to be deleted.",
+            detail=f"algorithm with ID: {id} is not allowed to be deleted",
         )
 
     algorithm = algorithm_crud.get(session=session, id=id)
