@@ -20,6 +20,7 @@
   $: setMinDate = new Date($startDate * 1000);
   $: setMaxDate = new Date($endDate * 1000);
   $: if (selectedDate) {
+    formattedDate = new Date(selectedDate).toLocaleDateString("en-US");
     weekDates = [new Date(selectedDate)];
     for (let i = 1; i <= 6; i++) {
       let nextDay = new Date(selectedDate);
@@ -47,10 +48,6 @@
   onDestroy(() => {
     window.removeEventListener("click", handleClickOutside);
   });
-
-  $: if (selectedDate) {
-    formattedDate = new Date(selectedDate).toLocaleDateString("en-US");
-  }
 </script>
 
 <div class="font-bold pb-4 gap-4 dark:text-les-white">

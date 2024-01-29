@@ -169,6 +169,17 @@
     }, 0);
   };
 
+  const updateDescriptionForCurrentStep = () => {
+    const keys = Object.keys(simulationData);
+    if (currentStep > 0 && currentStep <= keys.length) {
+      const key = keys[currentStep - 1];
+      currentDescription =
+        simulationData[key] && simulationData[key][0] ? simulationData[key][0].description : "";
+    } else {
+      currentDescription = "";
+    }
+  };
+
   // Updates the state of the stepper by loading the view of the next step in the stepper
   const nextStep = async () => {
     if (isStepZero) {
@@ -223,17 +234,6 @@
     currentDescription =
       simulationData[Object.keys(simulationData)[currentStep - 1]][0]?.description || "";
   };
-
-  function updateDescriptionForCurrentStep() {
-    const keys = Object.keys(simulationData);
-    if (currentStep > 0 && currentStep <= keys.length) {
-      const key = keys[currentStep - 1];
-      currentDescription =
-        simulationData[key] && simulationData[key][0] ? simulationData[key][0].description : "";
-    } else {
-      currentDescription = "";
-    }
-  }
 
   // Handles a button click when an option in the options frame has been selected
   const selectOption = (optionId: number, category: string, optionName: string) => {

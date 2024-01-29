@@ -58,17 +58,13 @@
     showDropdown = showDropdown === filterName ? null : filterName;
   };
 
-  function toggleDatePicker() {
+  const toggleDatePicker = () => {
     showDatePicker = !showDatePicker;
-  }
+  };
 
-  function toggleCard() {
+  const toggleCard = () => {
     showCard = !showCard;
-  }
-
-  function closeCard() {
-    showCard = false;
-  }
+  };
 
   // Retracts the displayed dropdown menu when an area outside of the dropdown menu has been clicked
   const createHandleClickOutside = (filterName: string) => {
@@ -241,7 +237,7 @@
     <div class="fixed inset-0 flex justify-center items-center">
       <div
         class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10 dark:bg-dark-sidebar dark:text-les-white">
-        <button class="text-xl text-gray-600 hover:text-gray-800 p-2" on:click={closeCard}>
+        <button class="text-xl text-gray-600 hover:text-gray-800 p-2" on:click={toggleCard}>
           &#10005;
         </button>
         <h2><b>Legend: </b></h2>
