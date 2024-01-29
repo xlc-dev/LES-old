@@ -54,7 +54,7 @@
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(timeDailiesData), "Time Dailies");
     processGraphDataAndAddToWorkbook(graphData, wb);
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet([dashboardData]), "Dashboard Data");
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dashboardData), "Dashboard Data");
     const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
     const blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
@@ -83,22 +83,22 @@
     );
     let sumEfficiencyNoSolar = sumEfficiencyTotal - sumEfficiencyIndividual;
 
-    return {
-      numberOfHouseholds: stepperDataValue.households.length,
-      priceNetworkBuyConsumer: stepperDataValue.costmodel.price_network_buy_consumer,
-      priceNetworkSellConsumer: stepperDataValue.costmodel.price_network_sell_consumer,
-      energyUsageFactor: stepperDataValue.twinworld.energy_usage_factor,
-      solarPanelsFactor: stepperDataValue.twinworld.solar_panels_factor,
-      maxTemperature: stepperDataValue.algorithm.max_temperature,
-      totalSavedByOwnSolarPanels: sumEfficiencyIndividual,
-      totalSavedByOtherHouseholdsSolarPanels: sumEfficiencyNoSolar,
-      totalSavedByTheCommunity: sumEfficiencyTotal,
-      totalMoneySaved: sumTotalMoneySaved,
-      runtime: runtimeValue,
-      selectedTwinWorld: stepperDataValue.twinworld.name,
-      selectedCostModel: stepperDataValue.costmodel.name,
-      selectedAlgorithm: stepperDataValue.algorithm.name
-    };
+    return [
+      { label: "Number of Households", value: stepperDataValue.households.length },
+      { label: "Cost Model Price Network Buy Consumer", value: stepperDataValue.costmodel.price_network_buy_consumer },
+      { label: "Cost Model Price Network Sell Consumer", value: stepperDataValue.costmodel.price_network_sell_consumer },
+      { label: "Twin World Energy Usage Factor", value: stepperDataValue.twinworld.energy_usage_factor },
+      { label: "Twin World Solar Panels Factor", value: stepperDataValue.twinworld.solar_panels_factor },
+      { label: "Algorithm Max Temperature", value: stepperDataValue.algorithm.max_temperature },
+      { label: "Total Saved by Own Solar Panels", value: `${sumEfficiencyIndividual.toFixed(2)} kWh` },
+      { label: "Total Saved by Other Households' Solar Panels", value: `${sumEfficiencyNoSolar.toFixed(2)} kWh` },
+      { label: "Total Saved by the Community", value: `${sumEfficiencyTotal.toFixed(2)} kWh` },
+      { label: "Total Money Saved", value: `€${sumTotalMoneySaved.toFixed(2)}` },
+      { label: "Runtime", value: `${runtimeValue} seconds` },
+      { label: "Selected Twin World", value: stepperDataValue.twinworld.name },
+      { label: "Selected Cost Model", value: stepperDataValue.costmodel.name },
+      { label: "Selected Algorithm", value: stepperDataValue.algorithm.name }
+    ];
   }
 
   function processGraphDataAndAddToWorkbook(graphData, workbook) {
