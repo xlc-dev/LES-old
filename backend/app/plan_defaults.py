@@ -156,7 +156,7 @@ def plan_simulated_annealing(
         index = (
             days_in_planning * (selected_appliance.id - 1)
             + day_number_in_planning
-            - 1
+            
         )
 
         bitmap_energy = appliance_time[index].bitmap_plan_energy
@@ -172,13 +172,15 @@ def plan_simulated_annealing(
         if appliance_frequency == 0:
             continue
 
+        appliance_timeslot = randint(0, appliance_frequency-1)
+
         # Find the old scheduled hour
         ones_in_bitmap = 0
         appliance_old_starttime = None
         for position, bit in enumerate(bitmap):
             if bit == "1":
                 ones_in_bitmap += 1
-                if ones_in_bitmap == appliance_frequency:
+                if ones_in_bitmap == appliance_timeslot * selected_appliance.duration + 1:
                     appliance_old_starttime = position
                     break
 
