@@ -14,7 +14,7 @@
   /**
    * Initialize chart instances with default configurations.
    */
-  export const initializeCharts = () => {
+  const initializeCharts = () => {
     chartContainers.forEach((container, index) => {
       charts[index] = new Chart(container.getContext("2d"), {
         type: "line",
@@ -32,12 +32,30 @@
         },
         options: {
           scales: {
-            y: { beginAtZero: true },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                color: getAxisTextColor(),
+              },
+              title: {
+                display: true,
+                text: getYAxisChartLabel(index),
+                color: getAxisTextColor(),
+              },
+            },
+            x: {
+              ticks: {
+                color: getAxisTextColor(),
+              },
+            },
           },
           plugins: {
             legend: {
               onClick: () => {}, // Disable legend click
               onHover: () => {}, // Disable legend hover
+              labels: {
+                color: getAxisTextColor(),
+              },
             },
             zoom: {
               zoom: {
@@ -59,6 +77,7 @@
       });
     });
   };
+
   /**
    * Update chart data based on efficiency result data.
    * @param {EfficiencyResult[]} data - The efficiency result data.
@@ -81,6 +100,21 @@
     "internalBoughtEnergyPrice",
     "totalAmountSaved",
   ];
+
+  /**
+   * Get the y axis label for the chart based on the chart index.
+   * @param {number} index - The index of the chart.
+   * @returns {string} - The chart label.
+   */
+  const getYAxisChartLabel = (index: number): string => {
+    const labels: string[] = [
+      "Fraction of solar energy used by houses themselves",
+      "Fraction of solar energy used by all houses",
+      "Price of internal energy (local currency)",
+      "Money saved by community (local currency)",
+    ];
+    return labels[index] || "";
+  };
 
   /**
    * Get the label for the chart based on the chart index.
@@ -122,20 +156,48 @@
    * Get color from an array or provide a default if not present.
    * @param {number} index - The index to access in the array.
    * @param {string[]} array - The array of colors.
-   * @returns {string} - The color at the specified index or a default color.
+   * @returns {string} - The color at the specified index.
    */
-  const getColor = (index: number, array: string[]): string => array[index] || "#000000";
+  const getColor = (index: number, array: string[]): string => array[index];
+
+  /**
+   * Get the axis text color based on Tailwind CSS dark mode.
+   * @returns {string} - The axis text color.
+   */
+  const getAxisTextColor = (): string => (darkModeEnabled() ? "#FFFFFF" : "#000000");
+
+  /**
+   * Check if Tailwind CSS dark mode is enabled.
+   * @returns {boolean} - True if dark mode is enabled, false otherwise.
+   */
+  const darkModeEnabled = (): boolean => localStorage.getItem("darkMode") === "true";
+
+  // Listen for dark mode changes
+  const observer = new MutationObserver((mutationsList) => {
+    for (const mutation of mutationsList) {
+      if (mutation.type === "attributes" && mutation.attributeName === "class") {
+        charts.forEach((chart) => {
+          chart.options.scales.y.ticks.color = getAxisTextColor();
+          chart.options.scales.x.ticks.color = getAxisTextColor();
+          chart.options.plugins.legend.labels.color = getAxisTextColor();
+          chart.update();
+        });
+      }
+    }
+  });
 
   // Initialize charts on component mount
   onMount(() => {
     initializeCharts();
     updateCharts($efficiencyresultstore);
     Chart.register(zoomPlugin);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
   });
 
   // Destroy charts on component destruction
   onDestroy(() => {
     charts.forEach((chart) => chart?.destroy());
+    observer.disconnect();
   });
 
   // Update charts when efficiency result store has data

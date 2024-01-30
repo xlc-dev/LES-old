@@ -8,7 +8,7 @@ from sqlmodel import SQLModel, Field
 
 
 class EnergyFlowBase(SQLModel):
-    "Energyflow model that saves the energyflow in the database."
+    "Energyflow model that saves the energyflow in the database"
 
     timestamp: int = Field(nullable=False, index=True)  # in unix
     energy_used: float = Field(nullable=False)  # in kWh

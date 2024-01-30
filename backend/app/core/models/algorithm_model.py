@@ -15,6 +15,7 @@ class AlgorithmBase(SQLModel):
 
     max_temperature contains the the amount of trials being done for simulated
         annealing, and how fast it decays.
+
     algorithm contains the code for creating the planning
     """
 
