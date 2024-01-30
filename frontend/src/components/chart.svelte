@@ -116,7 +116,7 @@
    * @returns {string} - The border color.
    */
   const getChartColor = (index: number): string =>
-    getColor(index, ["#f23f44", "#cbba07", "#1565c0", "#008000"]);
+    getColor(index, ["#f23f44", "#cbba07", "#1565c0", "#15803d"]);
 
   /**
    * Get color from an array or provide a default if not present.
