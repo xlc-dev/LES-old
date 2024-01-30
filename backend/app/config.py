@@ -28,6 +28,7 @@ from sqlmodel import create_engine
 
 class Settings(BaseSettings):
     "Class for the configuration options of the application"
+
     port: int = 8000
     development: bool = False
     uvcorn_colors: bool = True

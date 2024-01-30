@@ -13,6 +13,7 @@
   import * as monaco from "monaco-editor";
 
   import { isStarted, stepperData } from "../lib/stores";
+  import { message } from "../lib/message";
 
   import {
     SimulateService,
@@ -94,10 +95,7 @@
     appliance_id: 0,
   };
 
-  let costmodelEditor: monaco.editor.IStandaloneCodeEditor;
-  let algorithmEditor: monaco.editor.IStandaloneCodeEditor;
   let costmodelCode = "return buy_consumer * ratio + sell_consumer * (1 - ratio)";
-
   let algorithmCode =
     "import pandas\nimport numpy\nimport scipy\nimport math\nimport random\n\ndef run():\n    pass\n";
 
@@ -111,25 +109,17 @@
   let applianceToAdd: number = 0;
   let timewindowToAdd: number = 0;
 
-  let twinWorlds = [];
   let twinworldHouseholds = [];
-
-  let householdError: string = "";
-  let applianceError: string = "";
-  let timewindowError: string = "";
-  let algorithmError: string = "";
-  let costmodelError: string = "";
 
   let applianceCheck: Array<{
     householdName: string;
-    appliance: string;
-    missingDay: ApplianceDays;
+    noAppliance: boolean;
+    appliance?: string;
+    missingDay?: ApplianceDays;
   }> = [];
 
   let editingHousehold: HouseholdRead_Output = null;
   let editingApplianceTimeWindow: ApplianceTimeWindowRead = null;
-
-  $: simulationDataKeys = simulationData ? Object.keys(simulationData) : [];
 
   // Updates the value of the description frame, based on the hovered option in the options frame
   const updateDescription = (description: string) => {
@@ -250,6 +240,7 @@
     stepperData.update((data) => ({ ...data, [category]: "-" }));
     await deleteOptionBasedOnCategory(category, optionId);
     simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+    message(`${category} deleted`);
   };
 
   // Removes an option in the options frame that has been created by the researcher based on a category
@@ -267,6 +258,8 @@
       default:
         break;
     }
+
+    updateDescriptionForCurrentStep();
   };
 
   // Initializes the Monaco editor for the custom algorithms in the cost model step of the stepper
@@ -281,21 +274,8 @@
     // Updates the state of the Monaco editor when changes in the provided code are detected
     const handleEditorChange = () => {
       const newValue = editor.getValue();
-      if (validatePythonSyntax(newValue)) {
-        onChange(newValue);
-        monaco.editor.setModelMarkers(editor.getModel(), "python", []);
-      } else {
-        monaco.editor.setModelMarkers(editor.getModel(), "python", [
-          {
-            startLineNumber: 1,
-            startColumn: 1,
-            endLineNumber: 1,
-            endColumn: 1,
-            message: "Code is not valid Python syntax",
-            severity: monaco.MarkerSeverity.Error,
-          },
-        ]);
-      }
+      onChange(newValue);
+      monaco.editor.setModelMarkers(editor.getModel(), "python", []);
     };
 
     editor.onDidChangeModelContent(handleEditorChange);
@@ -312,24 +292,15 @@
     };
   };
 
-  // Validates whether the provided code in the Monaco editor is valid Python code based on a regex function
-  const validatePythonSyntax = (code: string) => {
-    const pythonPattern =
-      /(?:def|class)\s+\w+\s*\(.*\)\s*:\s*|import\s+\w+|from\s+\w+\s+import\s+\w+/;
-    return pythonPattern.test(code);
-  };
-
-  // klaar. voeg grijze text toe aan twinworld net als de andere 2 upload secties. kijk maar in stepper wat ik bdl
-
   // Assigns time slots and appliances to a created schedulable load
   const addTimewindow = async () => {
     if (checkboxStates.every((state) => state === false)) {
-      timewindowError = "Please select at least one hour";
+      message("Please select at least one hour");
       return;
     }
 
     if (newTimeWindow.appliance_id === 0) {
-      timewindowError = "Please select at least one appliance";
+      message("Please select at least one appliance");
       return;
     }
 
@@ -341,10 +312,10 @@
           );
 
         checkboxStates = Array(24).fill(false);
-        timewindowError = "";
+        message("Time window added");
       })
       .catch((err) => {
-        timewindowError = err.message;
+        message(err);
       });
   };
 
@@ -365,8 +336,10 @@
         });
         return household;
       });
+
+      message("Time window deleted");
     } catch (err) {
-      console.log(err);
+      message(err);
     }
   };
 
@@ -378,8 +351,9 @@
         editingApplianceTimeWindow
       );
       editingApplianceTimeWindow = null;
+      message("Time window updated");
     } catch (err) {
-      console.log(err);
+      message(err);
     }
   };
 
@@ -394,10 +368,10 @@
           );
 
         applianceToAdd = 0;
-        applianceError = "";
+        message("Appliance added");
       })
       .catch((err) => {
-        applianceError = err.message;
+        message(err);
       });
   };
 
@@ -412,8 +386,9 @@
         );
         return household; // return so svelte can update the array
       });
+      message("Appliance deleted");
     } catch (err) {
-      console.log(err);
+      message(err);
     }
   };
 
@@ -426,11 +401,13 @@
           await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
             selectedIDs.twinworld
           );
+
+        twinworldHouseholds = twinworldHouseholds;
         applianceToAdd = 0;
-        householdError = "";
+        message("Household added");
       })
       .catch((err) => {
-        householdError = err.message;
+        message(err);
       });
   };
 
@@ -439,9 +416,10 @@
     await HouseholdService.deleteHouseholdApiHouseholdIdDelete(id)
       .then(() => {
         twinworldHouseholds = twinworldHouseholds.filter((household) => household.id !== id);
+        message("Household deleted");
       })
       .catch((err) => {
-        console.log(err);
+        message(err);
       });
   };
 
@@ -453,8 +431,9 @@
         editingHousehold
       );
       editingHousehold = null;
+      message("Household updated");
     } catch (err) {
-      console.log(err);
+      message(err);
     }
   };
 
@@ -484,9 +463,9 @@
     try {
       await CostModelService.postCostmodelApiCostmodelPost(formData);
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
-      costmodelError = "";
-    } catch (error) {
-      costmodelError = error.message;
+      message("Cost model created");
+    } catch (err) {
+      message(err);
     }
   };
 
@@ -505,8 +484,11 @@
       await TwinWorldService.postTwinworldApiTwinworldPost(formData);
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
       twinworldHouseholds = [];
-    } catch (error) {
-      console.error(error);
+      selectedIDs.twinworld = simulationData.twinworld[simulationData.twinworld.length - 1].id;
+      fetchHouseholds(); // Fetch households for the newly created twin world
+      message("Twin world created");
+    } catch (err) {
+      message(err);
     }
   };
 
@@ -524,9 +506,9 @@
     try {
       await AlgorithmService.postAlgorithmApiAlgorithmPost(formData);
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
-      algorithmError = "";
+      message("Algorithm created");
     } catch (err) {
-      algorithmError = err.message;
+      message(err);
     }
   };
 
@@ -534,8 +516,17 @@
   const startSimulation = async () => {
     applianceCheck = [];
     const hasApplianceWithoutEveryDay = twinworldHouseholds
-      .map((household) =>
-        household.appliances.map((appliance: ApplianceRead_Output) => {
+      .map((household) => {
+        // Check if the household has appliances
+        if (!household.appliances || household.appliances.length === 0) {
+          applianceCheck.push({
+            householdName: household.name,
+            noAppliance: true,
+          });
+          return true; // Return true to indicate no appliances
+        }
+
+        return household.appliances.map((appliance: ApplianceRead_Output) => {
           // Check if the current appliance has an appliance_windows array
           if (appliance.appliance_windows) {
             const missingDays = Object.values(ApplianceDays).filter(
@@ -547,6 +538,7 @@
               missingDays.forEach((day) => {
                 applianceCheck.push({
                   householdName: household.name,
+                  noAppliance: false,
                   appliance: appliance.name,
                   missingDay: day,
                 });
@@ -557,52 +549,47 @@
           }
 
           return false; // Return false if appliance_windows is undefined or null
-        })
-      )
+        });
+      })
       .flat()
       .some(Boolean);
 
     if (hasApplianceWithoutEveryDay) {
-      applianceCheck = applianceCheck;
+      applianceCheck.map((check) => {
+        if (check.noAppliance) {
+          message(check.householdName + " has no appliances.");
+        } else {
+          message(
+            check.householdName + " is missing " + check.missingDay + " for " + check.appliance
+          );
+        }
+      });
       goToStep(1);
-      return; // Don't continue with the function if an appliance doesn't have every day
+      return; // Don't continue with the function if there are appliances without every day or no appliances
     }
 
     await SimulateService.startApiSimulateStartPost({
       algorithm_id: selectedIDs.algorithm,
       twinworld_id: selectedIDs.twinworld,
       costmodel_id: selectedIDs.costmodel,
-    }).then((res) => {
-      $stepperData = res;
-      $isStarted = true;
-    });
+    })
+      .then((res) => {
+        $stepperData = res;
+        $isStarted = true;
+      })
+      .catch((err) => {
+        message(err);
+      });
   };
 
   // Initializes the simulation data, the twin world, the simulation data's object keys, and the Monaco editors
   onMount(async () => {
-    const data: SimulationData = await SimulateService.getDataApiSimulateLoadDataGet();
-    simulationData = data;
-
-    twinWorlds = await TwinWorldService.getTwinworldsApiTwinworldGet();
+    simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
 
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
     if (keys.length > 0) {
       currentDescription = simulationData[keys[0]][0]?.description || "";
     }
-
-    costmodelEditor = monaco.editor.create(document.getElementById("algo1-editor"), {
-      value: "",
-      language: "python",
-      lineNumbers: "on",
-      automaticLayout: true,
-    });
-
-    algorithmEditor = monaco.editor.create(document.getElementById("algo2-editor"), {
-      value: "",
-      language: "python",
-      lineNumbers: "on",
-      automaticLayout: true,
-    });
   });
 
   // If an appliance has been added to a created twin world the window scrolls to a section in which a new appliance can be added
@@ -634,23 +621,6 @@
 </script>
 
 <div class="max-w-3xl mx-auto pt-8">
-  {#if applianceCheck.length > 0}
-    <div
-      class="bg-les-white p-8 border-2 border-gray-400 rounded-lg flex flex-col justify-center items-center">
-      <p class="text-xl font-bold text-les-highlight text-center w-full pb-4">
-        Appliances to fix:
-      </p>
-
-      {#each applianceCheck as check}
-        <p class="text-les-red">
-          Household <strong>{check.householdName}</strong> is missing time window for
-          <strong>{check.missingDay}</strong>
-          in appliance <strong>{check.appliance}</strong>.
-        </p>
-      {/each}
-    </div>
-  {/if}
-
   {#if !isStepZero}
     <div class="flex items-center justify-between mt-16">
       {#key selectedIDs}
@@ -882,7 +852,7 @@
           </button>
         </form>
 
-        {#if selectedIDs.twinworld}
+        {#if selectedIDs.twinworld && selectedIDs.twinworld !== 1 && selectedIDs.twinworld !== 2}
           <hr class="my-8 bg-les-highlight" />
 
           <h2 class="font-bold text-lg mb-4">
@@ -898,6 +868,7 @@
                 type="text"
                 minlength="1"
                 required
+                bind:value={newHousehold.name}
                 placeholder="Household 10" />
             </div>
 
@@ -953,10 +924,6 @@
                 >Add Household
               </button>
             </div>
-
-            {#if householdError}
-              <p class="text-les-red">{householdError}</p>
-            {/if}
           </div>
 
           {#if applianceToAdd > 0}
@@ -985,6 +952,8 @@
                   id="power"
                   class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
                   type="number"
+                  step="0.01"
+                  min="0.01"
                   bind:value={newAppliance.power} />
               </div>
 
@@ -994,6 +963,8 @@
                   id="duration"
                   class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
                   type="number"
+                  step="1"
+                  min="1"
                   bind:value={newAppliance.duration} />
               </div>
 
@@ -1003,6 +974,8 @@
                   id="daily_usage"
                   class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
                   type="number"
+                  step="0.01"
+                  min="0.01"
                   bind:value={newAppliance.daily_usage} />
               </div>
 
@@ -1014,10 +987,6 @@
                   >Add Appliance
                 </button>
               </div>
-
-              {#if applianceError}
-                <p class="text-les-red">{applianceError}</p>
-              {/if}
             </div>
           {/if}
 
@@ -1173,10 +1142,6 @@
                   >Add Timewindow
                 </button>
               </div>
-
-              {#if timewindowError}
-                <p class="text-les-red flex items-center">{timewindowError}</p>
-              {/if}
             </div>
           {/if}
           <table class="min-w-full leading-normal rounded-lg mt-4 overflow-hidden">
@@ -1378,7 +1343,7 @@
           </div>
 
           <input
-            step="any"
+            step="0.1"
             type="number"
             name="price_network_buy_consumer"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1394,7 +1359,7 @@
           </div>
 
           <input
-            step="any"
+            step="0.1"
             type="number"
             name="price_network_sell_consumer"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1410,7 +1375,7 @@
           </div>
 
           <input
-            step="any"
+            step="0.1"
             type="number"
             name="fixed_price_ratio"
             placeholder="0.5"
@@ -1431,10 +1396,6 @@
             }}
             class="h-48 border-2 border-gray-400 aria-selected:border-gray-600 rounded-lg">
           </div>
-
-          {#if costmodelError}
-            <p class="text-les-red">{costmodelError}</p>
-          {/if}
 
           <button
             type="submit"

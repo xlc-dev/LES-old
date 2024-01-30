@@ -1,4 +1,11 @@
-from typing import TYPE_CHECKING, Sized
+"""This file contains the model for the Household table.
+
+The Household table is used to store all the households that are available
+to use in the twinworld. The households contain appliances that will be planned
+in using the selected algorithm.
+"""
+
+from typing import TYPE_CHECKING, Any
 
 from sqlmodel import SQLModel, Field, Relationship
 from pydantic import field_validator
@@ -11,17 +18,21 @@ if TYPE_CHECKING:
 
 
 class HouseholdBase(SQLModel):
+    "Household model that saves the households in the database"
+
     name: str = Field(
         index=True, unique=True, nullable=False, min_length=1, max_length=15
     )
-    size: int = Field(default=1, nullable=False, ge=1, le=5)
-    energy_usage: int = Field(nullable=False, ge=0)
+    size: int = Field(
+        default=1, nullable=False, ge=1, le=5
+    )  # amount of inhabitants
+    energy_usage: int = Field(nullable=False, ge=0)  # in kWh per year
     solar_panels: int = Field(default=0, nullable=False, ge=0)
-    solar_yield_yearly: int
+    solar_yield_yearly: int  # in kWh per year
 
     @field_validator("name")
     @classmethod
-    def ensure_name(cls, v: Sized):
+    def ensure_name(cls, v: Any):
         if v:
             if not (1 <= len(v) <= 15):
                 raise ValueError("name must be between 1 and 15 characters")

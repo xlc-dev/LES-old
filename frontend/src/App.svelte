@@ -7,12 +7,14 @@
     timeDailies,
     startDate,
     endDate,
+    messages,
   } from "./lib/stores";
 
   import { OpenAPI, SimulateService } from "./lib/client";
 
   import Stepper from "./components/stepper.svelte";
   import BaseLayout from "./components/baseLayout.svelte";
+  import Message from "./components/message.svelte";
 
   OpenAPI.BASE = "http://localhost:8000";
 
@@ -72,6 +74,12 @@
     $isStarted = false;
   }
 </script>
+
+<div class="flex flex-col gap-6 fixed top-4 right-4">
+  {#each $messages as message}
+    <Message message={message.msg} id={message.id} />
+  {/each}
+</div>
 
 {#if $stepperData.households.length !== 0}
   <BaseLayout />

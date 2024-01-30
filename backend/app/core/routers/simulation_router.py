@@ -64,7 +64,7 @@ async def start(
     if not twinworld:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"No twinworld found with id: {twinworld_id}",
+            detail=f"Twinworld with id {twinworld_id} not found",
         )
 
     costmodel = costmodel_crud.get(session=session, id=costmodel_id)
@@ -72,7 +72,7 @@ async def start(
     if not costmodel:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"No costmodel found with id: {costmodel_id}",
+            detail=f"Costmodel with id {costmodel_id} not found",
         )
 
     algorithm = algorithm_crud.get(session=session, id=algorithm_id)
@@ -80,7 +80,7 @@ async def start(
     if not algorithm:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"No algorithm found with id: {algorithm_id}",
+            detail=f"Algorithm with id {algorithm_id} not found",
         )
 
     households = household_crud.get_by_twinworld_sorted_solar_panels(
@@ -90,7 +90,7 @@ async def start(
     if not households:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"No households found for twinworld with id: {twinworld_id}",  # noqa: E501
+            detail=f"No households found for twinworld with id {twinworld_id}",
         )
 
     return SelectedOptions(
@@ -147,7 +147,6 @@ async def plan(
                         total_available_energy,
                         household_energy,
                     ) = plan_greedy(
-                        date=date,
                         household_idx=household_idx,
                         days_in_planning=days_in_planning,
                         day_number_in_planning=day_number_in_planning,

@@ -54,6 +54,8 @@ router = APIRouter()
 
 
 def create_energyflow():
+    "Creates the energyflow data from the csv file"
+
     energy_flow_hour = pandas.read_csv("energyflow.csv", sep=";")
     hourly_data = []  # Create an empty list to store EnergyFlow objects
     first_time = unix_to_timestamp(energy_flow_hour["timestamp"].iloc[0])
@@ -73,6 +75,7 @@ def create_energyflow():
 
 def add_appliance_to_session(session: Session, appliance: Appliance):
     "Abstraction for adding an appliance to a session"
+
     session.add(appliance)
     session.flush()
 
@@ -106,6 +109,7 @@ def create_timewindow(
     :param appliance_id:
         Id of the appliance the time window belongs to
     """
+
     bitmap = 0
 
     if ApplianceType.STOVE.value == appliance_id:
@@ -203,6 +207,7 @@ def create_appliance(
     :param usage_addition:
         Addition to random factor
     """
+
     daily_usage = 0.0
     energy_usage = 0.0
 
@@ -454,6 +459,7 @@ def seed(
     seed: float = random.random(), session: Session = Depends(get_session)
 ) -> None:
     "Seeds the database with initial data for the twinworld. Deletes all previous in the database before seeding."  # noqa: E501
+
     delete_db_and_tables()
     create_db_and_tables()
 
@@ -507,7 +513,7 @@ def seed(
 
     twinworld_1 = twinworld_model.TwinWorld(
         name="Twinworld Large",
-        description="A larger twin world consisting of roughly 75 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
+        description="A larger twinworld consisting of roughly 75 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
         solar_panels_factor=25,
         energy_usage_factor=7000,
     )
@@ -516,7 +522,7 @@ def seed(
 
     twinworld_2 = twinworld_model.TwinWorld(
         name="Twinworld Small",
-        description="A smaller twin world consisting of roughly 25 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
+        description="A smaller twinworld consisting of roughly 25 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
         solar_panels_factor=25,
         energy_usage_factor=7000,
     )

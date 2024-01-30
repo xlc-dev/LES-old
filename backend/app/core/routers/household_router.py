@@ -29,7 +29,7 @@ async def get_household(
     if not household:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"household with id: {id} not found",
+            detail=f"Household with id {id} not found",
         )
 
     return household
@@ -47,7 +47,7 @@ async def get_households_by_twinworld(
     if not household:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"twinworld with id: {household} not found",
+            detail=f"Household with id {household} not found",
         )
 
     return household_crud.get_by_twinworld(session=session, id=twinworld_id)
@@ -66,7 +66,14 @@ async def post_household(
     if check_household:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"household with name: {form_data.name} already exists",
+            detail=f"Household with name: {form_data.name} already exists",
+        )
+
+    # Don't allow creation of households in the default twinworlds
+    if form_data.twinworld_id == 1 or form_data.twinworld_id == 2:
+        Logger.exception(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New households are not allowed to be created in the default twinworlds",  # noqa: E501
         )
 
     household_crud.create(session=session, obj_in=form_data)
@@ -79,13 +86,33 @@ async def update_household(
     household: household_model.HouseholdUpdate,
     session: Session = Depends(get_session),
 ) -> household_model.HouseholdUpdate:
+    # Don't the user to update the default households
+    if id < 100:
+        Logger.exception(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Default households are not allowed to be updated",
+        )
+
     current_household = household_crud.get(session=session, id=id)
 
     if not current_household:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Household with ID: {id} not found",
+            detail=f"Household with id {id} not found",
         )
+
+    check_household = household_crud.get_by_name(
+        session=session, name=household.name
+    )
+
+    if check_household:
+        # If the household name is the same as the current household name
+        # allow the update
+        if check_household.name != current_household.name:
+            Logger.exception(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Household with name {household.name} already exists",
+            )
 
     household_crud.update(
         session=session,
@@ -107,13 +134,15 @@ async def delete_household(
     if not household:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"household with ID: {id} not found",
+            detail=f"Household with id {id} not found",
         )
 
-    if household.twinworld_id == 1 or household.twinworld_id == 2:
-        Logger.exception(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"household with twinworld id: {id} is not allowed to be deleted",  # noqa: E501
-        )
+    # Don't allow deletion of households with twinworld_id 1 or 2 and id > 100
+    if not household.id > 100:
+        if household.twinworld_id == 1 or household.twinworld_id == 2:
+            Logger.exception(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Household with id {id} is not allowed to be deleted",
+            )
 
     household_crud.remove(session=session, id=id)
