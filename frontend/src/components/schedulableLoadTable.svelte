@@ -238,7 +238,9 @@
       <button
         on:click={toggleCard}
         class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10 dark:bg-dark-sidebar dark:text-les-white relative legend">
-        <button class="text-xl text-gray-600 hover:text-gray-800 p-2 absolute top-2 right-2" on:click={toggleCard}>
+        <button
+          class="text-xl text-gray-600 hover:text-gray-800 p-2 absolute top-2 right-2"
+          on:click={toggleCard}>
           <svg
             class="h-4 w-4 fill-current text-white hover:text-les-highlight transition-colors duration-200"
             xmlns="http://www.w3.org/2000/svg"

@@ -194,8 +194,7 @@
       </button>
     </div>
     <tbody>
-      <tr
-        class="bg-white text-sm dark:bg-dark-table-header">
+      <tr class="bg-white text-sm dark:bg-dark-table-header">
         <td colspan={3}>
           <div class="p-4 flex justify-center">
             <div class="flex flex-col items-center gap-4">
