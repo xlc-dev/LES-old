@@ -26,10 +26,10 @@ const isJsonString = (value: string): boolean => {
 const showError = (error: object | string): void => {
   const id = Math.random();
   const cleanedError =
-    typeof error === "object" && error.body
-      ? Array.isArray(error.body.detail)
-        ? `<p class="font-bold mb-2">${error.body.detail[0].loc[1]}</p>${error.body.detail[0].msg}`
-        : error.body.detail
+    typeof error === "object" && (error as any).body
+      ? Array.isArray((error as any).body.detail)
+        ? `<p class="font-bold mb-2">${(error as any).body.detail[0].loc[1]}</p>${(error as any).body.detail[0].msg}`
+        : (error as any).body.detail
       : typeof error === "string" && isJsonString(error)
         ? JSON.parse(error).body.detail[0].msg
         : typeof error === "string"
