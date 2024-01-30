@@ -76,7 +76,7 @@ class ApplianceBase(SQLModel):
 
 
 class Appliance(ApplianceBase, table=True):
-    """"""
+    """Contains all the appliances that are present in a household"""
 
     id: int = Field(primary_key=True)
 
@@ -116,7 +116,8 @@ class ApplianceTimeWindow(ApplianceTimeWindowBase, table=True):
 class ApplianceTimeDailyBase(SQLModel):
     """When an appliance is planned in.
 
-    Different from the window. The bitmaps contain 24 possible hours"""
+    Different from the window. The bitmaps contain 24 possible hours
+    """
 
     day: int = Field(
         nullable=False, ge=1
