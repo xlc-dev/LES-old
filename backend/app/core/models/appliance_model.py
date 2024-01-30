@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from enum import Enum
 
 from sqlmodel import SQLModel, Field, Relationship
@@ -41,7 +41,7 @@ class ApplianceBase(SQLModel):
 
     @field_validator("power")
     @classmethod
-    def ensure_power(cls, v: any):
+    def ensure_power(cls, v: Any):
         if v:
             if v < 0:
                 raise ValueError("power must be greater than 0")
@@ -49,7 +49,7 @@ class ApplianceBase(SQLModel):
 
     @field_validator("duration")
     @classmethod
-    def ensure_duration(cls, v: any):
+    def ensure_duration(cls, v: Any):
         if v:
             if v < 0:
                 raise ValueError("duration must be greater than 0")
@@ -57,7 +57,7 @@ class ApplianceBase(SQLModel):
 
     @field_validator("daily_usage")
     @classmethod
-    def ensure_daily_usage(cls, v: any):
+    def ensure_daily_usage(cls, v: Any):
         if v:
             if v < 0:
                 raise ValueError("daily_usage must be greater than 0")
@@ -109,7 +109,7 @@ class ApplianceTimeDailyBase(SQLModel):
 
     @field_validator("bitmap_plan_energy")
     @classmethod
-    def ensure_bitmap_plan_energy(cls, v: any):
+    def ensure_bitmap_plan_energy(cls, v: Any):
         if v:
             if v < 0 and v > 2**24 - 1:
                 raise ValueError("Bit length unequal to 24")
@@ -120,7 +120,7 @@ class ApplianceTimeDailyBase(SQLModel):
 
     @field_validator("bitmap_plan_no_energy")
     @classmethod
-    def ensure_bitmap_plan_no_energy(cls, v: any):
+    def ensure_bitmap_plan_no_energy(cls, v: Any):
         if v:
             if v < 0 and v > 2**24 - 1:
                 raise ValueError("Bit length unequal to 24")
@@ -175,7 +175,7 @@ class ApplianceCreate(ApplianceBase):
 
     @field_validator("household_id")
     @classmethod
-    def ensure_household_id(cls, v: any):
+    def ensure_household_id(cls, v: Any):
         if v:
             if v < 1:
                 raise ValueError("household_id must be greater than 0")
