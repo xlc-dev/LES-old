@@ -11,10 +11,7 @@
   let chartContainers: HTMLCanvasElement[] = [];
   let charts: Chart[] = [];
 
-  /**
-   * Initialize chart instances with default configurations.
-   */
-  export const initializeCharts = () => {
+  const initializeCharts = () => {
     chartContainers.forEach((container, index) => {
       charts[index] = new Chart(container.getContext("2d"), {
         type: "line",
@@ -48,6 +45,9 @@
             legend: {
               onClick: () => {}, // Disable legend click
               onHover: () => {}, // Disable legend hover
+              labels: {
+                color: getAxisTextColor(),
+              },
             },
             zoom: {
               zoom: {
@@ -69,6 +69,7 @@
       });
     });
   };
+
   /**
    * Update chart data based on efficiency result data.
    * @param {EfficiencyResult[]} data - The efficiency result data.
@@ -154,6 +155,7 @@
         charts.forEach((chart) => {
           chart.options.scales.y.ticks.color = getAxisTextColor();
           chart.options.scales.x.ticks.color = getAxisTextColor();
+          chart.options.plugins.legend.labels.color = getAxisTextColor();
           chart.update();
         });
       }
