@@ -10,7 +10,11 @@
 
   let chartContainers: HTMLCanvasElement[] = [];
   let charts: Chart[] = [];
+  let observer: MutationObserver;
 
+  /**
+   * Initialize chart instances with default configurations.
+   */
   const initializeCharts = () => {
     chartContainers.forEach((container, index) => {
       charts[index] = new Chart(container.getContext("2d"), {
@@ -170,7 +174,12 @@
    */
   const darkModeEnabled = (): boolean => localStorage.getItem("darkMode") === "true";
 
-  const observer = new MutationObserver((mutationsList) => {
+  /**
+   * Creates a MutationObserver to watch for changes in the "class" attribute and updates chart axis colors accordingly.
+   * @param {MutationRecord[]} mutationsList - List of mutation records.
+   * @param {MutationObserver} observer - The MutationObserver instance.
+   */
+  const handleAttributeChanges = (mutationsList) => {
     for (const mutation of mutationsList) {
       if (mutation.type === "attributes" && mutation.attributeName === "class") {
         charts.forEach((chart) => {
@@ -181,14 +190,14 @@
         });
       }
     }
-  });
+  };
 
   // Initialize charts on component mount
   onMount(() => {
     initializeCharts();
     updateCharts($efficiencyresultstore);
     Chart.register(zoomPlugin);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    observer = new MutationObserver(handleAttributeChanges);
   });
 
   // Destroy charts on component destruction
