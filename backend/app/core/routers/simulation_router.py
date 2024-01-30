@@ -147,7 +147,6 @@ async def plan(
                         total_available_energy,
                         household_energy,
                     ) = plan_greedy(
-                        date=date,
                         household_idx=household_idx,
                         days_in_planning=days_in_planning,
                         day_number_in_planning=day_number_in_planning,
