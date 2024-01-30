@@ -1,5 +1,7 @@
 # LES
 
+A simulation tool for comparing schedulable load algorithms and twinworlds in a local energy system environment.
+
 ## Requirements
 
 - Any moderately modern version of Node and NPM
@@ -50,10 +52,29 @@ Then `cd` into the backend folder, and run `python run.py` for a dev server, and
 
 When `development mode` is enabled, you can go to `http://localhost:8000/docs` to find the API documentation.
 
+#### Linters
+
+The linters installed with the project are: `black`, `mypy`, and `flake8`. They are run on each pull request with a CI workflow, but to manually run them on your machine,
+be sure to be in the backend directory, have the virtual environment enabled and use the commands below:
+
+- black (for formatting your code):
+`black .`
+
+- flake8 (follow PEP8 styling):
+`flake8 app/`
+
+- mypy (fix type errors):
+`mypy app/`
+
 ### Frontend
 
 `cd` to the frontend folder, and run `npm run dev` for a dev server, and navigate to `http://localhost:5173/`. The application will automatically reload if you change any of the source files.
 
+#### Linters
+
+The frontend uses `svelte-check` for checking any errors for svelte, and `prettier` for formatting.
+
+Run `npm run check` to run both to check for issues, or run `npm run format` to format the project with prettier.
 
 ## Project structure
 
