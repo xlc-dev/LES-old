@@ -258,7 +258,7 @@
           <p>contain the time slots that are available to plan appliances in.</p>
         </div>
         <div class="flex items-center mb-2">
-          <div class="h-4 w-4 bg-green-500 mr-2"></div>
+          <div class="h-4 w-4 bg-green-700 mr-2"></div>
           <p>indicate that the planned energy used is drawn from solar panels.</p>
         </div>
         <div class="flex items-center">
