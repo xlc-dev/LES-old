@@ -177,9 +177,8 @@
   /**
    * Creates a MutationObserver to watch for changes in the "class" attribute and updates chart axis colors accordingly.
    * @param {MutationRecord[]} mutationsList - List of mutation records.
-   * @param {MutationObserver} observer - The MutationObserver instance.
    */
-  const handleAttributeChanges = (mutationsList) => {
+  const handleAttributeChanges = (mutationsList: MutationRecord[]) => {
     for (const mutation of mutationsList) {
       if (mutation.type === "attributes" && mutation.attributeName === "class") {
         charts.forEach((chart) => {
