@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Sized
+from typing import TYPE_CHECKING
 
 from sqlmodel import SQLModel, Field, Relationship
 from pydantic import field_validator
@@ -21,7 +21,7 @@ class HouseholdBase(SQLModel):
 
     @field_validator("name")
     @classmethod
-    def ensure_name(cls, v: Sized):
+    def ensure_name(cls, v: any):
         if v:
             if not (1 <= len(v) <= 15):
                 raise ValueError("name must be between 1 and 15 characters")
