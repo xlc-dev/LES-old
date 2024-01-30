@@ -116,7 +116,6 @@
     return labels[index] || "";
   };
 
-
   /**
    * Get the label for the chart based on the chart index.
    * @param {number} index - The index of the chart.
