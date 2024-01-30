@@ -45,6 +45,7 @@ class ApplianceDays(str, Enum):
 
 class ApplianceBase(SQLModel):
     "Appliance model that saves the appliances in the database"
+
     name: ApplianceType = Field(index=True, nullable=False)
     power: float = Field(nullable=False, gt=0)  # in Kwh
     duration: int = Field(nullable=False, gt=0)  # in hours
