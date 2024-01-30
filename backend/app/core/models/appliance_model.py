@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from enum import Enum
 
 from sqlmodel import SQLModel, Field, Relationship
@@ -35,9 +35,33 @@ class ApplianceDays(str, Enum):
 
 class ApplianceBase(SQLModel):
     name: ApplianceType = Field(index=True, nullable=False)
-    power: float = Field(nullable=False, ge=0)  # in Kwh
-    duration: int = Field(nullable=False, ge=0)  # in hours
-    daily_usage: float = Field(nullable=False, ge=0)  # in hours
+    power: float = Field(nullable=False, gt=0)  # in Kwh
+    duration: int = Field(nullable=False, gt=0)  # in hours
+    daily_usage: float = Field(nullable=False, gt=0)  # in hours
+
+    @field_validator("power")
+    @classmethod
+    def ensure_power(cls, v: any):
+        if v:
+            if v < 0:
+                raise ValueError("power must be greater than 0")
+            return v
+
+    @field_validator("duration")
+    @classmethod
+    def ensure_duration(cls, v: any):
+        if v:
+            if v < 0:
+                raise ValueError("duration must be greater than 0")
+            return v
+
+    @field_validator("daily_usage")
+    @classmethod
+    def ensure_daily_usage(cls, v: any):
+        if v:
+            if v < 0:
+                raise ValueError("daily_usage must be greater than 0")
+            return v
 
 
 class Appliance(ApplianceBase, table=True):
@@ -85,7 +109,7 @@ class ApplianceTimeDailyBase(SQLModel):
 
     @field_validator("bitmap_plan_energy")
     @classmethod
-    def ensure_bitmap_plan_energy(cls, v: Any):
+    def ensure_bitmap_plan_energy(cls, v: any):
         if v:
             if v < 0 and v > 2**24 - 1:
                 raise ValueError("Bit length unequal to 24")
@@ -96,7 +120,7 @@ class ApplianceTimeDailyBase(SQLModel):
 
     @field_validator("bitmap_plan_no_energy")
     @classmethod
-    def ensure_bitmap_plan_no_energy(cls, v: Any):
+    def ensure_bitmap_plan_no_energy(cls, v: any):
         if v:
             if v < 0 and v > 2**24 - 1:
                 raise ValueError("Bit length unequal to 24")
@@ -151,7 +175,7 @@ class ApplianceCreate(ApplianceBase):
 
     @field_validator("household_id")
     @classmethod
-    def ensure_household_id(cls, v: Any):
+    def ensure_household_id(cls, v: any):
         if v:
             if v < 1:
                 raise ValueError("household_id must be greater than 0")
