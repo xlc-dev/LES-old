@@ -32,7 +32,7 @@ async def get_appliance(
     if not appliance:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"appliance with id: {id} not found",
+            detail=f"Appliance with id {id} not found",
         )
 
     return appliance
@@ -59,7 +59,14 @@ async def update_appliance(
     if not current_appliance:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Appliance with ID: {id} not found",
+            detail=f"Appliance with id {id} not found",
+        )
+
+    # Don't allow the user to update appliances from the default households
+    if current_appliance.household_id < 100:
+        Logger.exception(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Appliance with id {id} is not allowed to be updated",
         )
 
     appliance_crud.update(
@@ -82,15 +89,14 @@ async def delete_appliance(
     if not appliance:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"appliance with ID: {id} not found",
+            detail=f"Appliance with id {id} not found",
         )
 
-    # Do not allow an appliance with an ID lower than 100 to be deleted
-    # because these are the default appliances made by the seeder.
-    if appliance.household_id <= 100:
+    # Don't allow the user to delete appliances from the default households
+    if appliance.household_id < 100:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"default appliance with ID: {id} is not allowed to be deleted",  # noqa: E501
+            detail=f"Appliance with id {id} is not allowed to be deleted",
         )
 
     appliance_crud.remove(session=session, id=id)
@@ -121,7 +127,7 @@ async def get_appliance_timewindow(
     if not timewindow:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"timewindow with id: {id} not found",
+            detail=f"Timewindow with id {id} not found",
         )
 
     return timewindow
@@ -142,7 +148,7 @@ async def post_appliance_timewindow(
             if appliance.day == form_data.day:
                 Logger.exception(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"appliance with day: {form_data.day} already exists",  # noqa: E501
+                    detail=f"Appliance with day {form_data.day} already exists",  # noqa: E501
                 )
 
     appliance_time_window_crud.create(session=session, obj_in=form_data)
@@ -165,7 +171,7 @@ async def update_appliance_timewindow(
     if not current_appliance_timewindow:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"ApplianceTimeWindow with ID: {id} not found",
+            detail=f"ApplianceTimeWindow with id {id} not found",
         )
 
     appliance_time_window_crud.update(
@@ -190,7 +196,7 @@ async def delete_appliance_timewindow(
     if not appliance_time_window:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"applianceTimeWindow with ID: {id} not found",
+            detail=f"ApplianceTimeWindow with id {id} not found",
         )
 
     appliance_time_window_crud.remove(session=session, id=id)

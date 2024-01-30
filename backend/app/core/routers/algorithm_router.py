@@ -36,7 +36,7 @@ async def get_algorithm(
     if not algorithm:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"algorithm with id: {id} not found",
+            detail=f"Algorithm with id {id} not found",
         )
 
     return algorithm
@@ -55,7 +55,7 @@ async def post_algorithm(
     if check_algorithm:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"algorithm with name: {form_data.name} already exists",
+            detail=f"Algorithm with name {form_data.name} already exists",
         )
 
     # Create a restricted globals dictionary
@@ -100,6 +100,46 @@ async def post_algorithm(
     algorithm_crud.create(session=session, obj_in=form_data)
 
 
+@router.patch("/{id}", response_model=algorithm_model.AlgorithmUpdate)
+async def update_algorithm(
+    *,
+    id: int,
+    algorithm: algorithm_model.AlgorithmUpdate,
+    session: Session = Depends(get_session),
+) -> algorithm_model.AlgorithmUpdate:
+    if id == 1 or id == 2:
+        Logger.exception(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Algorithm with id {id} is not allowed to be updated",
+        )
+
+    current_algorithm = algorithm_crud.get(session=session, id=id)
+
+    if not current_algorithm:
+        Logger.exception(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Algorithm with id {id} not found",
+        )
+
+    check_algorithm = algorithm_crud.get_by_name(
+        session=session, name=algorithm.name
+    )
+
+    if check_algorithm:
+        Logger.exception(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Algorithm with name {algorithm.name} already exists",
+        )
+
+    algorithm_crud.update(
+        session=session,
+        db_obj=current_algorithm,
+        obj_in=algorithm,
+    )
+
+    return algorithm
+
+
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_algorithm(
     *,
@@ -110,7 +150,7 @@ async def delete_algorithm(
     if id == 1 or id == 2:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"algorithm with ID: {id} is not allowed to be deleted",
+            detail=f"Algorithm with id {id} is not allowed to be deleted",
         )
 
     algorithm = algorithm_crud.get(session=session, id=id)
@@ -118,7 +158,7 @@ async def delete_algorithm(
     if not algorithm:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"algorithm with ID: {id} not found",
+            detail=f"Algorithm with id {id} not found",
         )
 
     algorithm_crud.remove(session=session, id=id)
