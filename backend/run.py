@@ -1,4 +1,5 @@
 """Entrypoint for the application.
+
 This is the file that needs to be run to start the application.
 
 This file does the following:
@@ -30,17 +31,19 @@ if __name__ == "__main__":
 
     if config.settings.development:
         reload = True
+        urls = [
+            {"path": route.path, "name": route.name} for route in app.routes
+        ]
+
+        print("\033[1mAll routes:\033[0m\n")
+
+        for url in urls:
+            print(url)
+
         print(
-            "DEVELOPMENT IS SET TO \033[1;31mTRUE.\033[0m "
+            "\nDEVELOPMENT IS SET TO \033[1;31mTRUE.\033[0m "
             + "MAKE SURE THIS IS \033[1;31mNOT\033[0m IN PRODUCTION"
         )
-
-    urls = [{"path": route.path, "name": route.name} for route in app.routes]
-
-    print("\nAll routes:\n")
-
-    for url in urls:
-        print(url)
 
     print(
         "\n======================================================="

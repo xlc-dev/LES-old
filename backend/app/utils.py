@@ -21,16 +21,19 @@ HOURS_IN_WEEK = 168
 
 def timestamp_to_unix(timestamp: float) -> int:
     "Convert excel timestamp to unix timestamp"
+
     return round((timestamp - 25569) * SECONDS_IN_DAY)
 
 
 def unix_to_hour(unix: int) -> int:
     "Convert unix timestamp to hour"
+
     return unix // 3600 % 24
 
 
 def unix_to_timestamp(unix: int) -> float:
     "Convert unix timestamp to excel timestamp"
+
     return unix / SECONDS_IN_DAY + 25569
 
 

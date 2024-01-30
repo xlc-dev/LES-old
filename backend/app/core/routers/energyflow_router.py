@@ -28,7 +28,7 @@ async def get_energyflow(
     if not energyflow:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"energyflow with ID: {id} not found",
+            detail=f"Energyflow with id {id} not found",
         )
 
     return energyflow
@@ -47,7 +47,7 @@ async def post_energyflow(
     if check_energyflow:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"energyflow with timestamp: {form_data.timestamp} already exists",  # noqa: E501
+            detail=f"Energyflow with timestamp {form_data.timestamp} already exists",  # noqa: E501
         )
 
     energyflow_crud.create(session=session, obj_in=form_data)
@@ -63,7 +63,7 @@ async def delete_energyflow(
     if id == 1:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"eneergyflow with ID: {id} is not allowed to be deleted",
+            detail=f"Energyflow with id {id} is not allowed to be deleted",
         )
 
     eneryflow = energyflow_crud.get(session=session, id=id)
@@ -71,7 +71,7 @@ async def delete_energyflow(
     if not eneryflow:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"energyflow with ID: {id} not found",
+            detail=f"Energyflow with id {id} not found",
         )
 
     energyflow_crud.remove(session=session, id=id)

@@ -29,7 +29,7 @@ async def get_twinworld(
     if not twinworld:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Twinworld with id: {id} not found",
+            detail=f"Twinworld with id {id} not found",
         )
 
     return twinworld
@@ -48,7 +48,7 @@ async def post_twinworld(
     if check_twinworld:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Twinworld with name: {form_data.name} already exists",
+            detail=f"Twinworld with name {form_data.name} already exists",
         )
 
     twinworld_crud.create(session=session, obj_in=form_data)
@@ -64,7 +64,7 @@ async def delete_twinworld(
     if id == 1 or id == 2:
         Logger.exception(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Twinworld with ID: {id} is not allowed to be deleted",
+            detail=f"Twinworld with id {id} is not allowed to be deleted",
         )
 
     twinworld = twinworld_crud.get(session=session, id=id)
@@ -72,7 +72,7 @@ async def delete_twinworld(
     if not twinworld:
         Logger.exception(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Twinworld with ID: {id} not found",
+            detail=f"Twinworld with id {id} not found",
         )
 
     twinworld_crud.remove(session=session, id=id)
