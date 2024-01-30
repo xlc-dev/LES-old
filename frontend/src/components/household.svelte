@@ -8,26 +8,13 @@
   import type { HouseholdRead_Output } from "../lib/client";
   import SchedulableLoadGrid from "./schedulableLoadGrid.svelte";
   import { DatePicker } from "date-picker-svelte";
-  import { activatedHousehold, endDate, startDate } from "../lib/stores";
+  import { endDate, startDate } from "../lib/stores";
   import { onDestroy, onMount } from "svelte";
 
   export let household: HouseholdRead_Output;
   let showDatePicker = false;
-  let selectedDate = new Date();
+  let selectedDate = new Date($startDate * 1000);
   let weekDates = [];
-  let formattedDate: string;
-
-  $: setMinDate = new Date($startDate * 1000);
-  $: setMaxDate = new Date($endDate * 1000);
-  $: if (selectedDate) {
-    formattedDate = new Date(selectedDate).toLocaleDateString("en-US");
-    weekDates = [new Date(selectedDate)];
-    for (let i = 1; i <= 6; i++) {
-      let nextDay = new Date(selectedDate);
-      nextDay.setDate(nextDay.getDate() + i);
-      weekDates.push(nextDay);
-    }
-  }
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
@@ -48,6 +35,24 @@
   onDestroy(() => {
     window.removeEventListener("click", handleClickOutside);
   });
+
+  $: setMinDate = new Date($startDate * 1000);
+  $: setMaxDate = new Date($endDate * 1000);
+
+  $: if (selectedDate) {
+    weekDates = [selectedDate];
+
+    let daysLeft = Math.min(
+      6,
+      Math.round((setMaxDate.getTime() - selectedDate.getTime()) / (24 * 60 * 60 * 1000))
+    );
+
+    for (let i = 1; i <= daysLeft; i++) {
+      let nextDay = new Date(selectedDate);
+      nextDay.setDate(nextDay.getDate() + i);
+      weekDates.push(nextDay);
+    }
+  }
 </script>
 
 <div class="font-bold pb-4 gap-4 dark:text-les-white">
@@ -169,32 +174,44 @@
       {/each}
     </tbody>
   </table>
-  <button class="date-picker-container relative" on:click|stopPropagation>
-    <button
-      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      on:click={toggleDatePicker}
-      >Select Date
-    </button>
-    {#if showDatePicker}
-      <div
-        class="date-picker-popup absolute z-10 mt-2 bg-white border border-gray-300 rounded shadow-lg p-4">
-        <DatePicker bind:value={selectedDate} min={setMinDate} max={setMaxDate} />
-      </div>
-    {/if}
-  </button>
-  {#if formattedDate}
-    <div class="text-center mt-2">
-      <span class="text-lg font-medium text-les-white">Selected date: {formattedDate}</span>
+
+  <hr class="my-2 border-black dark:border-les-white" />
+
+  <h2 class="font-bold text-3xl dark:text-les-white">Schedulable Load</h2>
+  <table class="bg-white dark:bg-dark-table-header min-w-full leading-normal rounded-lg">
+    <div class="flex justify-center pt-4">
+      <button class="date-picker-container relative" on:click|stopPropagation>
+        <button
+          class="px-4 py-2 bg-les-blue text-white rounded hover:brightness-110 transition-colors duration-200"
+          on:click={toggleDatePicker}
+          >Select Date
+        </button>
+        {#if showDatePicker}
+          <div class="absolute z-10 mt-2 rounded shadow-lg calendar dark:calendar-dark">
+            <DatePicker bind:value={selectedDate} min={setMinDate} max={setMaxDate} />
+          </div>
+        {/if}
+      </button>
     </div>
-  {/if}
-  <table>
     <tbody>
-      <tr
-        class="bg-white hover:bg-white text-sm dark:bg-dark-table-row border-b border-gray-200 dark:border-les-white">
-        <td colspan={7}>
+      <tr class="bg-white text-sm dark:bg-dark-table-header">
+        <td colspan={3}>
           <div class="p-4 flex justify-center">
             <div class="flex flex-col items-center gap-4">
-              {#each weekDates as date}
+              {#each weekDates.slice(0, 3) as date}
+                <SchedulableLoadGrid
+                  appliances={household.appliances}
+                  date={date.toLocaleDateString("en-US")}
+                  dateNoFormat={date}
+                  {hours} />
+              {/each}
+            </div>
+          </div>
+        </td>
+        <td colspan={4}>
+          <div class="p-4 flex justify-center">
+            <div class="flex flex-col items-center gap-4">
+              {#each weekDates.slice(3, 7) as date}
                 <SchedulableLoadGrid
                   appliances={household.appliances}
                   date={date.toLocaleDateString("en-US")}
@@ -208,5 +225,3 @@
     </tbody>
   </table>
 </div>
-
-<hr class="my-8 border-black dark:border-les-white" />

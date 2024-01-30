@@ -8,8 +8,6 @@
    */
 
   import { onMount } from "svelte";
-  import { get } from "svelte/store";
-  import Chart from "./chart.svelte";
   import * as XLSX from "xlsx";
 
   import {
@@ -21,8 +19,9 @@
     efficiencyresultstore,
   } from "../lib/stores";
 
-  import Stepper from "./stepper.svelte";
   import BaseLayout from "./baseLayout.svelte";
+  import Chart from "./chart.svelte";
+  import Stepper from "./stepper.svelte";
 
   let newSession = false;
 
@@ -74,7 +73,6 @@
   const getDashboardData = () => {
     const stepperDataValue = $stepperData;
     const efficiencyResults = $efficiencyresultstore;
-    const runtimeValue = get(runtime);
 
     let sumEfficiencyIndividual = efficiencyResults.reduce(
       (acc, result) => acc + result.solarEnergyIndividual,
@@ -119,7 +117,7 @@
       },
       { label: "Total Saved by the Community", value: `${sumEfficiencyTotal.toFixed(2)} kWh` },
       { label: "Total Money Saved", value: `€${sumTotalMoneySaved.toFixed(2)}` },
-      { label: "Runtime", value: `${runtimeValue} seconds` },
+      { label: "Runtime", value: `${$runtime} seconds` },
       { label: "Selected Twin World", value: stepperDataValue.twinworld.name },
       { label: "Selected Cost Model", value: stepperDataValue.costmodel.name },
       { label: "Selected Algorithm", value: stepperDataValue.algorithm.name },
@@ -170,11 +168,12 @@
 {#if !newSession}
   <div class="max-w-3xl mx-auto pt-8">
     <Chart />
-    <div class="mt-8 bg-white rounded-lg p-4 mb-8 shadow grid grid-cols-2 gap-4 relative">
+    <div
+      class="mt-8 bg-white dark:bg-dark-table-row dark:text-white rounded-lg p-4 mb-8 shadow grid grid-cols-2 gap-4 relative">
       <p class="absolute left-1/2 transform -translate-x-1/2 mt-4">Runtime: {$runtime} seconds</p>
       <div class="col-span-2 flex justify-between mt-8">
         <button
-          class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-dark-les-bg"
+          class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-blue hover:brightness-110"
           on:click={newSessionButton}>New session</button>
         <button
           class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-blue hover:brightness-110"

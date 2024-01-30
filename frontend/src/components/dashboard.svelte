@@ -55,42 +55,6 @@
         <td class="p-2">Number of Households:</td>
         <td class="p-2 min-w-40">{$stepperData.households.length}</td>
       </tr>
-      {#if $stepperData.costmodel.fixed_price_ratio !== null}
-        <tr class="border-b border-gray-400">
-          <td class="p-2">Cost model fixed price ratio:</td>
-          <td class="p-2 min-w-40">{$stepperData.costmodel.fixed_price_ratio}</td>
-        </tr>
-      {/if}
-      {#if $stepperData.costmodel.price_network_buy_consumer !== null}
-        <tr class="border-b border-gray-400">
-          <td class="p-2">Cost model price network buy consumer:</td>
-          <td class="p-2 min-w-40">{$stepperData.costmodel.price_network_buy_consumer}</td>
-        </tr>
-      {/if}
-      {#if $stepperData.costmodel.price_network_sell_consumer !== null}
-        <tr class="border-b border-gray-400">
-          <td class="p-2">Cost model price network sell consumer:</td>
-          <td class="p-2 min-w-40">{$stepperData.costmodel.price_network_sell_consumer}</td>
-        </tr>
-      {/if}
-      {#if $stepperData.twinworld.energy_usage_factor !== null}
-        <tr class="border-b border-gray-400">
-          <td class="p-2">Twin world energy usage factor:</td>
-          <td class="p-2 min-w-40">{$stepperData.twinworld.energy_usage_factor}</td>
-        </tr>
-      {/if}
-      {#if $stepperData.twinworld.solar_panels_factor !== null}
-        <tr class="border-b border-gray-400">
-          <td class="p-2">Twin world solar panels factor:</td>
-          <td class="p-2 min-w-40">{$stepperData.twinworld.solar_panels_factor}</td>
-        </tr>
-      {/if}
-      {#if $stepperData.algorithm.max_temperature !== null}
-        <tr class="border-b border-gray-400">
-          <td class="p-2">Algorithm max temperature:</td>
-          <td class="p-2 min-w-40">{$stepperData.algorithm.max_temperature}</td>
-        </tr>
-      {/if}
       {#if sumEfficiencyIndividual !== null}
         <tr class="border-b border-gray-400">
           <td class="p-2">Total saved by own solar panels:</td>

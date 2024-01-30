@@ -8,6 +8,13 @@ import {
 
 import type { HouseholdRead_Output, SelectedOptions, ApplianceTimeDailyRead } from "./client";
 
+export interface EfficiencyResult {
+  solarEnergyIndividual: number;
+  solarEnergyTotal: number;
+  internalBoughtEnergyPrice: number;
+  totalAmountSaved: number;
+}
+
 const createRuntimeStore = () => {
   const { subscribe, set, update } = writable(0);
   let timer;
@@ -26,12 +33,15 @@ const createRuntimeStore = () => {
   };
 };
 
-export interface EfficiencyResult {
-  solarEnergyIndividual: number;
-  solarEnergyTotal: number;
-  internalBoughtEnergyPrice: number;
-  totalAmountSaved: number;
-}
+export const runtime: {
+  stop: () => void;
+  subscribe: (
+    this: void,
+    run: Subscriber<number>,
+    invalidate?: Invalidator<number>
+  ) => Unsubscriber;
+  start: () => void;
+} = createRuntimeStore();
 
 export const stepperData: Writable<SelectedOptions> = writable(<SelectedOptions>{
   algorithm: {},
@@ -46,19 +56,11 @@ export const activatedHousehold: Writable<HouseholdRead_Output> = writable(
 
 export const efficiencyresultstore = writable<Array<EfficiencyResult>>([]);
 
-export const isStarted = writable(false);
-
-export const runtime: {
-  stop: () => void;
-  subscribe: (
-    this: void,
-    run: Subscriber<number>,
-    invalidate?: Invalidator<number>
-  ) => Unsubscriber;
-  start: () => void;
-} = createRuntimeStore();
-
 export const timeDailies = writable<Array<ApplianceTimeDailyRead>>([]);
+
+export const messages = writable<Array<{ id: number; msg: string }>>([]);
 
 export const startDate = writable(0);
 export const endDate = writable(0);
+
+export const isStarted = writable(false);

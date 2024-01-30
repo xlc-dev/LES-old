@@ -63,18 +63,18 @@
 
     if (planEnergyBit === 1) {
       if (bitmapString[hour] !== "1") {
-        return "bg-yellow-500";
+        return "bg-yellow-700";
       }
-      return "bg-green-500"; // Green for energy from solar panels
+      return "bg-green-700"; // Green for energy from solar panels
     } else if (planNoEnergyBit === 1) {
       if (bitmapString[hour] !== "1") {
         return "bg-les-red-dark";
       }
-      return "bg-red-500"; // Red for energy from the national grid
+      return "bg-les-red"; // Red for energy from the national grid
     }
 
     // Default to gray for unavailable time slots
-    return bitmapString[hour] === "1" ? "bg-blue-600" : "bg-gray-700";
+    return bitmapString[hour] === "1" ? "bg-les-blue" : "bg-gray-700";
   };
 
   $: unixTimestamp = Math.floor(dateNoFormat.getTime() / 1000);

@@ -8,7 +8,6 @@
   */
 
   import { onDestroy, onMount } from "svelte";
-  import { get } from "svelte/store";
   import { slide } from "svelte/transition";
   import { DatePicker } from "date-picker-svelte";
 
@@ -44,7 +43,7 @@
   let filteredData = [];
   let showDatePicker = false;
   let selectedDate = new Date();
-  let showCard = false;
+  let showLegend = false;
   let formattedDate: string;
 
   // Need these reactive values to be set here for later use in file
@@ -63,7 +62,7 @@
   };
 
   const toggleCard = () => {
-    showCard = !showCard;
+    showLegend = !showLegend;
   };
 
   // Retracts the displayed dropdown menu when an area outside of the dropdown menu has been clicked
@@ -78,6 +77,10 @@
   const handleClickOutside = (event) => {
     if (!event.target.closest(".date-picker-container")) {
       showDatePicker = false;
+    }
+
+    if (!event.target.closest(".legend")) {
+      showLegend = false;
     }
   };
 
@@ -130,8 +133,7 @@
 
   // Applies the filter logic on the schedulable load table
   $: {
-    let data = get(stepperData);
-    filteredData = data.households.filter((item) => {
+    filteredData = $stepperData.households.filter((item) => {
       const matchesSearch =
         !searchQuery ||
         item.id.toString().includes(searchQuery) ||
@@ -216,9 +218,12 @@
         {/if}
       </button>
     {/each}
+    <button
+      class="ml-2 bg-dark-les-bg hover:brightness-110 text-white py-2 px-4 rounded"
+      on:click|stopPropagation={toggleCard}>Legend</button>
     <button class="date-picker-container relative" on:click|stopPropagation>
       <button
-        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        class="px-4 py-2 bg-les-blue text-white rounded hover:brightness-110 transition-colors duration-200"
         on:click={toggleDatePicker}>Select Date</button>
       {#if showDatePicker}
         <div class="absolute z-10 rounded mt-2 calendar dark:calendar-dark">
@@ -226,27 +231,30 @@
         </div>
       {/if}
     </button>
-    <button
-      class="ml-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-      on:click={toggleCard}>
-      Legend
-    </button>
   </div>
 
-  {#if showCard}
+  {#if showLegend}
     <div class="fixed inset-0 flex justify-center items-center">
-      <div
-        class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10 dark:bg-dark-sidebar dark:text-les-white">
-        <button class="text-xl text-gray-600 hover:text-gray-800 p-2" on:click={toggleCard}>
-          &#10005;
+      <button
+        on:click={toggleCard}
+        class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10 dark:bg-dark-sidebar dark:text-les-white relative legend">
+        <button
+          class="text-xl text-gray-600 hover:text-gray-800 p-2 absolute top-2 right-2"
+          on:click={toggleCard}>
+          <svg
+            class="h-4 w-4 fill-current text-white hover:text-les-highlight transition-colors duration-200"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24">
+            <path
+              d="M12 10.586l4.95-4.95a1 1 0 111.414 1.414L13.414 12l4.95 4.95a1 1 0 11-1.414 1.414L12 13.414l-4.95 4.95a1 1 0 11-1.414-1.414L10.586 12 5.636 7.05a1 1 0 111.414-1.414L12 10.586z" />
+          </svg>
         </button>
-        <h2><b>Legend: </b></h2>
         <div class="flex items-center mb-2">
-          <div class="h-4 w-4 bg-gray-500 mr-2"></div>
+          <div class="h-4 w-4 bg-gray-700 mr-2"></div>
           <p>contain the time slots that are unavailable to plan appliances in.</p>
         </div>
         <div class="flex items-center mb-2">
-          <div class="h-4 w-4 bg-blue-500 mr-2"></div>
+          <div class="h-4 w-4 bg-les-blue mr-2"></div>
           <p>contain the time slots that are available to plan appliances in.</p>
         </div>
         <div class="flex items-center mb-2">
@@ -254,10 +262,10 @@
           <p>indicate that the planned energy used is drawn from solar panels.</p>
         </div>
         <div class="flex items-center">
-          <div class="h-4 w-4 bg-red-500 mr-2"></div>
+          <div class="h-4 w-4 bg-les-red mr-2"></div>
           <p>indicate that the planned energy used is drawn from the national grid.</p>
         </div>
-      </div>
+      </button>
     </div>
   {/if}
 </div>
@@ -333,7 +341,7 @@
         on:click={() => toggleRow(data.id)}>
         <td class="px-5 py-5">
           <button
-            class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4 dark:text-les-white"
+            class="text-gray-800 cursor-pointer hover:!text-les-blue flex items-center gap-4 dark:text-les-white transition-colors duration-200"
             on:click={() => ($activatedHousehold = data)}>
             {data.id}
           </button>
@@ -341,7 +349,7 @@
 
         <td class="px-5 py-5">
           <button
-            class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4 dark:text-les-white"
+            class="text-gray-800 cursor-pointer hover:!text-les-blue flex items-center gap-4 dark:text-les-white transition-colors duration-200"
             on:click={() => ($activatedHousehold = data)}>
             {data.name}
           </button>

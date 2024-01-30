@@ -52,9 +52,33 @@ class ApplianceBase(SQLModel):
         nullable=False, ge=0
     )  # in amount of times used per day
 
+    @field_validator("power")
+    @classmethod
+    def ensure_power(cls, v: Any):
+        if v:
+            if v < 0:
+                raise ValueError("power must be greater than 0")
+            return v
+
+    @field_validator("duration")
+    @classmethod
+    def ensure_duration(cls, v: Any):
+        if v:
+            if v < 0:
+                raise ValueError("duration must be greater than 0")
+            return v
+
+    @field_validator("daily_usage")
+    @classmethod
+    def ensure_daily_usage(cls, v: Any):
+        if v:
+            if v < 0:
+                raise ValueError("daily_usage must be greater than 0")
+            return v
+
 
 class Appliance(ApplianceBase, table=True):
-    """"""
+    "Contains all the appliances that are present in a household"
 
     id: int = Field(primary_key=True)
 
@@ -94,7 +118,8 @@ class ApplianceTimeWindow(ApplianceTimeWindowBase, table=True):
 class ApplianceTimeDailyBase(SQLModel):
     """When an appliance is planned in.
 
-    Different from the window. The bitmaps contain 24 possible hours"""
+    Different from the window. The bitmaps contain 24 possible hours
+    """
 
     day: int = Field(
         nullable=False, ge=1
