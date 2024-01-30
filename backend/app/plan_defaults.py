@@ -1,3 +1,8 @@
+"""The default plan functions.
+
+Contains the cost function, and the possible algorithms.
+"""
+
 from math import exp
 from random import random, randint, choice
 
@@ -25,12 +30,18 @@ def cost_default(
     sell_consumer: float,
     ratio: float,
 ) -> float:
+    """Fixed price and TEMO
+
+    Both can be represented by the same formula, where the various inputs
+    differ.
+    Most notably, ratio is fixed by fixed price, and variable by TEMO.
+    """
+
     return buy_consumer * ratio + sell_consumer * (1 - ratio)
 
 
 def plan_greedy(
     *,
-    date: int,
     household_idx: int,
     days_in_planning: int,
     day_number_in_planning: int,
@@ -41,6 +52,35 @@ def plan_greedy(
     energyflow_day: list[EnergyFlowRead],
     total_start_date: int,
 ) -> tuple[list[ApplianceTimeDaily], float, list[list[float]]]:
+    """The plan greedy planning algorithm.
+
+    The function tries to plan in an appliance on a given day.
+    How many times an appliance will be planned in on a day is random,
+    determined by it's daily_usage. It will be planned in at least
+    daily_usage times rounded down, and possibly another time, which is
+    random based on the value in the decimals.
+
+    The order for at which time the appliance will be tried is determined
+    by the energy provided, ordered from high to low. This makes it likelier
+    that the first attempts result in as much solar power usage as possible.
+
+    The ordered times will be checked whether they are possible for the
+    appliance to be planned in to. If so, they will then be planned in, in
+    the bitmap_plan_energy. This signifies that they are planned in using solar
+    power.
+
+    If no possible time is found, then it will be checked if it can be planned
+    in without solar power and just energy from the national grid. The order
+    for the times here is chronological.
+
+    If at this point still no possible time is found, the appliance will not be
+    planned in and the search will be aborted. It is possible with this search
+    method that a lower than desired number of usages is planned in.
+
+    This planning algorithm doesn't try for finding the best solution, but just
+    a decent but quick one.
+    """
+
     usage = appliance.daily_usage
 
     index = days_in_planning * (appliance.id - 1) + day_number_in_planning - 1
@@ -135,6 +175,31 @@ def plan_simulated_annealing(
     household_planning: list[HouseholdRead],
     appliance_time: list[ApplianceTimeDaily],
 ) -> None:
+    """The simulated annealing planning algorithm.
+
+    It requires an already feasible planning as input, and will further
+    optimize this planning. It attempts to find the global optimum by randomly
+    deciding to go for a worse solution, with the goal of getting out of a
+    local optimum.
+
+    The temperature represents the amount of trials available as well as the
+    chance for a worse solution to be approved. The higher the temperature, the
+    worse a solution is allowed to be.
+
+    In each loop, a random household and one of its appliances is selected.
+    This appliance will be then tried to be planned in on a random time with
+    either solar power or power from the energy provider. If this is infeasible
+    the attempt will be shut down and a new attempt will be generated.
+
+    If the attempt is a feasible solution, it will be check if it is an
+    improvement. If so, it will be accepted no matter what. If not it will be
+    accepted based on chance, where a better solution will recieve better odds
+    of acceptance. If it is accepted it will be planned in, if not, a new
+    attempt will be made.
+
+    This is done until the temperature reaches 0.
+    """
+
     for temperature in range(algorithm.max_temperature):  # type: ignore # noqa: E501
         if all(value <= 0 for value in current_available):
             break
@@ -156,7 +221,6 @@ def plan_simulated_annealing(
         index = (
             days_in_planning * (selected_appliance.id - 1)
             + day_number_in_planning
-            
         )
 
         bitmap_energy = appliance_time[index].bitmap_plan_energy
@@ -172,7 +236,7 @@ def plan_simulated_annealing(
         if appliance_frequency == 0:
             continue
 
-        appliance_timeslot = randint(0, appliance_frequency-1)
+        appliance_timeslot = randint(0, appliance_frequency - 1)
 
         # Find the old scheduled hour
         ones_in_bitmap = 0
@@ -180,7 +244,10 @@ def plan_simulated_annealing(
         for position, bit in enumerate(bitmap):
             if bit == "1":
                 ones_in_bitmap += 1
-                if ones_in_bitmap == appliance_timeslot * selected_appliance.duration + 1:
+                if (
+                    ones_in_bitmap
+                    == appliance_timeslot * selected_appliance.duration + 1
+                ):
                     appliance_old_starttime = position
                     break
 

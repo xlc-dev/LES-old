@@ -1,3 +1,9 @@
+"""This file contains the model for the Appliance table.
+
+The Appliance table is used to store all the appliance that are present
+in a household. The appliances are planned in by the algorithms.
+"""
+
 from typing import TYPE_CHECKING, Any
 from enum import Enum
 
@@ -10,6 +16,8 @@ if TYPE_CHECKING:
 
 
 class ApplianceType(str, Enum):
+    "Contains all the appliances available in the default twinworld"
+
     DISHWASHER = "Dishwasher"
     WASHING_MACHINE = "Washing Machine"
     TUMBLE_DRYER = "Tumble Dryer"
@@ -21,6 +29,8 @@ class ApplianceType(str, Enum):
 
 
 class ApplianceDays(str, Enum):
+    "Contains the days of the week as variable"
+
     MONDAY = "Monday"
     TUESDAY = "Tuesday"
     WEDNESDAY = "Wednesday"
@@ -34,13 +44,18 @@ class ApplianceDays(str, Enum):
 
 
 class ApplianceBase(SQLModel):
+    "Appliance model that saves the appliances in the database"
     name: ApplianceType = Field(index=True, nullable=False)
     power: float = Field(nullable=False, ge=0)  # in Kwh
     duration: int = Field(nullable=False, ge=0)  # in hours
-    daily_usage: float = Field(nullable=False, ge=0)  # in hours
+    daily_usage: float = Field(
+        nullable=False, ge=0
+    )  # in amount of times used per day
 
 
 class Appliance(ApplianceBase, table=True):
+    """"""
+
     id: int = Field(primary_key=True)
 
     household: "Household" = Relationship(back_populates="appliances")
@@ -57,6 +72,10 @@ class Appliance(ApplianceBase, table=True):
 
 
 class ApplianceTimeWindowBase(SQLModel):
+    """When an appliance can be planned in.
+
+    The bitmap window contains 24 possible hours"""
+
     day: ApplianceDays = Field(
         nullable=False
     )  # day of week, example = "Monday"
@@ -73,6 +92,10 @@ class ApplianceTimeWindow(ApplianceTimeWindowBase, table=True):
 
 
 class ApplianceTimeDailyBase(SQLModel):
+    """When an appliance is planned in.
+
+    Different from the window. The bitmaps contain 24 possible hours"""
+
     day: int = Field(
         nullable=False, ge=1
     )  # Number day of reviewed dataset, example=1

@@ -1,3 +1,10 @@
+"""This file contains the model for the Twinworld table.
+
+The Twinworld table is used to store all the Twinworlds that are available
+to use in the simulation. The twinworlds contain the households, which contain
+the appliances which will be planned in using the algorithm.
+"""
+
 from typing import TYPE_CHECKING
 
 from sqlmodel import SQLModel, Field, Relationship
@@ -9,10 +16,16 @@ if TYPE_CHECKING:
 
 
 class TwinWorldBase(SQLModel):
+    "Twinworld model that saves the twinworlds in the database"
+
     name: str = Field(index=True, unique=True, nullable=False)
     description: str = Field(nullable=False, min_length=1, max_length=500)
-    solar_panels_factor: int = Field(nullable=False, ge=1)
-    energy_usage_factor: int = Field(nullable=False, ge=1)
+    solar_panels_factor: int = Field(
+        nullable=False, ge=1
+    )  # amount of solar panels that are available in the energyflow
+    energy_usage_factor: int = Field(
+        nullable=False, ge=1
+    )  # yearly energy usage in kWh by the house in the energyflow file
 
     @field_validator("description")
     @classmethod

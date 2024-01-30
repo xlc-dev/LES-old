@@ -1,3 +1,8 @@
+"""The functions that help the default plan functions.
+
+Contains the cost function, and the possible algorithms.
+"""
+
 from calendar import day_name
 from math import floor
 
@@ -53,6 +58,10 @@ class SelectedModelsOutput(SQLModel):
 
 
 def _calculate_appliance_duration_bit(duration: int, hour: int) -> int:
+    """Internal function that transforms the appliance information into a
+    bitmapwindow
+    """
+
     shift = 24 - hour - duration
     return (
         (2**duration - 1) << shift
@@ -68,6 +77,13 @@ def _get_potential_energy(
     solar_panels_factor: int,
     energy_usage_factor: int,
 ) -> float:
+    """Internal function that calculates the potential solar energy used for a
+    household
+
+    20% of the energy usage in a normal household is used for the appliances
+    that are being planned in here.
+    """
+
     return (
         solar_produced * household.solar_panels / solar_panels_factor
         - energy_used * 0.8 * household.energy_usage / energy_usage_factor
@@ -83,6 +99,19 @@ def _energy_efficiency_day(
     appliance_bitmap_plan: list[ApplianceTimeDaily],
     costmodel: CostModelRead,
 ) -> tuple[float, float, float, float, float]:
+    """Internal function that calculates the energy efficiency of a day.
+
+    This is done by checking for each house how much energy they produce and
+    use themselves at a certain time, and how much of the available solar
+    energy in total gets used at a certain time.
+
+    The self efficiency is how much energy all of the houses combined use of
+    their own generated solar power.
+
+    The total efficiency is how much energy all of the houses combined use of
+    all the available generated solar power.
+    """
+
     total_panels = sum(household.solar_panels for household in planning)
     solar_energy_produced = [
         ef.solar_produced * total_panels / solar_panels_factor
@@ -173,6 +202,8 @@ def _energy_efficiency_day(
 def plan_energy(
     hour: int, appliance_duration: int, appliance_bitmap_plan: int
 ) -> int:
+    "Creates the updated bitmap window with the new usage added in."
+
     appliance_duration_bit = _calculate_appliance_duration_bit(
         duration=appliance_duration, hour=hour
     )
@@ -189,6 +220,8 @@ def update_energy(
     appliance_bitmap_plan_energy: int,
     appliance_bitmap_plan_no_energy: int,
 ) -> tuple[int, int]:
+    "Updates both bitmap windows with the newly planned in appliance."
+
     appliance_duration_bit_old = _calculate_appliance_duration_bit(
         appliance.duration, old_hour
     )
@@ -217,6 +250,13 @@ def check_appliance_time(
     unix: int,
     appliance_bitmap_plan: int,
 ) -> bool:
+    """Checks whether an appliance can be planned in at a certain time.
+
+    This is done by retrieving the correctly daily bitmap window and then
+    comparing that to the new planned in time. Also the old planning is
+    checked with the newly planned in time.
+    """
+
     hour = unix_to_hour(unix)
     current_day = day_name[(floor(unix / SECONDS_IN_DAY + 3) % 7)]
     day_number = ApplianceDays[current_day.upper()].value
@@ -262,6 +302,22 @@ def setup_planning(
     list[HouseholdRead],
     list[list[float]],
 ]:
+    """Retrieves all the data for starting the planning.
+
+    This contains the following data:
+    days_in_chunk, the timeframe that will be planned in, in this loop
+    days_in_planning, the current day that will be planned in
+    length_planning, the total timeframe that will be planned in
+    start_date, the start date of this chunk
+    end_date, the end date of this chunk
+    total_start_date, the start date of the total planning
+    energyflow_data_sim, all of the energyflows in this chunk
+    energyflow_data, the energyflows where the solar power is greater than 0
+    appliance_time, all of the appliance time windows
+    household_planning, all of the households available in this planning
+    results, the results of this chunk
+    """
+
     energyflow_data = energyflow_crud.get_by_solar_produced(
         session=session,
         limit=HOURS_IN_WEEK,
@@ -328,6 +384,16 @@ def loop_helpers(
     energyflow_data: list[EnergyFlowRead],
     twinworld: TwinWorldRead,
 ) -> tuple[int, list[EnergyFlowRead], list[list[float]], float, int]:
+    """All of the helper variables in the loop.
+
+    This results in the following data:
+    date, the current time in unix for this day
+    energyflow_day, the energy flows for this day where solar power > 0
+    household_energy, how much energy each household has available for usage
+    total_available_energy, how much energy is available in total
+    day_number_in_planning, the current day in planning
+    """
+
     day_number_in_planning = (
         start_date - total_start_date
     ) // SECONDS_IN_DAY + day_iterator
@@ -385,6 +451,12 @@ def write_results(
     energyflow_day_sim: list[EnergyFlowRead],
     household_planning: list[HouseholdRead],
 ) -> list[list[float]]:
+    """Returns the results of a certain in the planning.
+
+    This uses the helper function _energy_efficiency_day to determine the
+    efficiency, and then puts it into an array which is send back.
+    """
+
     current_day_appliance = [
         el for el in appliance_time if el.day == day_number_in_planning
     ]
@@ -429,6 +501,14 @@ def create_results(
     household_planning: list[HouseholdRead],
     twinworld: TwinWorldRead,
 ) -> tuple[list[float], list[float], list[float], list[EnergyFlowRead]]:
+    """Creates the helper variables for determining the results.
+
+    The following variables are created:
+    solar_produced, the amount of energy produced by all households in a day
+    current_used, the amount of energy used by all households for SL's
+    current_available, the amount of energy still available for all households
+    energyflow_day_sim, all the energy flows for the day
+    """
     # Process to calculate energy efficiency for the day
     current_used, solar_produced, current_available = (
         [0.0] * 24,
