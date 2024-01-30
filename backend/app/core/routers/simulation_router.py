@@ -105,6 +105,24 @@ async def start(
 async def plan(
     *, planning: SelectedModelsInput, session: Session = Depends(get_session)
 ) -> SelectedModelsOutput:
+    """The plan function executing all the different subfunctions.
+
+    The plan function is done in the following 8 steps:
+    1. All the relevant data is gathered in setup_planning
+    2. For each day, relevant data is gathered in loop_helpers
+    3. The greedy algorithm is executed with plan_greedy, resulting in a base
+    planning
+    4. The framework for the results is created in create_results
+    5. The results of greedy algorithm are documented in write_results
+    6. If selected, the simulated annealing is performed, resulting in an
+    improved planning
+    7. The results, and any improvements, are recorded again in write_results
+    8. The results and planned in data is send back to the frontend
+
+    The reason for performing write_results twice is in case the random nature
+    of simulated annealing causes a worse result during simulated annealing.
+    While this is unlikely, it technically is possible.
+    """
     (
         days_in_chunk,
         days_in_planning,

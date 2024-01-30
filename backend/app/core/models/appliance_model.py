@@ -78,7 +78,7 @@ class ApplianceBase(SQLModel):
 
 
 class Appliance(ApplianceBase, table=True):
-    """Contains all the appliances that are present in a household"""
+    "Contains all the appliances that are present in a household"
 
     id: int = Field(primary_key=True)
 
