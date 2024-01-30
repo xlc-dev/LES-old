@@ -34,6 +34,11 @@
               ticks: {
                 color: getAxisTextColor(),
               },
+              title: {
+                display: true,
+                text: getYAxisChartLabel(index),
+                color: getAxisTextColor(),
+              },
             },
             x: {
               ticks: {
@@ -92,6 +97,22 @@
     "internalBoughtEnergyPrice",
     "totalAmountSaved",
   ];
+
+  /**
+   * Get the y axis label for the chart based on the chart index.
+   * @param {number} index - The index of the chart.
+   * @returns {string} - The chart label.
+   */
+  const getYAxisChartLabel = (index: number): string => {
+    const labels: string[] = [
+      "Fraction of solar energy used by houses themselves",
+      "Fraction of solar energy used by all houses",
+      "Price of internal energy (local currency)",
+      "Money saved by community (local currency)",
+    ];
+    return labels[index] || "";
+  };
+
 
   /**
    * Get the label for the chart based on the chart index.
