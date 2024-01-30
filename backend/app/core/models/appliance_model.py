@@ -49,7 +49,7 @@ class ApplianceBase(SQLModel):
     power: float = Field(nullable=False, gt=0)  # in Kwh
     duration: int = Field(nullable=False, gt=0)  # in hours
     daily_usage: float = Field(
-        nullable=False, ge=0
+        nullable=False, gt=0
     )  # in amount of times used per day
 
     @field_validator("power")
