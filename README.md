@@ -52,6 +52,8 @@ Then `cd` into the backend folder, and run `python run.py` for a dev server, and
 
 When `development mode` is enabled, you can go to `http://localhost:8000/docs` to find the API documentation.
 
+**IMPORTANT:** To have any data to start with, call the `seed` API route to generate intial data for your database.
+
 #### Linters
 
 The linters installed with the project are: `black`, `mypy`, and `flake8`. They are run on each pull request with a CI workflow, but to manually run them on your machine,
