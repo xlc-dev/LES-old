@@ -25,6 +25,11 @@
 
   let newSession = false;
 
+  /**
+   * Converts a string to an ArrayBuffer.
+   * @param {string} s - The string to be converted.
+   * @returns {ArrayBuffer} - The converted ArrayBuffer.
+   */
   const s2ab = (s) => {
     const buffer = new ArrayBuffer(s.length);
     const view = new Uint8Array(buffer);
@@ -34,6 +39,10 @@
     return buffer;
   };
 
+  /**
+   * Retrieves the graph data from the efficiency results.
+   * @returns {Object} - The graph data object.
+   */
   const getGraphData = () => {
     const efficiencyResults = $efficiencyresultstore;
     let graphData = {
@@ -57,6 +66,12 @@
     return graphData;
   };
 
+  /**
+   * Processes graph data and adds it to a workbook.
+   * @param {Object} graphData - The graph data object.
+   * @param {Object} workbook - The workbook object.
+   * @returns {void}
+   */
   const processGraphDataAndAddToWorkbook = (graphData, workbook) => {
     Object.keys(graphData).forEach((graphKey) => {
       const graphPoints = graphData[graphKey].map((point) => {
@@ -70,6 +85,10 @@
     });
   };
 
+  /**
+   * Retrieves data for the dashboard.
+   * @returns {Array} An array of objects containing label and value pairs for the dashboard.
+   */
   const getDashboardData = () => {
     const stepperDataValue = $stepperData;
     const efficiencyResults = $efficiencyresultstore;
@@ -124,6 +143,9 @@
     ];
   };
 
+  /**
+   * Generates and downloads a xlsx file.
+   */
   export const downloadExcel = () => {
     const timeDailiesData = $timeDailies;
     const graphData = getGraphData();
@@ -145,6 +167,10 @@
     URL.revokeObjectURL(url);
   };
 
+  /**
+   * Initialises a new session.
+   * @returns {void}
+   */
   const newSessionButton = () => {
     $stepperData = {
       algorithm: {} as any,
