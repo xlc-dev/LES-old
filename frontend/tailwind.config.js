@@ -14,6 +14,7 @@ export default {
         "les-highlight": "#2a2a3d",
         "les-table-cell": "#373737",
         "les-sort-inactive": "#838383",
+        "les-dark-date-picker-text": "#0e8bf8",
         "les-sort-active": "#313131",
         "les-sidebar-item": "#12121b",
 
@@ -52,7 +53,7 @@ export default {
           "--date-picker-selected-background": theme("colors.les-blue"),
         },
         ".calendar-dark": {
-          "--date-picker-foreground": theme("colors.les-sort-inactive"),
+          "--date-picker-foreground": theme("colors.les-dark-date-picker-text"),
           "--date-picker-background": theme("colors.dark-les-bg"),
           "--date-picker-highlight-border": theme("colors.les-blue"),
           "--date-picker-highlight-shadow": theme("colors.les-sidebar-item"),
