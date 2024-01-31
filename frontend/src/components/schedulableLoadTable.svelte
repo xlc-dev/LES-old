@@ -180,7 +180,17 @@
     window.removeEventListener("click", handleClickOutsideDatePicker);
   });
 
-  // Applies the filter logic on the schedulable load table
+  /**
+   * Applies the filter logic on the schedulable load table.
+   * @param {string} searchQuery - The search query to filter by. If empty, all items will be returned.
+   * @param {Object} selectedFilters - The selected filters to apply.
+   * @param {Array} selectedFilters.size - The selected size filters. If empty, all sizes will be considered a match.
+   * @param {Array} selectedFilters.energyUsage - The selected energy usage filters. If empty, all energy usages will be considered a match.
+   * @param {Array} selectedFilters.solarPanels - The selected solar panels filters. If empty, all solar panels will be considered a match.
+   * @param {Array} selectedFilters.solarYieldYearly - The selected solar yield yearly filters. If empty, all solar yield yearly values will be considered a match.
+   * @param {Array} selectedFilters.appliances - The selected appliances filters. If empty, all appliances will be considered a match.
+   * @return {Array} The filtered stepper data based on the search query and selected filters.
+   */
   $: {
     filteredData = $stepperData.households.filter((item) => {
       const matchesSearch =
