@@ -110,7 +110,10 @@
           </button>
           <button
             class="mt-4 p-2 bg-les-blue hover:brightness-110 transition duration-200 text-white rounded-lg"
-            on:click={() => {showPopup = false; $showResult = true;}}>
+            on:click={() => {
+              showPopup = false;
+              $showResult = true;
+            }}>
             View Result
           </button>
         </div>
