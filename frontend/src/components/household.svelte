@@ -200,6 +200,9 @@
           <div class="p-4 flex justify-center">
             <div class="flex flex-col items-center gap-4">
               {#each weekDates.slice(0, 3) as date}
+                <div class="text-center mt-2 text-gray-500">
+                  {date.toLocaleDateString("en-US", { weekday: "long" })}
+                </div>
                 <SchedulableLoadGrid
                   appliances={household.appliances}
                   date={date.toLocaleDateString("en-US")}
@@ -213,6 +216,9 @@
           <div class="p-4 flex justify-center">
             <div class="flex flex-col items-center gap-4">
               {#each weekDates.slice(3, 7) as date}
+                <div class="text-center mt-2 text-gray-500">
+                  {date.toLocaleDateString("en-US", { weekday: "long" })}
+                </div>
                 <SchedulableLoadGrid
                   appliances={household.appliances}
                   date={date.toLocaleDateString("en-US")}
