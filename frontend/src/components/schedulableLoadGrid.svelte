@@ -20,7 +20,6 @@
 
   /**
    * Determines the color of a box in a schedulable load grid raster based on a bitmap value.
-   *
    * @param {number} bitmap - The bitmap value to determine the color from.
    * @param {number} hour - The hour for which the color is being determined.
    * @param {string} selectedDate - The selected date for which the color is being determined.
@@ -77,6 +76,10 @@
     return bitmapString[hour] === "1" ? "bg-les-blue" : "bg-gray-700";
   };
 
+  /**
+   * Calculates the grid size class based on the current window width.
+   * @returns {string} The grid size class.
+   */
   const getGridSizeClass = () => {
     const breakpoints = {
       '2xl': 1536,
@@ -107,6 +110,11 @@
     gridSizeClass = getGridSizeClass();
   });
 
+  /**
+   * Converts a given Date object to a Unix timestamp.
+   * @param {Date} date - The Date object to convert.
+   * @returns {number} - The Unix timestamp of the given date.
+   */
   $: unixTimestamp = Math.floor(dateNoFormat.getTime() / 1000);
 </script>
 
