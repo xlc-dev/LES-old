@@ -52,7 +52,7 @@ export default {
           "--date-picker-selected-background": theme("colors.les-blue"),
         },
         ".calendar-dark": {
-          "--date-picker-foreground": theme("colors.les-white"),
+          "--date-picker-foreground": theme("colors.les-sort-inactive"),
           "--date-picker-background": theme("colors.dark-les-bg"),
           "--date-picker-highlight-border": theme("colors.les-blue"),
           "--date-picker-highlight-shadow": theme("colors.les-sidebar-item"),
