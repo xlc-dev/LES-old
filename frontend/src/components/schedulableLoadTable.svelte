@@ -63,8 +63,7 @@
   $: setMaxDate = new Date($endDate * 1000);
 
   /**
-   * Displays a dropdown menu of a filter when its' corresponding button is clicked
-   *
+   * Displays a dropdown menu of a filter when its corresponding button is clicked.
    * @param {string} filterName - The name of the filter.
    * @returns {void}
    */
