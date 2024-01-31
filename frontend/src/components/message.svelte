@@ -9,6 +9,10 @@
 
   let visible = true;
 
+  /**
+   * Deletes a message from the collection of messages.
+   * @returns {void}
+   */
   const deleteMessage = () => {
     messages.update((e) => e.filter((msg) => msg.id !== id));
   };
