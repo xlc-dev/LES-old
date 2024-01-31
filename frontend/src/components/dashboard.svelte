@@ -55,14 +55,14 @@
     sumTotalMoneySavedListener();
   });
 
-  $: /**
+  /**
    * Calculates the difference between the total and individual efficiency
    *
    * @param {number} sumEfficiencyTotal - The value of the total efficiency.
    * @param {number} sumEfficiencyIndividual - The value of the individual efficiency.
    * @returns {number} - The difference between the two efficiency values.
    */
-  sumEfficiencyNoSolar = sumEfficiencyTotal - sumEfficiencyIndividual;
+  $: sumEfficiencyNoSolar = sumEfficiencyTotal - sumEfficiencyIndividual;
 </script>
 
 <div class="max-w-7xl mx-auto">

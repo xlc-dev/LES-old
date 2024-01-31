@@ -77,7 +77,7 @@
 
     let daysLeft = Math.min(
       6,
-      Math.round((setMaxDate.getTime() - selectedDate.getTime()) / (24 * 60 * 60 * 1000)),
+      Math.round((setMaxDate.getTime() - selectedDate.getTime()) / (24 * 60 * 60 * 1000))
     );
 
     for (let i = 1; i <= daysLeft; i++) {
@@ -107,104 +107,104 @@
   V51.041z M286.367,307.369H59.44V131.015l107.596-87.939c3.414-2.791,8.316-2.791,11.731,0l107.6,87.939V307.369z" />
     </g>
     <text x="33%" y="70%" font-size="60" class="dark:text-white text-black"
-    >{household.name} Data</text>
+      >{household.name} Data</text>
   </svg>
 </div>
 
 <div class="flex flex-col gap-12 justify-between">
   <table class="min-w-full leading-normal rounded-lg overflow-hidden">
     <thead>
-    <tr class="text-xs text-left uppercase tracking-wider">
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Name
-      </th>
+      <tr class="text-xs text-left uppercase tracking-wider">
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Name
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Size
-      </th>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Size
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Energy Usage
-      </th>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Energy Usage
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Solar Panels
-      </th>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Solar Panels
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Solar Yield Yearly
-      </th>
-    </tr>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Solar Yield Yearly
+        </th>
+      </tr>
     </thead>
 
     <tbody>
-    <tr class="text-xs text-left uppercase tracking-wider">
-      <td
-        class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >{household.name}</td>
-      <td
-        class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >{household.size}</td>
-      <td
-        class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >{household.energy_usage}</td>
-      <td
-        class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >{household.solar_panels}</td>
-      <td
-        class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >{household.solar_yield_yearly}</td>
-    </tr>
+      <tr class="text-xs text-left uppercase tracking-wider">
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.name}</td>
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.size}</td>
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.energy_usage}</td>
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.solar_panels}</td>
+        <td
+          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >{household.solar_yield_yearly}</td>
+      </tr>
     </tbody>
   </table>
 
   <table class="min-w-full leading-normal rounded-lg overflow-hidden">
     <thead>
-    <tr class="text-xs text-left uppercase tracking-wider">
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Name
-      </th>
+      <tr class="text-xs text-left uppercase tracking-wider">
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Name
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Power
-      </th>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Power
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Duration
-      </th>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Duration
+        </th>
 
-      <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-      >Daily Usage
-      </th>
-    </tr>
+        <th
+          class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+          >Daily Usage
+        </th>
+      </tr>
     </thead>
 
     <tbody>
-    {#each household.appliances as appliance}
-      <tr class="text-xs text-left uppercase tracking-wider">
-        <td
-          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-        >{appliance.name}</td>
-        <td
-          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-        >{appliance.power}</td>
-        <td
-          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-        >{appliance.duration}</td>
-        <td
-          class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
-        >{appliance.daily_usage}</td>
-      </tr>
-    {/each}
+      {#each household.appliances as appliance}
+        <tr class="text-xs text-left uppercase tracking-wider">
+          <td
+            class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+            >{appliance.name}</td>
+          <td
+            class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+            >{appliance.power}</td>
+          <td
+            class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+            >{appliance.duration}</td>
+          <td
+            class="px-5 py-6 border-b border-gray-200 bg-gray-100 text-gray-600 dark:text-les-white dark:bg-dark-table-header"
+            >{appliance.daily_usage}</td>
+        </tr>
+      {/each}
     </tbody>
   </table>
 
@@ -218,7 +218,7 @@
         <button
           class="px-4 py-2 bg-les-blue text-white rounded hover:brightness-110 transition-colors duration-200"
           on:click={toggleDatePicker}
-        >Select Date
+          >Select Date
         </button>
         {#if showDatePicker}
           <div class="absolute z-10 mt-2 rounded shadow-lg calendar dark:calendar-dark">
@@ -228,40 +228,40 @@
       </button>
     </div>
     <tbody>
-    <tr class="bg-white text-sm dark:bg-dark-table-header">
-      <td colspan={3}>
-        <div class="p-4 flex justify-center">
-          <div class="flex flex-col items-center gap-4">
-            {#each weekDates.slice(0, 3) as date}
-              <div class="text-center mt-2 text-gray-500">
-                {date.toLocaleDateString("en-US", { weekday: "long" })}
-              </div>
-              <SchedulableLoadGrid
-                appliances={household.appliances}
-                date={date.toLocaleDateString("en-US")}
-                dateNoFormat={date}
-                {hours} />
-            {/each}
+      <tr class="bg-white text-sm dark:bg-dark-table-header">
+        <td colspan={3}>
+          <div class="p-4 flex justify-center">
+            <div class="flex flex-col items-center gap-4">
+              {#each weekDates.slice(0, 3) as date}
+                <div class="text-center mt-2 text-gray-500">
+                  {date.toLocaleDateString("en-US", { weekday: "long" })}
+                </div>
+                <SchedulableLoadGrid
+                  appliances={household.appliances}
+                  date={date.toLocaleDateString("en-US")}
+                  dateNoFormat={date}
+                  {hours} />
+              {/each}
+            </div>
           </div>
-        </div>
-      </td>
-      <td colspan={4}>
-        <div class="p-4 flex justify-center">
-          <div class="flex flex-col items-center gap-4">
-            {#each weekDates.slice(3, 7) as date}
-              <div class="text-center mt-2 text-gray-500">
-                {date.toLocaleDateString("en-US", { weekday: "long" })}
-              </div>
-              <SchedulableLoadGrid
-                appliances={household.appliances}
-                date={date.toLocaleDateString("en-US")}
-                dateNoFormat={date}
-                {hours} />
-            {/each}
+        </td>
+        <td colspan={4}>
+          <div class="p-4 flex justify-center">
+            <div class="flex flex-col items-center gap-4">
+              {#each weekDates.slice(3, 7) as date}
+                <div class="text-center mt-2 text-gray-500">
+                  {date.toLocaleDateString("en-US", { weekday: "long" })}
+                </div>
+                <SchedulableLoadGrid
+                  appliances={household.appliances}
+                  date={date.toLocaleDateString("en-US")}
+                  dateNoFormat={date}
+                  {hours} />
+              {/each}
+            </div>
           </div>
-        </div>
-      </td>
-    </tr>
+        </td>
+      </tr>
     </tbody>
   </table>
 </div>
