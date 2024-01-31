@@ -16,19 +16,28 @@
 
   let isDarkMode = false;
 
-  // Registers and handles button clicks by dispatching the corresponding event
+  /**
+   * Registers and handles button clicks by dispatching the corresponding event.
+   * @param {string} action - The action triggered by the button click.
+   */
   const handleButtonClick = (action: string) => {
     dispatch("click", { action });
     currentComponent = action;
   };
 
-  // Triggers the function that turns dark mode on or off
+  /**
+   * Triggers the function that turns dark mode on or off.
+   * @returns {void}
+   */
   const toggleDarkMode = () => {
     isDarkMode = !isDarkMode;
     updateDarkMode();
   };
 
-  // Turns dark mode on or off
+  /**
+   * Updates the dark mode setting and applies the corresponding styles to the document.
+   * @returns {void}
+   */
   const updateDarkMode = () => {
     // Save the dark mode setting to local storage
     localStorage.setItem("darkMode", isDarkMode.toString());
