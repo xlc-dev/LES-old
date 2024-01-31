@@ -45,7 +45,10 @@
     );
   });
 
-  // Destroy listeners on component destruction
+  /*
+    Contains logic that runs immediately before the component is unmounted.
+    In this component it destroys the listener functions.
+   */
   onDestroy(() => {
     sumEfficiencyIndividualListener();
     sumEfficiencyTotalListener();

@@ -159,6 +159,10 @@
     newSession = true;
   };
 
+  /*
+    Contains logic that runs at initialisation, as soon as the component has been mounted.
+    In this component it stops the runtime count and modifies the state of the simulation.
+   */
   onMount(() => {
     $isStarted = false;
     runtime.stop();

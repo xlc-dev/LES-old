@@ -40,7 +40,10 @@
     }
   };
 
-  // Initializes the dark mode state at the start of a session based on the last saved state of a previous session
+  /*
+    Contains logic that runs at initialisation, as soon as the component has been mounted.
+    In this component it initialises the dark mode state at the start of a session based on the last saved state of a previous session.
+   */
   onMount(() => {
     const savedDarkMode = localStorage.getItem("darkMode");
     isDarkMode = savedDarkMode === "true";

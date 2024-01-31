@@ -64,6 +64,10 @@
     return matchesSearch && matchesSize && matchesSolarPanels;
   });
 
+  /*
+    Contains logic that runs at initialisation, as soon as the component has been mounted.
+    In this component it initialises (the state of) the filter bar and its filters and dropdown menus.
+   */
   onMount(() => {
     document.addEventListener("click", (event: any) => {
       for (const filterName in filters) {

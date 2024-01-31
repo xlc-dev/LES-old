@@ -582,7 +582,10 @@
       });
   };
 
-  // Initializes the simulation data, the twin world, the simulation data's object keys, and the Monaco editors
+  /*
+    Contains logic that runs at initialisation, as soon as the component has been mounted.
+    In this component it initialises the simulation data, the twin world, the simulation data's object keys, and the Monaco editors.
+   */
   onMount(async () => {
     simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
 
