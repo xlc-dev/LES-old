@@ -31,7 +31,7 @@
    * @param {Event} event - The click event object.
    * @returns {void}
    */
-  const handleClickOutside = (event) => {
+  const handleClickOutsideDatePicker = (event) => {
     if (!event.target.closest(".date-picker-container")) {
       showDatePicker = false;
     }
@@ -42,7 +42,7 @@
   In this component it initialises the event listener that checks whether an area outside a dropdown menu has been clicked.
    */
   onMount(() => {
-    window.addEventListener("click", handleClickOutside);
+    window.addEventListener("click", handleClickOutsideDatePicker);
   });
 
   /*
@@ -50,7 +50,7 @@
   In this component it destroys the event listener that checks whether an area outside a dropdown menu has been clicked.
    */
   onDestroy(() => {
-    window.removeEventListener("click", handleClickOutside);
+    window.removeEventListener("click", handleClickOutsideDatePicker);
   });
 
   /**

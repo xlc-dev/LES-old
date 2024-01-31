@@ -34,7 +34,7 @@
     showDropdown = showDropdown === filterName ? null : filterName;
   };
 
-  const createHandleClickOutside = (filterName: string) => {
+  const handleClickOutsideFilter = (filterName: string) => {
     return (event: any) => {
       if (!event.target.closest(`#${filterName}-dropdown`)) {
         showDropdown = null;
@@ -94,7 +94,7 @@
         <button
           class="relative"
           id={`${filterName}-dropdown`}
-          on:click|stopPropagation={createHandleClickOutside(filterName)}>
+          on:click|stopPropagation={handleClickOutsideFilter(filterName)}>
           <button
             class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white"
             on:click={() => toggleDropdown(filterName)}>
