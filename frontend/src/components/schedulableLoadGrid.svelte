@@ -77,6 +77,38 @@
     return bitmapString[hour] === "1" ? "bg-les-blue" : "bg-gray-700";
   };
 
+  const getGridSizeClass = () => {
+    const breakpoints = {
+      '2xl': 1536,
+      'xl': 1280,
+      'lg': 1024,
+      'md': 768,
+      'sm': 640,
+    };
+
+    const screenWidth = window.innerWidth;
+
+    if (screenWidth >= breakpoints['2xl']) {
+      return 'w-8 h-8';
+    } else if (screenWidth >= breakpoints['xl']) {
+      return 'w-7 h-7';
+    } else if (screenWidth >= breakpoints['lg']) {
+      return 'w-6 h-6';
+    } else if (screenWidth >= breakpoints['md']) {
+      return 'w-5 h-5';
+    } else {
+      return 'w-4 h-4';
+    }
+  };
+
+  let gridSizeClass = getGridSizeClass();
+
+  window.addEventListener('resize', () => {
+    gridSizeClass = getGridSizeClass();
+  });
+
+  const gridCellSize = 'w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6';
+
   $: unixTimestamp = Math.floor(dateNoFormat.getTime() / 1000);
 </script>
 
@@ -85,7 +117,7 @@
     <div class="w-36 text-right pr-2 font-bold dark:text-les-white">Appliances:</div>
     <div class="flex">
       {#each hours as hour}
-        <div class="w-6 h-6 text-center dark:text-les-white">{hour}</div>
+        <div class={`text-center dark:text-les-white ${gridCellSize}`}>{hour}</div>
       {/each}
     </div>
   </div>
@@ -96,12 +128,12 @@
       </div>
       {#each hours as hour}
         <div
-          class={`w-6 h-6 border border-white ${getCellColor(
+          class={`border border-white ${getCellColor(
             appliance.appliance_windows[(Math.round(unixTimestamp / 86400) + 3) % 7].bitmap_window,
             hour,
             date,
             appliance.id
-          )}`}>
+          )} ${gridCellSize}`}>
         </div>
       {/each}
     </div>
