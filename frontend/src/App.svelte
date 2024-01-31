@@ -8,6 +8,7 @@
     startDate,
     endDate,
     messages,
+    showResult,
   } from "./lib/stores";
 
   import { OpenAPI, SimulateService } from "./lib/client";
@@ -18,8 +19,19 @@
 
   OpenAPI.BASE = "http://localhost:8000";
 
+  let showPopup = false;
+  let fetchedData = false;
+
+  /*
+   * Fetches the simulation results from the API.
+   * The API returns the results in chunks of 7 days.
+   * This function is called recursively until the simulation is finished.
+   */
   const fetchData = async (chunkoffset = 0) => {
+    // Don't call the API if the simulation is not started
     if (!$isStarted) return;
+    fetchedData = true;
+
     try {
       const response = await SimulateService.planApiSimulatePlanPost({
         chunkoffset: chunkoffset,
@@ -48,16 +60,14 @@
       timeDailies.update((store) => [...store, ...response.timedaily]);
       $startDate = response.start_date;
       $endDate = response.end_date;
+
       setTimeout(() => {
         if (!$isStarted) return;
         fetchData(chunkoffset + 7);
       }),
         50;
     } catch (err) {
-      if (err.status === 204) {
-        $isStarted = false;
-        return;
-      } else if (err.status !== 500) {
+      if (err.status !== 500) {
         $isStarted = false;
         return;
       } else {
@@ -72,6 +82,9 @@
   } else {
     runtime.stop();
     $isStarted = false;
+    if (fetchedData) {
+      showPopup = true;
+    }
   }
 </script>
 
@@ -83,6 +96,27 @@
 
 {#if $stepperData.households.length !== 0}
   <BaseLayout />
+
+  {#if showPopup}
+    <div class="fixed inset-0 flex items-center justify-center z-50">
+      <div class="absolute bg-gray-900 opacity-75 inset-0"></div>
+      <div class="relative bg-white dark:bg-dark-table-row p-8 rounded-lg shadow-2xl">
+        <h2 class="text-2xl font-bold mb-4 dark:text-white">Simulation finished</h2>
+        <div class="flex justify-between">
+          <button
+            class="mt-4 p-2 bg-les-blue hover:brightness-110 transition duration-200 text-white rounded-lg"
+            on:click={() => (showPopup = false)}>
+            Continue
+          </button>
+          <button
+            class="mt-4 p-2 bg-les-blue hover:brightness-110 transition duration-200 text-white rounded-lg"
+            on:click={() => {showPopup = false; $showResult = true;}}>
+            View Result
+          </button>
+        </div>
+      </div>
+    </div>
+  {/if}
 {:else}
   <Stepper />
 {/if}

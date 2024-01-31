@@ -64,3 +64,5 @@ export const startDate = writable(0);
 export const endDate = writable(0);
 
 export const isStarted = writable(false);
+
+export const showResult = writable(false);

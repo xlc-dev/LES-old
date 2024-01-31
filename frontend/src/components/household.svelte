@@ -178,6 +178,7 @@
   <hr class="my-2 border-black dark:border-les-white" />
 
   <h2 class="font-bold text-3xl dark:text-les-white">Schedulable Load</h2>
+
   <table class="bg-white dark:bg-dark-table-header min-w-full leading-normal rounded-lg">
     <div class="flex justify-center pt-4">
       <button class="date-picker-container relative" on:click|stopPropagation>

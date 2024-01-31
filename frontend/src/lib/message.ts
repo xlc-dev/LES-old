@@ -20,10 +20,10 @@ const isJsonString = (value: string): boolean => {
 };
 
 /**
- * Show a message based on the given type of error.
+ * Show a message based on the given type.
  * @param {(object | string)} error - The error object or string.
  */
-const showError = (error: object | string): void => {
+const showMessage = (error: object | string): void => {
   const id = Math.random();
   const cleanedError =
     typeof error === "object" && (error as any).body
@@ -45,8 +45,8 @@ const showError = (error: object | string): void => {
  */
 export const message = (str: object | string): void => {
   if (typeof str === "object" || (typeof str === "string" && isJsonString(str))) {
-    showError(str);
+    showMessage(str);
   } else if (typeof str === "string") {
-    showError(str);
+    showMessage(str);
   }
 };

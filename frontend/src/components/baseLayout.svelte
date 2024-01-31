@@ -7,7 +7,7 @@
 
   import { blur } from "svelte/transition";
 
-  import { activatedHousehold } from "../lib/stores";
+  import { activatedHousehold, showResult } from "../lib/stores";
 
   import Sidebar from "./sidebar.svelte";
   import TitleBar from "./titleBar.svelte";
@@ -23,12 +23,19 @@
 
   let unsubscribe: () => void;
 
-  // Navigates to a different view based on the button that was clicked
-  const handleButtonClick = (action: string) => {
+  /**
+   * Navigates to a different view based on the button that was clicked.
+   *
+   * @param {string} action - The action associated with the clicked button.
+   */
+  const handleButtonClick = (action) => {
+    // Unsubscribe if previously subscribed
     if (unsubscribe) unsubscribe();
 
+    // Reset activated household
     $activatedHousehold = null;
 
+    // Determine the selected component and title based on the action
     switch (action) {
       case "Dashboard":
         selectedComponent = Dashboard;
@@ -53,6 +60,12 @@
     unsubscribe = activatedHousehold.subscribe((e) => {
       title = e.name;
     });
+  }
+
+  // User can press show result button when simulation is finished, if he does,
+  // the simulation should be stopped and the result will be shown
+  $: if ($showResult === true) {
+    stop = true;
   }
 </script>
 
