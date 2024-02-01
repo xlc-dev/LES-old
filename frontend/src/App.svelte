@@ -76,6 +76,14 @@
     }
   };
 
+  /*
+   * Stops the polling of the API.
+   */
+  const stopPolling = () => {
+    fetchedData = false;
+    $isStarted = false;
+  };
+
   $: if ($isStarted) {
     runtime.start();
     fetchData();
@@ -95,7 +103,7 @@
 </div>
 
 {#if $stepperData.households.length !== 0}
-  <BaseLayout />
+  <BaseLayout on:stop={stopPolling} />
 
   {#if showPopup}
     <div class="fixed inset-0 flex items-center justify-center z-50">
@@ -111,10 +119,8 @@
           <button
             class="mt-4 p-2 bg-les-blue hover:brightness-110 transition duration-200 text-white rounded-lg"
             on:click={() => {
-              runtime.stop();
               showPopup = false;
               fetchedData = false;
-              $isStarted = false;
               document.getElementById("stop-button").click();
             }}>
             View Result

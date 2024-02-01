@@ -6,8 +6,8 @@
    * the application has gathered during the session and provides the researcher a way to display
    * and download this data before a new session is started.
    */
+  import { createEventDispatcher } from "svelte";
 
-  import { onMount } from "svelte";
   import * as XLSX from "xlsx";
 
   import {
@@ -22,6 +22,8 @@
   import BaseLayout from "./baseLayout.svelte";
   import Chart from "./chart.svelte";
   import Stepper from "./stepper.svelte";
+
+  const dispatch = createEventDispatcher();
 
   let newSession = false;
 
@@ -185,15 +187,6 @@
     $runtime = 0;
     newSession = true;
   };
-
-  /*
-   * Contains logic that runs at initialisation, as soon as the component has been mounted.
-   * In this component it stops the runtime count and modifies the state of the simulation.
-   */
-  onMount(() => {
-    $isStarted = false;
-    runtime.stop();
-  });
 </script>
 
 {#if !newSession}
@@ -213,7 +206,7 @@
     </div>
   </div>
 {:else if $stepperData.households.length !== 0}
-  <BaseLayout />
+  <BaseLayout on:stop={() => dispatch("stopped")} />
 {:else}
   <Stepper />
 {/if}

@@ -5,6 +5,7 @@
   Finally, it also ensures that some components, such as the sidebar, persist in multiple views.
   */
 
+  import { createEventDispatcher } from "svelte";
   import { blur } from "svelte/transition";
 
   import { activatedHousehold } from "../lib/stores";
@@ -17,11 +18,13 @@
   import Dashboard from "./dashboard.svelte";
   import Household from "./household.svelte";
 
+  const dispatch = createEventDispatcher();
+
+  let unsubscribe: () => void;
+
   let selectedComponent = null;
   let title = "Dashboard";
   let stop = false;
-
-  let unsubscribe: () => void;
 
   /**
    * Navigates to a different view based on the button that was clicked.
@@ -51,6 +54,7 @@
         break;
       case "Stop":
         stop = true;
+        dispatch("stop");
         break;
     }
   };

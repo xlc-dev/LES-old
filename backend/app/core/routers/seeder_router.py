@@ -526,17 +526,17 @@ def seed(
     session.add(costmodel_temo)
 
     twinworld_1 = twinworld_model.TwinWorld(
-        name="Twinworld Large",
-        description="A larger twinworld consisting of roughly 75 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
-    )
-
-    twinworld_2 = twinworld_model.TwinWorld(
         name="Twinworld Small",
         description="A smaller twinworld consisting of roughly 25 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
     )
 
-    session.add(twinworld_2)
+    twinworld_2 = twinworld_model.TwinWorld(
+        name="Twinworld Large",
+        description="A larger twinworld consisting of roughly 75 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
+    )
+
     session.add(twinworld_1)
+    session.add(twinworld_2)
 
     session.flush()
 
@@ -547,7 +547,7 @@ def seed(
         if inv_norm < 0.3:
             inv_norm = 0.3
 
-        if random.random() < 0.75:
+        if random.random() > 0.75:
             household = create_household(f"Household {i}", 1, inv_norm)
         else:
             household = create_household(f"Household {i}", 2, inv_norm)
