@@ -177,7 +177,7 @@ def _energy_efficiency_day(
     energy_price_code = costmodel.algorithm
 
     # Remove trailing parentheses if they exist
-    energy_price_code = energy_price_code.rstrip("():")
+    energy_price_code = energy_price_code.rstrip("()")
 
     # Adding parameters to the code
     energy_price_code_with_params = f"""{energy_price_code}(
