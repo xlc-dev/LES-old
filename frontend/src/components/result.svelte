@@ -119,11 +119,11 @@
       },
       {
         label: "Twin World Energy Usage Factor",
-        value: stepperDataValue.twinworld.energy_usage_factor,
+        value: stepperDataValue.energyflow.energy_usage_factor,
       },
       {
         label: "Twin World Solar Panels Factor",
-        value: stepperDataValue.twinworld.solar_panels_factor,
+        value: stepperDataValue.energyflow.solar_panels_factor,
       },
       { label: "Algorithm Max Temperature", value: stepperDataValue.algorithm.max_temperature },
       {

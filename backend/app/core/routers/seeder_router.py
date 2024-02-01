@@ -472,6 +472,8 @@ def seed(
     energyflow_upload = energyflow_model.EnergyFlowUpload(
         name="Energyflow Zoetermeer",
         description="The energy data from a green household in Zoetermeer that is associated with the THUAS.",  # noqa: E501
+        solar_panels_factor=25,
+        energy_usage_factor=7000,
     )
 
     session.add(energyflow_upload)
@@ -526,15 +528,11 @@ def seed(
     twinworld_1 = twinworld_model.TwinWorld(
         name="Twinworld Large",
         description="A larger twinworld consisting of roughly 75 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
-        solar_panels_factor=25,
-        energy_usage_factor=7000,
     )
 
     twinworld_2 = twinworld_model.TwinWorld(
         name="Twinworld Small",
         description="A smaller twinworld consisting of roughly 25 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
-        solar_panels_factor=25,
-        energy_usage_factor=7000,
     )
 
     session.add(twinworld_2)

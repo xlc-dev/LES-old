@@ -6,6 +6,8 @@ internal yield of green energy that is available to be used in the simulation.
 
 from sqlmodel import SQLModel, Field, Relationship
 
+from pydantic import field_validator
+
 
 class EnergyFlowBase(SQLModel):
     "Energyflow model that saves the energyflow in the database"
@@ -41,6 +43,29 @@ class EnergyFlowUploadBase(SQLModel):
 
     name: str = Field(index=True, unique=True, nullable=False)
     description: str = Field(nullable=False)
+
+    solar_panels_factor: int = Field(
+        nullable=False, ge=1
+    )  # amount of solar panels that are available in the energyflow
+    energy_usage_factor: int = Field(
+        nullable=False, ge=1
+    )  # yearly energy usage in kWh by the house in the energyflow file
+
+    @field_validator("solar_panels_factor")
+    @classmethod
+    def ensure_solar_panels_factor(cls, v: int):
+        if v:
+            if v < 1:
+                raise ValueError("solar_panels_factor must be greater than 0")
+            return v
+
+    @field_validator("energy_usage_factor")
+    @classmethod
+    def ensure_energy_usage_factor(cls, v: int):
+        if v:
+            if v < 1:
+                raise ValueError("energy_usage_factor must be greater than 0")
+            return v
 
 
 class EnergyFlowUpload(EnergyFlowUploadBase, table=True):
