@@ -9,6 +9,8 @@ from typing import Optional
 
 from sqlmodel import SQLModel, Field
 
+from pydantic import field_validator
+
 
 class CostModelBase(SQLModel):
     """Costmodel model that saves the costmodel in the database.
@@ -20,7 +22,7 @@ class CostModelBase(SQLModel):
     """
 
     name: str = Field(index=True, unique=True, nullable=False)
-    description: str = Field(nullable=False)
+    description: str = Field(nullable=False, min_length=1, max_length=500)
     price_network_buy_consumer: float = Field(
         nullable=False
     )  # in local currency
@@ -31,6 +33,16 @@ class CostModelBase(SQLModel):
         nullable=True
     )  # a fraction between 0 and 1
     algorithm: str = Field(nullable=False)
+
+    @field_validator("description")
+    @classmethod
+    def ensure_description(cls, v: str):
+        if v:
+            if len(v) < 1 or len(v) > 500:
+                raise ValueError(
+                    "description must be between 1 and 500 characters"
+                )
+            return v
 
 
 class CostModel(CostModelBase, table=True):

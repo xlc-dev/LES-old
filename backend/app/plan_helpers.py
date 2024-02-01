@@ -59,6 +59,7 @@ class SelectedModelsInput(SQLModel):
 class SelectedModelsOutput(SQLModel):
     timedaily: list[ApplianceTimeDailyRead]
     results: list[list[float]]
+    days_in_planning: int
     start_date: int
     end_date: int
 
