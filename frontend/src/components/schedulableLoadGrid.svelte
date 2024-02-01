@@ -9,7 +9,9 @@
    * panels, while the red boxes indicate that the energy used is drawn from the national grid.
    */
 
-  import { timeDailies, startDate } from "../lib/stores";
+  import type { ApplianceRead_Output } from "../lib/client";
+
+  import { timeDailies, startDate, daysInPlanning } from "../lib/stores";
 
   import type { ApplianceRead_Output } from "../lib/client";
 
@@ -49,7 +51,7 @@
 
     // Find the corresponding day in timeDailies based on the calculated day number
     const dayData = $timeDailies.filter(
-      (entry) => entry.id === 304 * (appliance_id - 1) + dayNumber + 1
+      (entry) => entry.id === $daysInPlanning * (appliance_id - 1) + dayNumber + 1
     );
 
     // Fallback if user hasn't selected a date that has no timeDailies

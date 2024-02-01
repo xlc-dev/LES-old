@@ -14,6 +14,7 @@
     startDate,
     endDate,
     messages,
+    daysInPlanning,
   } from "./lib/stores";
 
   import { OpenAPI, SimulateService } from "./lib/client";
@@ -68,6 +69,7 @@
       timeDailies.update((store) => [...store, ...response.timedaily]);
       $startDate = response.start_date;
       $endDate = response.end_date;
+      $daysInPlanning = response.days_in_planning;
 
       setTimeout(() => {
         if (!$isStarted) return;

@@ -54,6 +54,15 @@
   };
 
   /**
+   * Modifies the name of a filter so that it's written in camel case.
+   * @param {string} camelCase - The string to be converted.
+   * @returns {string} - The converted readable name.
+   */
+  const toReadableName = (camelCase: string) => {
+    return camelCase.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
+  };
+
+  /**
    * Loads the view for a specific household if it has been clicked in the simulation view.
    * @param {HouseholdRead_Output} data - The household data to be set.
    * @returns {void}
@@ -128,7 +137,7 @@
           <button
             class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white"
             on:click={() => toggleDropdown(filterName)}>
-            {filterName}
+            {toReadableName(filterName)}
           </button>
 
           {#if showDropdown === filterName}

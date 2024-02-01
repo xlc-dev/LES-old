@@ -99,7 +99,8 @@
     appliance_id: 0,
   };
 
-  let costmodelCode = "return buy_consumer * ratio + sell_consumer * (1 - ratio)";
+  let costmodelCode =
+    "def cost_default():\n    return buy_consumer * ratio + sell_consumer * (1 - ratio)";
   let algorithmCode =
     "import pandas\nimport numpy\nimport scipy\nimport math\nimport random\n\ndef run():\n    pass\n";
 
@@ -588,6 +589,7 @@
       return;
     }
 
+    window.scrollTo({ top: 0, behavior: "smooth" });
     message("Energyflow uploaded");
     simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
   };
@@ -611,6 +613,9 @@
     try {
       await CostModelService.postCostmodelApiCostmodelPost(formData);
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+      selectedIDs.costmodel = simulationData.costmodel[simulationData.costmodel.length - 1].id;
+      $stepperData.costmodel = target.name.value;
+      window.scrollTo({ top: 0, behavior: "smooth" });
       message("Cost model created");
     } catch (err) {
       message(err);
@@ -635,6 +640,7 @@
       twinworldHouseholds = [];
       selectedIDs.twinworld = simulationData.twinworld[simulationData.twinworld.length - 1].id;
       fetchHouseholds(); // Fetch households for the newly created twin world
+      $stepperData.twinworld = target.name.value;
       message("Twin world created");
     } catch (err) {
       message(err);
@@ -660,6 +666,9 @@
     try {
       await AlgorithmService.postAlgorithmApiAlgorithmPost(formData);
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+      selectedIDs.algorithm = simulationData.algorithm[simulationData.algorithm.length - 1].id;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      $stepperData.algorithm = target.name.value;
       message("Algorithm created");
     } catch (err) {
       message(err);
@@ -1108,6 +1117,7 @@
                   type="number"
                   step="1"
                   min="1"
+                  max="24"
                   bind:value={newAppliance.duration} />
               </div>
 
@@ -1580,7 +1590,7 @@
           </div>
 
           <input
-            step="any"
+            step="number"
             type="number"
             name="max_temperature"
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
