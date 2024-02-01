@@ -18,8 +18,8 @@
   };
 
   /*
-    Contains logic that runs at initialisation, as soon as the component has been mounted.
-    In this component it sets a timer for how long a message is displayed.
+   * Contains logic that runs at initialisation, as soon as the component has been mounted.
+   * In this component it sets a timer for how long a message is displayed.
    */
   onMount(() => {
     setTimeout(() => {

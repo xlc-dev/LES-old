@@ -38,16 +38,16 @@
   };
 
   /*
-  Contains logic that runs at initialisation, as soon as the component has been mounted.
-  In this component it initialises the event listener that checks whether an area outside a dropdown menu has been clicked.
+   * Contains logic that runs at initialisation, as soon as the component has been mounted.
+   * In this component it initialises the event listener that checks whether an area outside a dropdown menu has been clicked.
    */
   onMount(() => {
     window.addEventListener("click", handleClickOutsideDatePicker);
   });
 
   /*
-  Contains logic that runs immediately before the component is unmounted.
-  In this component it destroys the event listener that checks whether an area outside a dropdown menu has been clicked.
+   * Contains logic that runs immediately before the component is unmounted.
+   * In this component it destroys the event listener that checks whether an area outside a dropdown menu has been clicked.
    */
   onDestroy(() => {
     window.removeEventListener("click", handleClickOutsideDatePicker);
