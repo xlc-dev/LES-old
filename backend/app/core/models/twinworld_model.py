@@ -27,7 +27,7 @@ class TwinWorldBase(SQLModel):
         if v:
             if len(v) < 1 or len(v) > 500:
                 raise ValueError(
-                    "description must be between 1 and 300 characters"
+                    "description must be between 1 and 500 characters"
                 )
             return v
 

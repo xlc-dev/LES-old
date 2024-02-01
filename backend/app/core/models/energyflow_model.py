@@ -42,7 +42,7 @@ class EnergyFlowUploadBase(SQLModel):
     "Upload table for uploading CSV Energyflows"
 
     name: str = Field(index=True, unique=True, nullable=False)
-    description: str = Field(nullable=False)
+    description: str = Field(nullable=False, min_length=1, max_length=500)
 
     solar_panels_factor: int = Field(
         nullable=False, ge=1
@@ -50,6 +50,16 @@ class EnergyFlowUploadBase(SQLModel):
     energy_usage_factor: int = Field(
         nullable=False, ge=1
     )  # yearly energy usage in kWh by the house in the energyflow file
+
+    @field_validator("description")
+    @classmethod
+    def ensure_description(cls, v: str):
+        if v:
+            if len(v) < 1 or len(v) > 500:
+                raise ValueError(
+                    "description must be between 1 and 500 characters"
+                )
+            return v
 
     @field_validator("solar_panels_factor")
     @classmethod

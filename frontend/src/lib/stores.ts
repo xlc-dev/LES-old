@@ -63,5 +63,6 @@ export const messages = writable<Array<{ id: number; msg: string }>>([]);
 
 export const startDate = writable(0);
 export const endDate = writable(0);
+export const daysInPlanning = writable(0);
 
 export const isStarted = writable(false);

@@ -11,7 +11,7 @@
 
   import type { ApplianceRead_Output } from "../lib/client";
 
-  import { timeDailies, startDate } from "../lib/stores";
+  import { timeDailies, startDate, daysInPlanning } from "../lib/stores";
 
   export let appliances: ApplianceRead_Output[];
   export let hours: number[];
@@ -49,7 +49,7 @@
 
     // Find the corresponding day in timeDailies based on the calculated day number
     const dayData = $timeDailies.filter(
-      (entry) => entry.id === 304 * (appliance_id - 1) + dayNumber + 1
+      (entry) => entry.id === $daysInPlanning * (appliance_id - 1) + dayNumber + 1
     );
 
     // Fallback if user hasn't selected a date that has no timeDailies
