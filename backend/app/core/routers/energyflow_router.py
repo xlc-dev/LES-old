@@ -135,12 +135,12 @@ async def upload_energyflow(
         id_to_set = get_energyflow_upload[-1].id + 1
 
     try:
-        contents = file.file.read().decode('utf-8-sig')
+        contents = file.file.read().decode("utf-8-sig")
         with StringIO(contents) as f:
-            reader = DictReader(f, delimiter=';', skipinitialspace=True)
+            reader = DictReader(f, delimiter=";", skipinitialspace=True)
             for row in reader:
-                energy_used = float(row["energy_used"].replace(',', '.'))
-                solar_produced = float(row["solar_produced"].replace(',', '.'))
+                energy_used = float(row["energy_used"].replace(",", "."))
+                solar_produced = float(row["solar_produced"].replace(",", "."))
 
                 energyflow_crud.create(
                     session=session,
