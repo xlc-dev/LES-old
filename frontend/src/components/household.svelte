@@ -18,27 +18,60 @@
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
+  /**
+   * Toggles the visibility of the date picker.
+   * @returns {void}
+   */
   const toggleDatePicker = () => {
     showDatePicker = !showDatePicker;
   };
 
-  const handleClickOutside = (event) => {
+  /**
+   * Handles the click event in an area outside the date picker.
+   * @param {Event} event - The click event object.
+   * @returns {void}
+   */
+  const handleClickOutsideDatePicker = (event) => {
     if (!event.target.closest(".date-picker-container")) {
       showDatePicker = false;
     }
   };
 
+  /*
+   * Contains logic that runs at initialisation, as soon as the component has been mounted.
+   * In this component it initialises the event listener that checks whether an area outside a dropdown menu has been clicked.
+   */
   onMount(() => {
-    window.addEventListener("click", handleClickOutside);
+    window.addEventListener("click", handleClickOutsideDatePicker);
   });
 
+  /*
+   * Contains logic that runs immediately before the component is unmounted.
+   * In this component it destroys the event listener that checks whether an area outside a dropdown menu has been clicked.
+   */
   onDestroy(() => {
-    window.removeEventListener("click", handleClickOutside);
+    window.removeEventListener("click", handleClickOutsideDatePicker);
   });
 
+  /**
+   * Sets the minimum date for a given start date.
+   * @param {number} startDate - The start date in seconds, which is a Unix timestamp.
+   * @returns {Date} - The minimum date based on the start date.
+   */
   $: setMinDate = new Date($startDate * 1000);
+  /**
+   * Sets the maximum date based on the provided end date timestamp.
+   * @param {number} endDate - The end date in seconds, which is a Unix timestamp.
+   * @returns {Date} - The maximum date based on the start date.
+   */
   $: setMaxDate = new Date($endDate * 1000);
 
+  /**
+   * Generates an array of dates starting from the selected date up to a maximum of 6 days after.
+   * @param {Date} selectedDate - The selected date.
+   * @param {Date} setMaxDate - The maximum date allowed.
+   * @returns {Array} - An array of dates starting from the selected date up to a maximum of 6 days after.
+   */
   $: if (selectedDate) {
     weekDates = [selectedDate];
 
@@ -200,6 +233,9 @@
           <div class="p-4 flex justify-center">
             <div class="flex flex-col items-center gap-4">
               {#each weekDates.slice(0, 3) as date}
+                <div class="text-center mt-2 text-gray-500">
+                  {date.toLocaleDateString("en-US", { weekday: "long" })}
+                </div>
                 <SchedulableLoadGrid
                   appliances={household.appliances}
                   date={date.toLocaleDateString("en-US")}
@@ -213,6 +249,9 @@
           <div class="p-4 flex justify-center">
             <div class="flex flex-col items-center gap-4">
               {#each weekDates.slice(3, 7) as date}
+                <div class="text-center mt-2 text-gray-500">
+                  {date.toLocaleDateString("en-US", { weekday: "long" })}
+                </div>
                 <SchedulableLoadGrid
                   appliances={household.appliances}
                   date={date.toLocaleDateString("en-US")}

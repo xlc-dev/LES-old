@@ -9,16 +9,28 @@
 
   let visible = true;
 
+  /**
+   * Deletes a message from the collection of messages.
+   * @returns {void}
+   */
   const deleteMessage = () => {
     messages.update((e) => e.filter((msg) => msg.id !== id));
   };
 
+  /*
+   * Contains logic that runs at initialisation, as soon as the component has been mounted.
+   * In this component it sets a timer for how long a message is displayed.
+   */
   onMount(() => {
     setTimeout(() => {
       visible = false;
     }, 5000);
   });
 
+  /*
+    Contains logic that runs immediately after the component has been updated.
+    In this component it deletes a displayed message after the timer for that message has finished counting.
+   */
   afterUpdate(() => {
     if (!visible) {
       deleteMessage();

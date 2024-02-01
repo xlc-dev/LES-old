@@ -46,27 +46,53 @@
   let showLegend = false;
   let formattedDate: string;
 
-  // Need these reactive values to be set here for later use in file
-  $: setMinDate = new Date($startDate * 1000);
-  $: setMaxDate = new Date($endDate * 1000);
-
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
-  // Displays a dropdown menu of a filter when its' corresponding button is clicked
+  /**
+   * Sets the minimum date for a given start date.
+   * @param {number} startDate - The start date in seconds, which is a Unix timestamp.
+   * @returns {Date} - The minimum date based on the start date.
+   */
+  $: setMinDate = new Date($startDate * 1000);
+
+  /**
+   * Sets the maximum date based on the provided end date timestamp.
+   * @param {number} endDate - The end date in seconds, which is a Unix timestamp.
+   * @returns {Date} - The maximum date based on the start date.
+   */
+  $: setMaxDate = new Date($endDate * 1000);
+
+  /**
+   * Displays a dropdown menu of a filter when its corresponding button is clicked.
+   * @param {string} filterName - The name of the filter.
+   * @returns {void}
+   */
   const toggleDropdown = (filterName: string) => {
     showDropdown = showDropdown === filterName ? null : filterName;
   };
 
+  /**
+   * Toggles the visibility of the date picker.
+   * @returns {void}
+   */
   const toggleDatePicker = () => {
     showDatePicker = !showDatePicker;
   };
 
+  /**
+   * Toggles the visibility of the legend card.
+   * @returns {void}
+   */
   const toggleCard = () => {
     showLegend = !showLegend;
   };
 
-  // Retracts the displayed dropdown menu when an area outside of the dropdown menu has been clicked
-  const createHandleClickOutside = (filterName: string) => {
+  /**
+   * Retracts the displayed dropdown menu when an area outside the dropdown menu has been clicked.
+   * @param filterName
+   * @returns {void}
+   */
+  const handleClickOutsideFilter = (filterName: string) => {
     return (event: any) => {
       if (!event.target.closest(`#${filterName}-dropdown`)) {
         showDropdown = null;
@@ -74,7 +100,12 @@
     };
   };
 
-  const handleClickOutside = (event) => {
+  /**
+   * Handles the click event in an area outside the date picker.
+   * @param {Event} event - The click event object.
+   * @returns {void}
+   */
+  const handleClickOutsideDatePicker = (event) => {
     if (!event.target.closest(".date-picker-container")) {
       showDatePicker = false;
     }
@@ -84,17 +115,28 @@
     }
   };
 
-  // Modifies the name of a filter so that it's written in camel case
+  /**
+   * Modifies the name of a filter so that it's written in camel case.
+   * @param {string} camelCase - The string to be converted.
+   * @returns {string} - The converted readable name.
+   */
   const toReadableName = (camelCase: string) => {
     return camelCase.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
   };
 
-  // Expands a card of a household in the schedulable load table when its' row has been clicked
+  /**
+   * Expands a card of a household in the schedulable load table when its row has been clicked.
+   * @param {number} id - The id of the card to be expanded.
+   */
   const toggleRow = (id: number) => {
     expandedRow = expandedRow === id ? null : id;
   };
 
-  // Sorts certain columns of the schedulable load table by ascending or descending based on how often a sort button has been clicked
+  /**
+   * Sorts certain columns of the schedulable load table by ascending or descending based on how often a sort button has been clicked.
+   * @param {string} column - The column to sort the data by.
+   * @returns {void}
+   */
   const sortData = (column: string) => {
     if (sortColumn === column) {
       sortOrder = sortOrder === "asc" ? "desc" : "asc";
@@ -110,9 +152,12 @@
     });
   };
 
-  // Initializes the event listener that handles button clicks of filters in the schedulable load table
+  /*
+   * Contains logic that runs at initialisation, as soon as the component has been mounted.
+   * In this component it initialises the event listener that handles button clicks of filters in the schedulable load table.
+   */
   onMount(() => {
-    window.addEventListener("click", handleClickOutside);
+    window.addEventListener("click", handleClickOutsideDatePicker);
     document.addEventListener("click", (event: any) => {
       for (const filterName in filters) {
         const filterDropdown = document.getElementById(`${filterName}-dropdown`);
@@ -121,17 +166,30 @@
         }
       }
     });
-
     if (setMinDate) {
       selectedDate = setMinDate;
     }
   });
 
+  /*
+   * Contains logic that runs immediately before the component is unmounted.
+   * In this component it destroys the event listener that handles button clicks of filters in the schedulable load table.
+   */
   onDestroy(() => {
-    window.removeEventListener("click", handleClickOutside);
+    window.removeEventListener("click", handleClickOutsideDatePicker);
   });
 
-  // Applies the filter logic on the schedulable load table
+  /**
+   * Applies the filter logic on the schedulable load table.
+   * @param {string} searchQuery - The search query to filter by. If empty, all items will be returned.
+   * @param {Object} selectedFilters - The selected filters to apply.
+   * @param {Array} selectedFilters.size - The selected size filters. If empty, all sizes will be considered a match.
+   * @param {Array} selectedFilters.energyUsage - The selected energy usage filters. If empty, all energy usages will be considered a match.
+   * @param {Array} selectedFilters.solarPanels - The selected solar panels filters. If empty, all solar panels will be considered a match.
+   * @param {Array} selectedFilters.solarYieldYearly - The selected solar yield yearly filters. If empty, all solar yield yearly values will be considered a match.
+   * @param {Array} selectedFilters.appliances - The selected appliances filters. If empty, all appliances will be considered a match.
+   * @return {Array} The filtered stepper data based on the search query and selected filters.
+   */
   $: {
     filteredData = $stepperData.households.filter((item) => {
       const matchesSearch =
@@ -168,7 +226,11 @@
     });
   }
 
-  // Updates the selected date when a date has been selected in the date picker
+  /**
+   * Updates the selected date when a date has been selected in the date picker.
+   * @param {string} selectedDate - The selected date in a string format.
+   * @return {string} - The formatted date string.
+   */
   $: if (selectedDate) {
     formattedDate = new Date(selectedDate).toLocaleDateString("en-US");
   }
@@ -187,7 +249,7 @@
       <button
         class="relative"
         id={`${filterName}-dropdown`}
-        on:click|stopPropagation={createHandleClickOutside(filterName)}>
+        on:click|stopPropagation={handleClickOutsideFilter(filterName)}>
         <button
           class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white"
           on:click={() => toggleDropdown(filterName)}

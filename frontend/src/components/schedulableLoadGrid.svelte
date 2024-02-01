@@ -20,7 +20,6 @@
 
   /**
    * Determines the color of a box in a schedulable load grid raster based on a bitmap value.
-   *
    * @param {number} bitmap - The bitmap value to determine the color from.
    * @param {number} hour - The hour for which the color is being determined.
    * @param {string} selectedDate - The selected date for which the color is being determined.
@@ -77,31 +76,72 @@
     return bitmapString[hour] === "1" ? "bg-les-blue" : "bg-gray-700";
   };
 
+  /**
+   * Calculates the grid size class based on the current window width.
+   * @returns {string} The grid size class.
+   */
+  const getGridSizeClass = () => {
+    const breakpoints = {
+      "2xl": 1536,
+      xl: 1280,
+      lg: 1024,
+      md: 768,
+      sm: 640,
+    };
+
+    const screenWidth = window.innerWidth;
+
+    if (screenWidth >= breakpoints["2xl"]) {
+      return "w-8 h-8";
+    } else if (screenWidth >= breakpoints["xl"]) {
+      return "w-7 h-7";
+    } else if (screenWidth >= breakpoints["lg"]) {
+      return "w-6 h-6";
+    } else if (screenWidth >= breakpoints["md"]) {
+      return "w-5 h-5";
+    } else {
+      return "w-4 h-4";
+    }
+  };
+
+  let gridSizeClass = getGridSizeClass();
+
+  window.addEventListener("resize", () => {
+    gridSizeClass = getGridSizeClass();
+  });
+
+  /**
+   * Converts a given Date object to a Unix timestamp.
+   * @param {Date} date - The Date object to convert.
+   * @returns {number} - The Unix timestamp of the given date.
+   */
   $: unixTimestamp = Math.floor(dateNoFormat.getTime() / 1000);
 </script>
 
 <div class="flex flex-col items-center">
   <div class="flex w-full justify-start">
-    <div class="w-36 text-right pr-2 font-bold dark:text-les-white">Appliances:</div>
+    <div class="w-36 text-right pr-2 font-bold dark:text-les-white text-xs">Appliances:</div>
     <div class="flex">
       {#each hours as hour}
-        <div class="w-6 h-6 text-center dark:text-les-white">{hour}</div>
+        <div class="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 text-center dark:text-les-white text-xs">
+          {hour}
+        </div>
       {/each}
     </div>
   </div>
   {#each appliances as appliance}
     <div class="flex items-center">
-      <div class="w-36 text-right pr-2 whitespace-nowrap dark:text-les-white">
+      <div class="w-36 text-right pr-2 whitespace-nowrap dark:text-les-white text-xs">
         {appliance.name}
       </div>
       {#each hours as hour}
         <div
-          class={`w-6 h-6 border border-white ${getCellColor(
+          class={`border border-white ${getCellColor(
             appliance.appliance_windows[(Math.round(unixTimestamp / 86400) + 3) % 7].bitmap_window,
             hour,
             date,
             appliance.id
-          )}`}>
+          )} w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4`}>
         </div>
       {/each}
     </div>

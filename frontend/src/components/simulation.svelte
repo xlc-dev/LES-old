@@ -14,8 +14,6 @@
   import { slide } from "svelte/transition";
 
   let household: HouseholdRead_Output;
-  let sizeFilter = "";
-  let solarPanelFilter = "";
   let searchQuery = "";
 
   let filters = {
@@ -30,11 +28,21 @@
 
   let showDropdown = null;
 
+  /**
+   * Displays a dropdown menu of a filter when its corresponding button is clicked
+   * @param {string} filterName - The name of the filter.
+   * @returns {void}
+   */
   const toggleDropdown = (filterName: string) => {
     showDropdown = showDropdown === filterName ? null : filterName;
   };
 
-  const createHandleClickOutside = (filterName: string) => {
+  /**
+   * Retracts the displayed dropdown menu when an area outside the dropdown menu has been clicked.
+   * @param filterName
+   * @returns {void}
+   */
+  const handleClickOutsideFilter = (filterName: string) => {
     return (event: any) => {
       if (!event.target.closest(`#${filterName}-dropdown`)) {
         showDropdown = null;
@@ -42,18 +50,37 @@
     };
   };
 
-  // Loads the view for a specific household if it has been clicked in the simulation view
+  /**
+   * Loads the view for a specific household if it has been clicked in the simulation view.
+   * @param {HouseholdRead_Output} data - The household data to be set.
+   * @returns {void}
+   */
   const showHome = (data: HouseholdRead_Output) => {
     household = data;
   };
 
-  // Determines whether a household in the simulation view has solar panels
+  /**
+   * Determines whether a household in the simulation view has solar panels.
+   * @param {Object} household - The household object to check.
+   * @returns {boolean} - True if the household has solar panels, false otherwise.
+   */
   const hasSolarPanels = (household) => household.solar_panels > 0;
 
-  // Sets the selected household as the household that is used when displaying the individual househould view
+  /**
+   * Sets the selected household as the household that is used when displaying the individual househould view.
+   * @param {Object} household - The household object to be set as selected household.
+   */
   $: selectedHousehold = household;
 
-  // Contains the logic of the filters in the simulation view
+  /**
+   * Contains the logic of the filters in the simulation view.
+   * @param {Array} households - The array of households to filter.
+   * @param {string} searchQuery - The search query to filter by household name.
+   * @param {Object} selectedFilters - The selected filters object.
+   * @param {Array} selectedFilters.size - The array of selected sizes.
+   * @param {Array} selectedFilters.solarPanels - The array of selected solar panel options.
+   * @returns {Array} - The filtered array of households.
+   */
   $: filteredHouseholds = $stepperData.households.filter((h) => {
     const matchesSearch = !searchQuery || h.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesSize = selectedFilters.size.length === 0 || selectedFilters.size.includes(h.size);
@@ -64,6 +91,10 @@
     return matchesSearch && matchesSize && matchesSolarPanels;
   });
 
+  /*
+   * Contains logic that runs at initialisation, as soon as the component has been mounted.
+   * In this component it initialises (the state of) the filter bar and its filters and dropdown menus.
+   */
   onMount(() => {
     document.addEventListener("click", (event: any) => {
       for (const filterName in filters) {
@@ -90,7 +121,7 @@
         <button
           class="relative"
           id={`${filterName}-dropdown`}
-          on:click|stopPropagation={createHandleClickOutside(filterName)}>
+          on:click|stopPropagation={handleClickOutsideFilter(filterName)}>
           <button
             class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white"
             on:click={() => toggleDropdown(filterName)}>
