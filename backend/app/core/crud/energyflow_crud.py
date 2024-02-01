@@ -49,25 +49,22 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
     def get_start_end_date(self, *, session: Session, id: int):
         "Get the start and end date of the EnergyFlow table"
 
-        min_timestamp_query = (
-            select(EnergyFlow)
-            .where(EnergyFlow.energyflow_upload_id == id)
-            .filter(
-                EnergyFlow.timestamp  # type: ignore
-                == session.execute(
-                    select(func.min(EnergyFlow.timestamp))
-                ).scalar()
-            )
+        min_timestamp_query = select(EnergyFlow).filter(
+            EnergyFlow.timestamp  # type: ignore
+            == session.execute(
+                select(func.min(EnergyFlow.timestamp)).where(
+                    EnergyFlow.energyflow_upload_id == id
+                )
+            ).scalar()
         )
-        max_timestamp_query = (
-            select(EnergyFlow)
-            .where(EnergyFlow.energyflow_upload_id == id)
-            .filter(
-                EnergyFlow.timestamp  # type: ignore
-                == session.execute(
-                    select(func.max(EnergyFlow.timestamp))
-                ).scalar()
-            )
+
+        max_timestamp_query = select(EnergyFlow).filter(
+            EnergyFlow.timestamp  # type: ignore
+            == session.execute(
+                select(func.max(EnergyFlow.timestamp)).where(
+                    EnergyFlow.energyflow_upload_id == id
+                )
+            ).scalar()
         )
 
         results_min_timestamp = session.exec(min_timestamp_query).first()
