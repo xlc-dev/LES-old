@@ -76,7 +76,7 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
 
 
 class EnergyFlowUploadCRUD(
-    CRUDBase[EnergyFlow, EnergyFlowUploadCreate, EnergyFlowUploadUpdate]
+    CRUDBase[EnergyFlowUpload, EnergyFlowUploadCreate, EnergyFlowUploadUpdate]
 ):
     def get_by_name(self, *, session: Session, name: str):
         "Get a single EnergyFlowUpload by name"
