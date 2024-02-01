@@ -173,16 +173,24 @@ def _energy_efficiency_day(
     if costmodel.name == "Fixed Price":
         ratio = costmodel.fixed_price_ratio  # type: ignore
 
-    energy_price_code = costmodel.algorithm
+    algo = costmodel.algorithm
 
-    # Remove trailing parentheses if they exist
-    energy_price_code = energy_price_code.rstrip("()")
+    if costmodel.name != "Fixed Price" and costmodel.name != "TEMO":
+        print(algo)
+        algo = algo.replace("cost_default():", f"""{algo}(
+        buy_consumer={costmodel.price_network_buy_consumer},
+        sell_consumer={costmodel.price_network_sell_consumer},
+        ratio={ratio})""")
 
-    # Adding parameters to the code
-    energy_price_code_with_params = f"""{energy_price_code}(
-    buy_consumer={costmodel.price_network_buy_consumer},
-    sell_consumer={costmodel.price_network_sell_consumer},
-    ratio={ratio})"""
+        energy_price_code_with_params = algo
+        print(energy_price_code_with_params)
+    else:
+        algo = algo.rstrip("()")
+        # Adding parameters to the code
+        energy_price_code_with_params = f"""{algo}(
+        buy_consumer={costmodel.price_network_buy_consumer},
+        sell_consumer={costmodel.price_network_sell_consumer},
+        ratio={ratio})"""
 
     # Execute the modified code using eval
     from app.plan_defaults import cost_default  # noqa: F401
