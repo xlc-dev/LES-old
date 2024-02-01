@@ -99,7 +99,8 @@
     appliance_id: 0,
   };
 
-  let costmodelCode = "def cost_default():\n    return buy_consumer * ratio + sell_consumer * (1 - ratio)";
+  let costmodelCode =
+    "def cost_default():\n    return buy_consumer * ratio + sell_consumer * (1 - ratio)";
   let algorithmCode =
     "import pandas\nimport numpy\nimport scipy\nimport math\nimport random\n\ndef run():\n    pass\n";
 
