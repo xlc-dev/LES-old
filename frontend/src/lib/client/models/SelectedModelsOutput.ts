@@ -6,6 +6,7 @@ import type { ApplianceTimeDailyRead } from "./ApplianceTimeDailyRead";
 export type SelectedModelsOutput = {
   timedaily: Array<ApplianceTimeDailyRead>;
   results: Array<Array<number>>;
+  days_in_planning: number;
   start_date: number;
   end_date: number;
 };

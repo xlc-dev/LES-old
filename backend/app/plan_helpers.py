@@ -59,6 +59,7 @@ class SelectedModelsInput(SQLModel):
 class SelectedModelsOutput(SQLModel):
     timedaily: list[ApplianceTimeDailyRead]
     results: list[list[float]]
+    days_in_planning: int
     start_date: int
     end_date: int
 
@@ -176,7 +177,7 @@ def _energy_efficiency_day(
     energy_price_code = costmodel.algorithm
 
     # Remove trailing parentheses if they exist
-    energy_price_code = energy_price_code.rstrip("()")
+    energy_price_code = energy_price_code.rstrip("():")
 
     # Adding parameters to the code
     energy_price_code_with_params = f"""{energy_price_code}(

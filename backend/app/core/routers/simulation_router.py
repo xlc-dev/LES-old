@@ -269,6 +269,7 @@ async def plan(
     return SelectedModelsOutput(
         results=results,
         timedaily=time_daily,
+        days_in_planning=days_in_planning,
         start_date=total_start_date,
         end_date=end_date,
     )
