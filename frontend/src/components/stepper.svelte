@@ -591,7 +591,7 @@
    * @async
    * @returns {Promise<void>} - A promise that resolves when the cost model is successfully uploaded.
    */
-    const uploadCostModel = async ({ target }) => {
+  const uploadCostModel = async ({ target }) => {
     const formData = {
       name: target.name.value,
       description: target.description.value,
@@ -832,13 +832,7 @@
                 {$stepperData.costmodel}
               {:else if selectedIDs.algorithm !== 0 && stepName === "algorithm"}
                 {$stepperData.algorithm}
-              {:else if selectedIDs.energyflow !== 0 && ste<<<<<<< energyflow
-614
- 
-  // Sends a post request to save a created twin world and add it to the array of selectable options
-615
- 
-=======pName === "energyflow"}
+              {:else if selectedIDs.energyflow !== 0 && stepName === "energyflow"}
                 {$stepperData.energyflow}
               {:else}
                 -
