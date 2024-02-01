@@ -611,6 +611,9 @@
     try {
       await CostModelService.postCostmodelApiCostmodelPost(formData);
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+      selectedIDs.costmodel = simulationData.costmodel[simulationData.costmodel.length - 1].id;
+      $stepperData.costmodel = target.name.value;
+      window.scrollTo({ top: 0, behavior: "smooth" });
       message("Cost model created");
     } catch (err) {
       message(err);
@@ -660,6 +663,9 @@
     try {
       await AlgorithmService.postAlgorithmApiAlgorithmPost(formData);
       simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+      selectedIDs.algorithm = simulationData.algorithm[simulationData.algorithm.length - 1].id;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      $stepperData.algorithm = target.name.value;
       message("Algorithm created");
     } catch (err) {
       message(err);
@@ -1108,6 +1114,7 @@
                   type="number"
                   step="1"
                   min="1"
+                  max="24"
                   bind:value={newAppliance.duration} />
               </div>
 
