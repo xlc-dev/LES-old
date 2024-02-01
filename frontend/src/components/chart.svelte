@@ -185,7 +185,10 @@
     }
   });
 
-  // Initialize charts on component mount
+  /*
+   * Contains logic that runs at initialisation, as soon as the component has been mounted.
+   * In this component it initialises the (state of the) graphs.
+   */
   onMount(() => {
     initializeCharts();
     updateCharts($efficiencyresultstore);
@@ -193,7 +196,10 @@
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
   });
 
-  // Destroy charts on component destruction
+  /*
+   * Contains logic that runs immediately before the component is unmounted.
+   * In this component it destroys the charts.
+   */
   onDestroy(() => {
     charts.forEach((chart) => chart?.destroy());
     observer.disconnect();

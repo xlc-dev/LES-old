@@ -9,7 +9,11 @@
   let sumEfficiencyTotal: number = 0;
   let sumTotalMoneySaved: number = 0;
 
-  // Listener function for individual efficiency updates
+  /**
+   * Subscribes to the efficiency result store and checks for individual efficiency updates.
+   * @param {function} $efficiencyresultstore - The callback function that is invoked when individual efficiency updates have been detected.
+   * @returns {object} - A reference to the subscription.
+   */
   const sumEfficiencyIndividualListener = efficiencyresultstore.subscribe(
     ($efficiencyresultstore) => {
       sumEfficiencyIndividual = $efficiencyresultstore.reduce(
@@ -19,7 +23,10 @@
     }
   );
 
-  // Listener function for total efficiency updates
+  /**
+   * Subscribes to the efficiency result store and checks for total efficiency updates.
+   * @param {function} $efficiencyresultstore - The callback function that is invoked when individual efficiency updates have been detected.
+   */
   const sumEfficiencyTotalListener = efficiencyresultstore.subscribe(($efficiencyresultstore) => {
     sumEfficiencyTotal = $efficiencyresultstore.reduce(
       (accumulator, result) => accumulator + result.solarEnergyTotal,
@@ -27,7 +34,10 @@
     );
   });
 
-  // Listener function for total money saved updates
+  /**
+   * Subscribes to the efficiency result store and checks for updates on the total money saved.
+   * @param {function} $efficiencyresultstore - The callback function that is invoked when individual efficiency updates have been detected.
+   */
   const sumTotalMoneySavedListener = efficiencyresultstore.subscribe(($efficiencyresultstore) => {
     sumTotalMoneySaved = $efficiencyresultstore.reduce(
       (accumulator, result) => accumulator + result.totalAmountSaved,
@@ -35,14 +45,23 @@
     );
   });
 
-  // Destroy listeners on component destruction
+  /*
+   * Contains logic that runs immediately before the component is unmounted.
+   * In this component it destroys the listener functions.
+   */
   onDestroy(() => {
     sumEfficiencyIndividualListener();
     sumEfficiencyTotalListener();
     sumTotalMoneySavedListener();
   });
 
-  // Computed property: Difference between total and individual efficiency
+  /**
+   * Calculates the difference between the total and individual efficiency
+   *
+   * @param {number} sumEfficiencyTotal - The value of the total efficiency.
+   * @param {number} sumEfficiencyIndividual - The value of the individual efficiency.
+   * @returns {number} - The difference between the two efficiency values.
+   */
   $: sumEfficiencyNoSolar = sumEfficiencyTotal - sumEfficiencyIndividual;
 </script>
 

@@ -125,22 +125,37 @@
   let editingHousehold: HouseholdRead_Output = null;
   let editingApplianceTimeWindow: ApplianceTimeWindowRead = null;
 
-  // Updates the value of the description frame, based on the hovered option in the options frame
+  /**
+   * Updates the value of the description frame, based on the hovered option in the options frame.
+   * @param {string} description - The set description for the item.
+   * @returns {void}
+   */
   const updateDescription = (description: string) => {
     currentDescription = description;
   };
 
-  // Loads elements for editing a household in a created twin world
+  /**
+   * Loads elements for editing a household in a created twin world.
+   * @param {HouseholdRead_Output} household - The household object to be edited.
+   * @returns {void}
+   */
   const startEditingHousehold = (household: HouseholdRead_Output) => {
     editingHousehold = household;
   };
 
-  // Loads elements for editing time slots for a created household
+  /**
+   * Loads elements for editing time slots for a created household.
+   * @param {ApplianceTimeWindowRead} timewindow - The ApplianceTimeWindowRead object to set the value to.
+   * @returns {void}
+   */
   const startEditingTimewindow = (timewindow: ApplianceTimeWindowRead) => {
     editingApplianceTimeWindow = timewindow;
   };
 
-  // Automatically scrolls the screen to the next appliance element when adding appliances for a created household
+  /**
+   * Automatically scrolls the screen to the next appliance element when adding appliances for a created household.
+   * @returns {void}
+   */
   const scrollToApplianceLocation = () => {
     const applianceLocation = document.getElementById("applianceLocation");
     if (applianceLocation) {
@@ -148,7 +163,10 @@
     }
   };
 
-  // Automatically scrolls the screen to the next time slot element when adding time slots for a created household
+  /**
+   * Automatically scrolls the screen to the next time slot element when adding time slots for a created household.
+   * @returns {void}
+   */
   const scrollToTimewindowLocation = () => {
     const applianceLocation = document.getElementById("timewindowLocation");
     if (applianceLocation) {
@@ -156,13 +174,20 @@
     }
   };
 
-  // Applies the selected time ranges and converts them to usable bitmap values
+  /**
+   * Applies the selected time ranges and converts them to usable bitmap values
+   * @returns {void}
+   */
   const updateBitmapWindow = () => {
     newTimeWindow.bitmap_window = checkboxStates.reduce((acc, state: any, index) => {
       return acc | (state << index);
     }, 0);
   };
 
+  /**
+   * Updates the descriptions in the descriptions frame for the current step.
+   * @returns {void}
+   */
   const updateDescriptionForCurrentStep = () => {
     const keys = Object.keys(simulationData);
     if (currentStep > 0 && currentStep <= keys.length) {
@@ -174,7 +199,11 @@
     }
   };
 
-  // Updates the state of the stepper by loading the view of the next step in the stepper
+  /**
+   * Updates the state of the stepper by loading the view of the next step in the stepper.
+   * @async
+   * @returns {void}
+   */
   const nextStep = async () => {
     if (isStepZero) {
       isStepZero = false;
@@ -206,7 +235,10 @@
     }
   };
 
-  // Updates the state of the stepper by loading the view of the previous step in the stepper
+  /**
+   * Updates the state of the stepper by loading the view of the previous step in the stepper.
+   * @returns {void}
+   */
   const prevStep = () => {
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
     if (currentStep > 1) {
@@ -215,21 +247,35 @@
     }
   };
 
-  // Checks if a step is completed by determining whether all required actions within the step are run and no errors occur
+  /**
+   * Checks if a step is completed by determining whether all required actions within the step are run and no errors occur.
+   * @param {number} step - The step number to check.
+   * @returns {boolean} - Returns true if the step is completed, otherwise false.
+   */
   const isStepCompleted = (step: number): boolean => {
     const keys = Object.keys(selectedIDs) as (keyof typeof selectedIDs)[];
     const currentStepKey = keys[step - 1];
     return selectedIDs[currentStepKey] !== 0;
   };
 
-  // Updates the state of the stepper by loading the view of a specifically selected step in the stepper
+  /**
+   * Updates the state of the stepper by loading the view of a specifically selected step in the stepper.
+   * @param {number} stepNumber - The step number to go to.
+   * @returns {void}
+   */
   const goToStep = (stepNumber: number) => {
     currentStep = stepNumber;
     currentDescription =
       simulationData[Object.keys(simulationData)[currentStep - 1]][0]?.description || "";
   };
 
-  // Handles a button click when an option in the options frame has been selected
+  /**
+   * Handles a button click when an option in the options frame has been selected.
+   * @param {number} optionId - The ID of the option to be selected.
+   * @param {string} category - The category to which the option belongs.
+   * @param {string} optionName - The name of the option.
+   * @returns {void}
+   */
   const selectOption = (optionId: number, category: string, optionName: string) => {
     selectedIDs[category] = optionId;
     stepperData.update((data) => ({ ...data, [category]: optionName }));
@@ -238,7 +284,13 @@
     }
   };
 
-  // Removes an option in the options frame that has been created by the researcher
+  /**
+   * Removes an option in the options frame that has been created by the researcher.
+   * @param {number} optionId - The ID of the option to be deleted.
+   * @param {any} category - The category of the option.
+   * @async
+   * @returns {void}
+   */
   const deleteOption = async (optionId: number, category: any) => {
     selectedIDs[category] = 0;
     stepperData.update((data) => ({ ...data, [category]: "-" }));
@@ -247,7 +299,13 @@
     message(`${category} deleted`);
   };
 
-  // Removes an option in the options frame that has been created by the researcher based on a category
+  /**
+   * Removes an option in the options frame that has been created by the researcher based on a category.
+   * @param {keyof SimulationData} category - The category of the option to be deleted.
+   * @param {number} optionId - The ID of the option to be deleted.
+   * @async
+   * @returns {Promise<void>} - A Promise that resolves with no value.
+   */
   const deleteOptionBasedOnCategory = async (category: keyof SimulationData, optionId: number) => {
     switch (category) {
       case "costmodel":
@@ -269,7 +327,14 @@
     updateDescriptionForCurrentStep();
   };
 
-  // Initializes the Monaco editor for the custom algorithms in the cost model step of the stepper
+  /**
+   * Initializes the Monaco editor for the custom algorithms in the cost model step of the stepper.
+   * @param {HTMLElement} node - The HTML element to attach the editor to.
+   * @param {Object} options - The options for configuring the editor.
+   * @param {string} options.initialCode - The initial code to display in the editor.
+   * @param {Function} options.onChange - The callback function to be executed when the code in the editor changes.
+   * @returns {Object} An object with methods to update and destroy the editor.
+   */
   const initMonaco = (node: HTMLElement, { initialCode, onChange }) => {
     const editor = monaco.editor.create(node, {
       value: initialCode,
@@ -278,7 +343,10 @@
       automaticLayout: true,
     });
 
-    // Updates the state of the Monaco editor when changes in the provided code are detected
+    /**
+     * Updates the state of the Monaco editor when changes in the provided code are detected.
+     * @returns {void}
+     */
     const handleEditorChange = () => {
       const newValue = editor.getValue();
       onChange(newValue);
@@ -299,7 +367,11 @@
     };
   };
 
-  // Assigns time slots and appliances to a created schedulable load
+  /**
+   * Assigns time slots and appliances to a created schedulable load.
+   * @async
+   * @returns {Promise<void>} - A Promise that resolves with no value.
+   */
   const addTimewindow = async () => {
     if (checkboxStates.every((state) => state === false)) {
       message("Please select at least one hour");
@@ -326,7 +398,13 @@
       });
   };
 
-  // Removes a created schedulable load
+  /**
+   * Removes a created schedulable load.
+   * @param {number} id - The ID of the time window to delete.
+   * @async
+   * @returns {Promise<void>} - A Promise that resolves with no value.
+   * @throws {Error} - If an error occurs while deleting the time window.
+   */
   const deleteTimewindow = async (id: number) => {
     try {
       await ApplianceService.deleteApplianceTimewindowApiAppliancetimewindowIdDelete(id);
@@ -350,7 +428,12 @@
     }
   };
 
-  // Discards elements of time slots that were being edited for a created household
+  /**
+   * Discards elements of time slots that were being edited for a created household.
+   * or an error message if there is an exception.
+   * @async
+   * @returns {void}
+   */
   const stopEditingTimewindow = async () => {
     try {
       await ApplianceService.updateApplianceTimewindowApiApplianceTimewindowIdPatch(
@@ -364,7 +447,11 @@
     }
   };
 
-  // Adds an appliance to a created household
+  /**
+   * Adds an appliance to a created household.
+   * @async
+   * @returns {Promise<void>} A Promise that resolves with no value.
+   */
   const addAppliance = async () => {
     newAppliance.household_id = applianceToAdd;
     await ApplianceService.postApplianceApiAppliancePost(newAppliance)
@@ -382,7 +469,12 @@
       });
   };
 
-  // Removes an appliance from a created household
+  /**
+   * Removes an appliance from a created household.
+   * @async
+   * @param {number} id - The ID of the appliance to be deleted.
+   * @returns {Promise<void>} - A Promise that resolves with no value.
+   */
   const deleteAppliance = async (id: number) => {
     try {
       await ApplianceService.deleteApplianceApiApplianceIdDelete(id);
@@ -399,7 +491,12 @@
     }
   };
 
-  // Adds a household to a created twin world
+  /**
+   * Adds a household to a created twin world.
+   * @async
+   * @returns {Promise<void>} A Promise that resolves with no value.
+   * @throws {Error} If there was an error while adding the household.
+   */
   const addHousehold = async () => {
     newHousehold.twinworld_id = selectedIDs.twinworld;
     await HouseholdService.postHouseholdApiHouseholdPost(newHousehold)
@@ -418,7 +515,12 @@
       });
   };
 
-  // Removes a household from a created twin world
+  /**
+   * Removes a household from a created twin world.
+   * @async
+   * @param {number} id - The ID of the household to delete.
+   * @returns {Promise} - A Promise that resolves when the household is deleted or rejects with an error.
+   */
   const deleteHousehold = async (id: number) => {
     await HouseholdService.deleteHouseholdApiHouseholdIdDelete(id)
       .then(() => {
@@ -430,7 +532,11 @@
       });
   };
 
-  // Discards elements of a household that was being edited for a created twin world
+  /**
+   * Discards elements of a household that was being edited for a created twin world.
+   * @async
+   * @returns {Promise<void>} A promise that resolves when the household is updated or rejects with an error.
+   */
   const stopEditingHousehold = async () => {
     try {
       await HouseholdService.updateHouseholdApiHouseholdIdPatch(
@@ -444,7 +550,11 @@
     }
   };
 
-  // Gets all households for the selected twin world
+  /**
+   * Fetches all households for the selected twin world.
+   * @async
+   * @returns {Promise} - A Promise that resolves with the fetched households.
+   */
   const fetchHouseholds = async () => {
     if (selectedIDs.twinworld) {
       twinworldHouseholds =
@@ -475,8 +585,13 @@
     simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
   };
 
-  // Sends a post request containing the form data of a created cost model and add it to the array of selectable options
-  const uploadCostModel = async ({ target }) => {
+  /**
+   * Sends a post request containing the form data of a created cost model and add it to the array of selectable options.
+   * @param {any} event - The event object containing the target element.
+   * @async
+   * @returns {Promise<void>} - A promise that resolves when the cost model is successfully uploaded.
+   */
+    const uploadCostModel = async ({ target }) => {
     const formData = {
       name: target.name.value,
       description: target.description.value,
@@ -495,7 +610,12 @@
     }
   };
 
-  // Sends a post request to save a created twin world and add it to the array of selectable options
+  /**
+   * Sends a post request to save a created twin world and add it to the array of selectable options.
+   * @param {any} event - The event object that triggered the upload.
+   * @async
+   * @returns {void}
+   */
   const uploadTwinWorld = async ({ target }) => {
     const formData = {
       name: target.name.value,
@@ -516,7 +636,12 @@
     }
   };
 
-  // Sends a post request to save a created algorithm and add it to the array of selectable options
+  /**
+   * Sends a post request to save a created algorithm and add it to the array of selectable options.
+   * @param {any} event - The event data.
+   * @async
+   * @returns {Promise<void>} - A promise that resolves once the algorithm is uploaded.
+   */
   const uploadAlgorithm = async (event: any) => {
     const target = event.target;
 
@@ -536,7 +661,11 @@
     }
   };
 
-  // Processes all the selected options that were selected in the stepper and starts a simulation if the data is valid
+  /**
+   * Processes all the selected options that were selected in the stepper and starts a simulation if the data is valid.
+   * @async
+   * @returns {undefined}
+   */
   const startSimulation = async () => {
     applianceCheck = [];
     const hasApplianceWithoutEveryDay = twinworldHouseholds
@@ -607,7 +736,10 @@
       });
   };
 
-  // Initializes the simulation data, the twin world, the simulation data's object keys, and the Monaco editors
+  /*
+   * Contains logic that runs at initialisation, as soon as the component has been mounted.
+   * In this component it initialises the simulation data, the twin world, the simulation data's object keys, and the Monaco editors.
+   */
   onMount(async () => {
     simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
 
@@ -617,14 +749,20 @@
     }
   });
 
-  // If an appliance has been added to a created twin world the window scrolls to a section in which a new appliance can be added
+  /**
+   * If an appliance has been added to a created twin world the window scrolls to a section in which a new appliance can be added.
+   * @param {number} applianceToAdd - Number of appliances to add.
+   */
   $: if (applianceToAdd > 0) {
     setTimeout(() => {
       scrollToApplianceLocation();
     }, 100);
   }
 
-  // Adds the created appliances for a specific created household
+  /**
+   * Adds the created appliances for a specific created household.
+   * @param {number} timewindowToAdd - The id of the timewindow.
+   */
   $: if (timewindowToAdd > 0) {
     // Find the household with the matching id in twinworldHouseholds array
     const matchingHousehold = twinworldHouseholds.find(
@@ -640,6 +778,11 @@
     }, 100);
   }
 
+  /**
+   * Updates the description for the current step if the step number is not zero.
+   * @param {boolean} isStepZero - Indicates whether the current step number is zero.
+   * @returns {void}
+   */
   $: if (!isStepZero) {
     updateDescriptionForCurrentStep();
   }
@@ -689,7 +832,13 @@
                 {$stepperData.costmodel}
               {:else if selectedIDs.algorithm !== 0 && stepName === "algorithm"}
                 {$stepperData.algorithm}
-              {:else if selectedIDs.energyflow !== 0 && stepName === "energyflow"}
+              {:else if selectedIDs.energyflow !== 0 && ste<<<<<<< energyflow
+614
+ 
+  // Sends a post request to save a created twin world and add it to the array of selectable options
+615
+ 
+=======pName === "energyflow"}
                 {$stepperData.energyflow}
               {:else}
                 -
