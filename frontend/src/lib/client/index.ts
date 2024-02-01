@@ -9,6 +9,7 @@ export type { OpenAPIConfig } from "./core/OpenAPI";
 
 export type { AlgorithmCreate } from "./models/AlgorithmCreate";
 export type { AlgorithmRead } from "./models/AlgorithmRead";
+export type { AlgorithmUpdate } from "./models/AlgorithmUpdate";
 export type { ApplianceCreate } from "./models/ApplianceCreate";
 export { ApplianceDays } from "./models/ApplianceDays";
 export type { ApplianceRead_Input } from "./models/ApplianceRead_Input";
@@ -20,10 +21,12 @@ export type { ApplianceTimeWindowUpdate } from "./models/ApplianceTimeWindowUpda
 export { ApplianceType } from "./models/ApplianceType";
 export type { ApplianceUpdate } from "./models/ApplianceUpdate";
 export type { Body_start_api_simulate_start_post } from "./models/Body_start_api_simulate_start_post";
+export type { Body_upload_energyflow_api_energyflow_upload_post } from "./models/Body_upload_energyflow_api_energyflow_upload_post";
 export type { CostModelCreate } from "./models/CostModelCreate";
 export type { CostModelRead } from "./models/CostModelRead";
 export type { EnergyFlowCreate } from "./models/EnergyFlowCreate";
 export type { EnergyFlowRead } from "./models/EnergyFlowRead";
+export type { EnergyFlowUploadRead } from "./models/EnergyFlowUploadRead";
 export type { HouseholdCreate } from "./models/HouseholdCreate";
 export type { HouseholdRead_Input } from "./models/HouseholdRead_Input";
 export type { HouseholdRead_Output } from "./models/HouseholdRead_Output";

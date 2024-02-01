@@ -151,6 +151,7 @@
       twinworld: {} as any,
       costmodel: {} as any,
       households: [] as any[],
+      energyflow: {} as any,
     };
 
     $activatedHousehold = null;

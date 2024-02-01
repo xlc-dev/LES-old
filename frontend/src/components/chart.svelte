@@ -40,7 +40,6 @@
               title: {
                 display: true,
                 text: getYAxisChartLabel(index),
-                color: getAxisTextColor(),
               },
             },
             x: {
@@ -180,8 +179,6 @@
           chart.options.scales.y.ticks.color = getAxisTextColor();
           chart.options.scales.x.ticks.color = getAxisTextColor();
           chart.options.plugins.legend.labels.color = getAxisTextColor();
-          // @ts-ignore
-          chart.options.scales.y.title.color = getAxisTextColor();
           chart.update();
         });
       }

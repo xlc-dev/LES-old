@@ -123,6 +123,7 @@
     </div>
 
     <button
+      id="stop-button"
       class="flex items-center gap-3 hover:brightness-110 bg-les-red-dark w-full p-4 py-6 transition-colors duration-200"
       on:click={() => handleButtonClick("Stop")}>
       <img src="/stop.png" alt="" />

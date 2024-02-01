@@ -6,6 +6,9 @@ from app.core.models.energyflow_model import (
     EnergyFlow,
     EnergyFlowCreate,
     EnergyFlowUpdate,
+    EnergyFlowUpload,
+    EnergyFlowUploadCreate,
+    EnergyFlowUploadUpdate,
 )
 
 
@@ -31,27 +34,40 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
         ).all()
 
     def get_all_sorted_by_timestamp(
-        self, *, session: Session, limit: int = 10000, offset: int = 0
+        self, *, session: Session, id: int, limit: int = 10000, offset: int = 0
     ):
         "Get all EnergyFlow sorted by timestamp"
 
         return session.exec(
             select(EnergyFlow)
+            .where(EnergyFlow.energyflow_upload_id == id)
             .order_by(EnergyFlow.timestamp.asc())  # type: ignore
             .limit(limit)
             .offset(offset)
         ).all()
 
-    def get_start_end_date(self, *, session: Session):
+    def get_start_end_date(self, *, session: Session, id: int):
         "Get the start and end date of the EnergyFlow table"
 
-        min_timestamp_query = select(EnergyFlow).filter(
-            EnergyFlow.timestamp  # type: ignore
-            == session.execute(select(func.min(EnergyFlow.timestamp))).scalar()
+        min_timestamp_query = (
+            select(EnergyFlow)
+            .where(EnergyFlow.energyflow_upload_id == id)
+            .filter(
+                EnergyFlow.timestamp  # type: ignore
+                == session.execute(
+                    select(func.min(EnergyFlow.timestamp))
+                ).scalar()
+            )
         )
-        max_timestamp_query = select(EnergyFlow).filter(
-            EnergyFlow.timestamp  # type: ignore
-            == session.execute(select(func.max(EnergyFlow.timestamp))).scalar()
+        max_timestamp_query = (
+            select(EnergyFlow)
+            .where(EnergyFlow.energyflow_upload_id == id)
+            .filter(
+                EnergyFlow.timestamp  # type: ignore
+                == session.execute(
+                    select(func.max(EnergyFlow.timestamp))
+                ).scalar()
+            )
         )
 
         results_min_timestamp = session.exec(min_timestamp_query).first()
@@ -59,4 +75,16 @@ class CRUDEnergyFlow(CRUDBase[EnergyFlow, EnergyFlowCreate, EnergyFlowUpdate]):
         return results_min_timestamp, results_max_timestamp
 
 
+class EnergyFlowUploadCRUD(
+    CRUDBase[EnergyFlow, EnergyFlowUploadCreate, EnergyFlowUploadUpdate]
+):
+    def get_by_name(self, *, session: Session, name: str):
+        "Get a single EnergyFlowUpload by name"
+
+        return session.exec(
+            select(EnergyFlowUpload).where(EnergyFlowUpload.name == name)
+        ).first()
+
+
 energyflow_crud = CRUDEnergyFlow(EnergyFlow)
+energyflow_upload_crud = EnergyFlowUploadCRUD(EnergyFlowUpload)

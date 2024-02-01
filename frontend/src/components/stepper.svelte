@@ -1,11 +1,11 @@
 <script lang="ts">
   /*
-  The stepper component contains the first views the researcher is presented with.
-  The stepper can be seen as a setup wizard for a single session of using the application
-  and consists of three steps which the researcher goes through to prepare the environment
-  in which research is conducted. A pre-built twin world, cost model, and algorithm must be
-  selected or created as custom options in order for the environment to be created.
-  */
+   * The stepper component contains the first views the researcher is presented with.
+   * The stepper can be seen as a setup wizard for a single session of using the application
+   * and consists of three steps which the researcher goes through to prepare the environment
+   * in which research is conducted. A pre-built twin world, cost model, and algorithm must be
+   * selected or created as custom options in order for the environment to be created.
+   */
 
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
@@ -31,6 +31,8 @@
     type ApplianceTimeWindowCreate,
     ApplianceDays,
     type ApplianceTimeWindowRead,
+    EnergyflowService,
+    OpenAPI,
   } from "../lib/client";
 
   let hoursArray = [
@@ -64,12 +66,14 @@
     algorithm: [],
     twinworld: [],
     costmodel: [],
+    energyflow: [],
   };
 
   let selectedIDs = {
     twinworld: 0,
     costmodel: 0,
     algorithm: 0,
+    energyflow: 0,
   };
 
   let newHousehold: HouseholdCreate = {
@@ -181,7 +185,7 @@
 
     const keys = Object.keys(simulationData) as (keyof SimulationData)[];
 
-    if (currentStep === 3) {
+    if (currentStep === 4) {
       const skippedStep = Object.entries(selectedIDs).find(([_, value]) => value === 0);
 
       if (skippedStep) {
@@ -254,6 +258,9 @@
         break;
       case "algorithm":
         await AlgorithmService.deleteAlgorithmApiAlgorithmIdDelete(optionId);
+        break;
+      case "energyflow":
+        await EnergyflowService.deleteEnergyflowApiEnergyflowIdDelete(optionId);
         break;
       default:
         break;
@@ -447,10 +454,29 @@
     }
   };
 
-  // Sends a post request containing the form data of a created cost model and add it to the array of selectable options
-  const uploadCostModel = async (event: any) => {
-    const target = event.target;
+  // Sends a post request to save a created energy flow and add it to the array of selectable options
+  const uploadEnergyFlow = async ({ target }) => {
+    const formData = new FormData();
+    formData.append("name", target.name.value);
+    formData.append("description", target.description.value);
+    formData.append("file", target.file.files[0]);
 
+    const response = await fetch(OpenAPI.BASE + "/api/energyflow/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      message(response.statusText);
+      return;
+    }
+
+    message("Energyflow uploaded");
+    simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+  };
+
+  // Sends a post request containing the form data of a created cost model and add it to the array of selectable options
+  const uploadCostModel = async ({ target }) => {
     const formData = {
       name: target.name.value,
       description: target.description.value,
@@ -470,9 +496,7 @@
   };
 
   // Sends a post request to save a created twin world and add it to the array of selectable options
-  const uploadTwinWorld = async (event: any) => {
-    const target = event.target;
-
+  const uploadTwinWorld = async ({ target }) => {
     const formData = {
       name: target.name.value,
       description: target.description.value,
@@ -572,6 +596,7 @@
       algorithm_id: selectedIDs.algorithm,
       twinworld_id: selectedIDs.twinworld,
       costmodel_id: selectedIDs.costmodel,
+      energyflow_id: selectedIDs.energyflow,
     })
       .then((res) => {
         $stepperData = res;
@@ -647,7 +672,7 @@
 
             {#if index < Object.keys(simulationData).length - 1}
               <div
-                class={`absolute top-4 left-8 border-t-2 w-[21rem] transition-colors duration-200 ${
+                class={`absolute top-4 left-8 border-t-2 w-[13.3rem] transition-colors duration-200 ${
                   isStepCompleted(index + 1) ? "border-les-blue" : "border-gray-300"
                 }`}>
               </div>
@@ -664,6 +689,8 @@
                 {$stepperData.costmodel}
               {:else if selectedIDs.algorithm !== 0 && stepName === "algorithm"}
                 {$stepperData.algorithm}
+              {:else if selectedIDs.energyflow !== 0 && stepName === "energyflow"}
+                {$stepperData.energyflow}
               {:else}
                 -
               {/if}
@@ -715,7 +742,7 @@
                         {option.name}
                       </button>
 
-                      {#if option.id !== 1 && option.id !== 2}
+                      {#if (option.name !== "energyflow" && option.id !== 1 && option.id !== 2) || (option.name === "energyflow" && option.id !== 1)}
                         <button on:click={() => deleteOption(option.id, key)}>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -755,9 +782,9 @@
               </button>
             {/if}
 
-            {#if selectedIDs.algorithm !== 0 && selectedIDs.twinworld !== 0 && selectedIDs.costmodel !== 0}
+            {#if selectedIDs.algorithm !== 0 && selectedIDs.twinworld !== 0 && selectedIDs.costmodel !== 0 && selectedIDs.energyflow !== 0}
               <button
-                class="{currentStep === 3
+                class="{currentStep === 4
                   ? 'ml-auto'
                   : 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'} px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-red hover:brightness-110"
                 on:click={startSimulation}>
@@ -765,7 +792,7 @@
               </button>
             {/if}
 
-            {#if currentStep !== 3}
+            {#if currentStep !== 4}
               <button
                 class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-blue hover:brightness-110 ml-auto"
                 on:click={nextStep}
@@ -1458,6 +1485,53 @@
             }}
             class="h-48 border-2 border-gray-400 aria-selected:border-gray-600 rounded-lg">
           </div>
+
+          <button
+            type="submit"
+            class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            >Submit
+          </button>
+        </form>
+      {:else if currentStep === 4}
+        <form
+          method="post"
+          enctype="multipart/form-data"
+          on:submit|preventDefault={uploadEnergyFlow}
+          class="flex flex-col space-y-3">
+          <div>
+            <label for="name" class="font-bold pt-4">Name:</label>
+            <p class="text-sm text-gray-500">Name for the new energy flow</p>
+          </div>
+
+          <input
+            type="text"
+            name="name"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            placeholder="Custom energy flow"
+            required />
+
+          <div>
+            <label for="description" class="font-bold">Description:</label>
+            <p class="text-sm text-gray-500">Description for the new energy flow</p>
+          </div>
+
+          <textarea
+            name="description"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            placeholder="My own energy flow data"
+            required></textarea>
+
+          <div>
+            <label for="file" class="font-bold">File:</label>
+            <p class="text-sm text-gray-500">CSV file for Energyflow</p>
+          </div>
+
+          <input
+            type="file"
+            name="file"
+            accept=".csv"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            required />
 
           <button
             type="submit"

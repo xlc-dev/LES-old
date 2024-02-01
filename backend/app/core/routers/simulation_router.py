@@ -22,6 +22,7 @@ from app.core.crud.costmodel_crud import costmodel_crud
 from app.core.crud.twinworld_crud import twinworld_crud
 from app.core.crud.algorithm_crud import algorithm_crud
 from app.core.crud.household_crud import household_crud
+from app.core.crud.energyflow_crud import energyflow_upload_crud
 
 from app.plan_defaults import plan_greedy, plan_simulated_annealing
 from app.plan_helpers import (
@@ -44,9 +45,13 @@ async def get_data(*, session: Session = Depends(get_session)):
     twinworlds = twinworld_crud.get_multi(session=session)
     costmodels = costmodel_crud.get_multi(session=session)
     algorithms = algorithm_crud.get_multi(session=session)
+    energyflows = energyflow_upload_crud.get_multi(session=session)
 
     return SimulationData(
-        twinworld=twinworlds, costmodel=costmodels, algorithm=algorithms
+        twinworld=twinworlds,
+        costmodel=costmodels,
+        algorithm=algorithms,
+        energyflow=energyflows,
     )
 
 
@@ -56,6 +61,7 @@ async def start(
     algorithm_id: int = Body(...),
     twinworld_id: int = Body(...),
     costmodel_id: int = Body(...),
+    energyflow_id: int = Body(...),
     session: Session = Depends(get_session),
 ) -> SelectedOptions:
     "Start the simulation with the given parameters from /get-data"
@@ -83,6 +89,16 @@ async def start(
             detail=f"Algorithm with id {algorithm_id} not found",
         )
 
+    energyflow_upload = energyflow_upload_crud.get(
+        session=session, id=energyflow_id
+    )
+
+    if not energyflow_upload:
+        Logger.exception(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Energyflow with id {energyflow_id} not found",
+        )
+
     households = household_crud.get_by_twinworld_sorted_solar_panels(
         session=session, id=twinworld.id
     )
@@ -98,6 +114,7 @@ async def start(
         costmodel=costmodel,
         algorithm=algorithm,
         households=households,
+        energyflow=energyflow_upload,
     )
 
 

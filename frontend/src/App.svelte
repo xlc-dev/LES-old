@@ -8,7 +8,6 @@
     startDate,
     endDate,
     messages,
-    showResult,
   } from "./lib/stores";
 
   import { OpenAPI, SimulateService } from "./lib/client";
@@ -38,6 +37,7 @@
         costmodel: $stepperData.costmodel,
         algorithm: $stepperData.algorithm,
         twinworld: $stepperData.twinworld,
+        energyflow: $stepperData.energyflow,
         households: $stepperData.households,
       });
 
@@ -111,8 +111,11 @@
           <button
             class="mt-4 p-2 bg-les-blue hover:brightness-110 transition duration-200 text-white rounded-lg"
             on:click={() => {
+              runtime.stop();
               showPopup = false;
-              $showResult = true;
+              fetchedData = false;
+              $isStarted = false;
+              document.getElementById("stop-button").click();
             }}>
             View Result
           </button>
