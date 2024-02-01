@@ -9,8 +9,6 @@
    * panels, while the red boxes indicate that the energy used is drawn from the national grid.
    */
 
-  import type { ApplianceRead_Output } from "../lib/client";
-
   import { timeDailies, startDate, daysInPlanning } from "../lib/stores";
 
   import type { ApplianceRead_Output } from "../lib/client";
