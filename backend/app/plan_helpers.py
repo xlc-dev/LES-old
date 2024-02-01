@@ -390,6 +390,7 @@ def loop_helpers(
     length_planning: int,
     household_planning: list[HouseholdRead],
     energyflow_data: list[EnergyFlowRead],
+    energyflow: EnergyFlowUploadRead,
     twinworld: TwinWorldRead,
 ) -> tuple[int, list[EnergyFlowRead], list[list[float]], float, int]:
     """All of the helper variables in the loop.
@@ -431,8 +432,8 @@ def loop_helpers(
                 household=household,
                 energy_used=flow.energy_used,
                 solar_produced=flow.solar_produced,
-                solar_panels_factor=twinworld.solar_panels_factor,
-                energy_usage_factor=twinworld.energy_usage_factor,
+                solar_panels_factor=energyflow.solar_panels_factor,
+                energy_usage_factor=energyflow.energy_usage_factor,
             )
 
             household_energy[hour][household_idx] += potential_energy
@@ -453,6 +454,7 @@ def write_results(
     day_iterator: int,
     day_number_in_planning: int,
     results: list[list[float]],
+    energyflow: EnergyFlowUploadRead,
     twinworld: TwinWorldRead,
     costmodel: CostModelRead,
     appliance_time: list[ApplianceTimeDaily],
@@ -472,7 +474,7 @@ def write_results(
     temp_result = _energy_efficiency_day(
         day=day_number_in_planning,
         date=date,
-        solar_panels_factor=twinworld.solar_panels_factor,
+        solar_panels_factor=energyflow.solar_panels_factor,
         energy_flow=energyflow_day_sim,
         planning=household_planning,
         appliance_bitmap_plan=current_day_appliance,
@@ -507,7 +509,7 @@ def create_results(
     day_number_in_planning: int,
     energyflow_data_sim: list[EnergyFlowRead],
     household_planning: list[HouseholdRead],
-    twinworld: TwinWorldRead,
+    energyflow: EnergyFlowUploadRead,
 ) -> tuple[list[float], list[float], list[float], list[EnergyFlowRead]]:
     """Creates the helper variables for determining the results.
 
@@ -544,7 +546,7 @@ def create_results(
                 if unix_to_hour(el.timestamp) == hour
             )
             * total_panels
-            / twinworld.solar_panels_factor
+            / energyflow.solar_panels_factor
         )
 
         current_available[hour] = solar_produced[hour] - current_used[hour]

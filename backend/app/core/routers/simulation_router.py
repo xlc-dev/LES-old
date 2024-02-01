@@ -168,6 +168,7 @@ async def plan(
             length_planning=length_planning,
             household_planning=household_planning,
             energyflow_data=energyflow_data,
+            energyflow=planning.energyflow,
             twinworld=planning.twinworld,
         )
 
@@ -203,7 +204,7 @@ async def plan(
             day_number_in_planning=day_number_in_planning,
             energyflow_data_sim=energyflow_data_sim,
             household_planning=household_planning,
-            twinworld=planning.twinworld,
+            energyflow=planning.energyflow,
         )
 
         results = write_results(
@@ -211,6 +212,7 @@ async def plan(
             day_iterator=day_iterator,
             day_number_in_planning=day_number_in_planning,
             results=results,
+            energyflow=planning.energyflow,
             twinworld=planning.twinworld,
             costmodel=planning.costmodel,
             appliance_time=appliance_time,
@@ -240,6 +242,7 @@ async def plan(
                 day_iterator=day_iterator,
                 day_number_in_planning=day_number_in_planning,
                 results=results,
+                energyflow=planning.energyflow,
                 twinworld=planning.twinworld,
                 costmodel=planning.costmodel,
                 appliance_time=appliance_time,

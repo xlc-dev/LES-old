@@ -564,11 +564,18 @@
     }
   };
 
-  // Sends a post request to save a created energy flow and add it to the array of selectable options
+  /**
+   * Sends a post request containing the form data of a created energy flow and add it to the array of selectable options.
+   * @param {any} event - The event object containing the target element.
+   * @async
+   * @returns {Promise<void>} - A promise that resolves when the energy flow is successfully uploaded.
+   */
   const uploadEnergyFlow = async ({ target }) => {
     const formData = new FormData();
     formData.append("name", target.name.value);
     formData.append("description", target.description.value);
+    formData.append("solar_panels_factor", target.solar_panels_factor.value);
+    formData.append("energy_usage_factor", target.energy_usage_factor.value);
     formData.append("file", target.file.files[0]);
 
     const response = await fetch(OpenAPI.BASE + "/api/energyflow/upload", {
@@ -620,8 +627,6 @@
     const formData = {
       name: target.name.value,
       description: target.description.value,
-      solar_panels_factor: target.solar_panels_factor.value,
-      energy_usage_factor: target.energy_usage_factor.value,
     };
 
     try {
@@ -982,38 +987,6 @@
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
             placeholder="My own twinworld"
             required></textarea>
-
-          <div>
-            <label for="solar_panels_factor" class="font-bold pt-4">Solar Panels Factor:</label>
-            <p class="text-sm text-gray-500">
-              Amount of solar panels for the household in the supplied energy table
-            </p>
-          </div>
-
-          <input
-            type="number"
-            name="solar_panels_factor"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-            step="1"
-            min="1"
-            placeholder="25"
-            required />
-
-          <div>
-            <label for="energy_usage_factor" class="font-bold pt-4">Energy Usage Factor:</label>
-            <p class="text-sm text-gray-500">
-              Amount of yearly energy used for the household in the supplied energy table
-            </p>
-          </div>
-
-          <input
-            type="number"
-            name="energy_usage_factor"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
-            step="1"
-            min="1"
-            placeholder="7000"
-            required />
 
           <button
             type="submit"
@@ -1663,6 +1636,38 @@
             class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
             placeholder="My own energy flow data"
             required></textarea>
+
+          <div>
+            <label for="solar_panels_factor" class="font-bold pt-4">Solar Panels Factor:</label>
+            <p class="text-sm text-gray-500">
+              Amount of solar panels for the household in the supplied energy table
+            </p>
+          </div>
+
+          <input
+            type="number"
+            name="solar_panels_factor"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            step="1"
+            min="1"
+            placeholder="25"
+            required />
+
+          <div>
+            <label for="energy_usage_factor" class="font-bold pt-4">Energy Usage Factor:</label>
+            <p class="text-sm text-gray-500">
+              Amount of yearly energy used for the household in the supplied energy table
+            </p>
+          </div>
+
+          <input
+            type="number"
+            name="energy_usage_factor"
+            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            step="1"
+            min="1"
+            placeholder="7000"
+            required />
 
           <div>
             <label for="file" class="font-bold">File:</label>

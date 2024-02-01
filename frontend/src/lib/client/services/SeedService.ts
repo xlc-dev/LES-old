@@ -13,7 +13,7 @@ export class SeedService {
    * @returns null Successful Response
    * @throws ApiError
    */
-  public static seedApiSeedPost(seed: number = 0.6758096573300725): CancelablePromise<null> {
+  public static seedApiSeedPost(seed: number = 0.7358808287447506): CancelablePromise<null> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/seed/",

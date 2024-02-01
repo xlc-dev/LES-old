@@ -6,4 +6,5 @@ export type EnergyFlowCreate = {
   timestamp: number;
   energy_used: number;
   solar_produced: number;
+  energyflow_upload_id: number;
 };
