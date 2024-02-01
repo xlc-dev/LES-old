@@ -176,27 +176,29 @@ def _energy_efficiency_day(
 
     algo = costmodel.algorithm
 
-    if costmodel.name != "Fixed Price" and costmodel.name != "TEMO":
-        print(algo)
-        algo = algo.replace("cost_default():", f"""{algo}(
-        buy_consumer={costmodel.price_network_buy_consumer},
-        sell_consumer={costmodel.price_network_sell_consumer},
-        ratio={ratio})""")
+    if costmodel.name not in {"Fixed Price", "TEMO"}:
+        try:
+            local_vars = {}
+            algo = algo.replace(
+                "cost_model()",
+                f"cost_model(\n    buy_consumer={costmodel.price_network_buy_consumer},\n    sell_consumer={costmodel.price_network_sell_consumer},\n    ratio={ratio}\n)",  # noqa: E501
+            )
 
-        energy_price_code_with_params = algo
-        print(energy_price_code_with_params)
+            exec(algo, globals(), local_vars)
+
+            dynamic_cost_model = local_vars.get("cost_model", None)
+
+            energy_price = dynamic_cost_model()
+        except Exception as e:
+            Logger.exception(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Error in algorithm: {e}",
+            )
     else:
-        algo = algo.rstrip("()")
-        # Adding parameters to the code
-        energy_price_code_with_params = f"""{algo}(
-        buy_consumer={costmodel.price_network_buy_consumer},
-        sell_consumer={costmodel.price_network_sell_consumer},
-        ratio={ratio})"""
+        energy_price_code_with_params = f"{algo.rstrip('()')}(\n    buy_consumer={costmodel.price_network_buy_consumer},\n    sell_consumer={costmodel.price_network_sell_consumer},\n    ratio={ratio})"  # noqa: E501
+        from app.plan_defaults import cost_default  # noqa: F401
 
-    # Execute the modified code using eval
-    from app.plan_defaults import cost_default  # noqa: F401
-
-    energy_price = eval(energy_price_code_with_params)
+        energy_price = eval(energy_price_code_with_params)
 
     if sum(solar_energy_used_self) <= 0:
         energy_price = costmodel.price_network_buy_consumer
