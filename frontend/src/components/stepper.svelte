@@ -1,5 +1,5 @@
 <script lang="ts">
-  /*
+  /**
    * The stepper component contains the first views the researcher is presented with.
    * The stepper can be seen as a setup wizard for a single session of using the application
    * and consists of three steps which the researcher goes through to prepare the environment

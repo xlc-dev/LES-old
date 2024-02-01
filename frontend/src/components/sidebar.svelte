@@ -1,5 +1,5 @@
 <script lang="ts">
-  /*
+  /**
    * The sidebar component contains the sidebar that is displayed in various other views.
    * The researcher can switch between the dashboard, simulation, and schedulable load views,
    * toggle the dark mode on or off, view the session options that were selected in the stepper,
@@ -49,7 +49,7 @@
     }
   };
 
-  /*
+  /**
    * Contains logic that runs at initialisation, as soon as the component has been mounted.
    * In this component it initialises the dark mode state at the start of a session based on the last saved state of a previous session.
    */

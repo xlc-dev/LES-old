@@ -1,4 +1,9 @@
 <script lang="ts">
+  /**
+   * The dashboard component contains the dashboard view in which the results of the simulation are displayed.
+   * It also contains the chart component that displays the results in a chart.
+   */
+
   import { onDestroy } from "svelte";
 
   import { efficiencyresultstore, stepperData, runtime } from "../lib/stores";

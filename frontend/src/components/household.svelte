@@ -1,15 +1,20 @@
 <script lang="ts">
-  /*
+  /**
    * The household component contains the view that is displayed when an individual household
    * is clicked in the schedulable load table or in the simulation view. It contains additional
    * data about the selected household and its' appliances, which is regularly updated and
    * translated into a part of the visualisations in the dashboard component.
    */
-  import type { HouseholdRead_Output } from "../lib/client";
-  import SchedulableLoadGrid from "./schedulableLoadGrid.svelte";
-  import { DatePicker } from "date-picker-svelte";
-  import { endDate, startDate } from "../lib/stores";
+
   import { onDestroy, onMount } from "svelte";
+
+  import { DatePicker } from "date-picker-svelte";
+
+  import { endDate, startDate } from "../lib/stores";
+
+  import type { HouseholdRead_Output } from "../lib/client";
+
+  import SchedulableLoadGrid from "./schedulableLoadGrid.svelte";
 
   export let household: HouseholdRead_Output;
   let showDatePicker = false;
@@ -37,7 +42,7 @@
     }
   };
 
-  /*
+  /**
    * Contains logic that runs at initialisation, as soon as the component has been mounted.
    * In this component it initialises the event listener that checks whether an area outside a dropdown menu has been clicked.
    */
@@ -45,7 +50,7 @@
     window.addEventListener("click", handleClickOutsideDatePicker);
   });
 
-  /*
+  /**
    * Contains logic that runs immediately before the component is unmounted.
    * In this component it destroys the event listener that checks whether an area outside a dropdown menu has been clicked.
    */

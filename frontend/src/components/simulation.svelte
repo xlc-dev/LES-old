@@ -1,17 +1,20 @@
 <script lang="ts">
-  /*
-  The simulation component contains the simulation view in which all the households that
-  are a part of the current session, based on the current twin world, cost model, and
-  algorithm that were selected in the stepper and filters for showing only specific
-  households are displayed. When an individual household is clicked, its' corresponding
-  household view is displayed.
-  */
+  /**
+   * The simulation component contains the simulation view in which all the households that
+   * are a part of the current session, based on the current twin world, cost model, and
+   * algorithm that were selected in the stepper and filters for showing only specific
+   * households are displayed. When an individual household is clicked, its' corresponding
+   * household view is displayed.
+   */
 
-  import type { HouseholdRead_Output } from "../lib/client";
-  import { stepperData } from "../lib/stores";
-  import Household from "./household.svelte";
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
+
+  import { stepperData } from "../lib/stores";
+
+  import type { HouseholdRead_Output } from "../lib/client";
+
+  import Household from "./household.svelte";
 
   let household: HouseholdRead_Output;
   let searchQuery = "";

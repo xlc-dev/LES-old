@@ -1,14 +1,15 @@
 <script lang="ts">
-  /*
-  The schedulableLoadTable component contians the table of the schedulable load view that
-  consists of the table and cards of the households that are included in the selected or
-  created twin world of the current session and filters that can be used to only display
-  specific items of the table. Each card in the table contains data about its' corresponding
-  household and can be expanded to view its' schedulable load grid raster.
-  */
+  /**
+   * The schedulableLoadTable component contians the table of the schedulable load view that
+   * consists of the table and cards of the households that are included in the selected or
+   * created twin world of the current session and filters that can be used to only display
+   * specific items of the table. Each card in the table contains data about its' corresponding
+   * household and can be expanded to view its' schedulable load grid raster.
+   */
 
   import { onDestroy, onMount } from "svelte";
   import { slide } from "svelte/transition";
+
   import { DatePicker } from "date-picker-svelte";
 
   import { activatedHousehold, stepperData, startDate, endDate } from "../lib/stores";
@@ -152,7 +153,7 @@
     });
   };
 
-  /*
+  /**
    * Contains logic that runs at initialisation, as soon as the component has been mounted.
    * In this component it initialises the event listener that handles button clicks of filters in the schedulable load table.
    */
@@ -171,7 +172,7 @@
     }
   });
 
-  /*
+  /**
    * Contains logic that runs immediately before the component is unmounted.
    * In this component it destroys the event listener that handles button clicks of filters in the schedulable load table.
    */

@@ -1,5 +1,5 @@
 <script lang="ts">
-  /*
+  /**
    * The result component contains the end view that is displayed when the application determines
    * that the session has ended or if the researcher manually ends the session by pressing the
    * Stop Simulation button in the sidebar. This component takes a snapshot of all the data that
@@ -14,7 +14,6 @@
     stepperData,
     activatedHousehold,
     runtime,
-    isStarted,
     timeDailies,
     efficiencyresultstore,
   } from "../lib/stores";
