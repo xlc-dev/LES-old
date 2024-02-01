@@ -114,6 +114,8 @@ async def upload_energyflow(
     *,
     name: str = Form(...),
     description: str = Form(...),
+    solar_panels_factor: float = Form(...),
+    energy_usage_factor: float = Form(...),
     file: UploadFile,
     session: Session = Depends(get_session),
 ) -> None:
@@ -162,7 +164,10 @@ async def upload_energyflow(
     energyflow_upload_crud.create(
         session=session,
         obj_in=energyflow_model.EnergyFlowUploadCreate(
-            name=name, description=description
+            name=name,
+            description=description,
+            energy_usage_factor=energy_usage_factor,
+            solar_panels_factor=solar_panels_factor,
         ),
     )
 

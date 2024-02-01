@@ -1,5 +1,7 @@
 <script lang="ts">
-  /* Shared chart logic between result.svelte and dashboard.svelte */
+  /**
+   * Shared chart logic between result.svelte and dashboard.svelte
+   */
 
   import { onMount, onDestroy } from "svelte";
 

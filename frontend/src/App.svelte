@@ -1,4 +1,10 @@
 <script lang="ts">
+  /**
+   * The App component is the root component of the application.
+   * This component contains the logic that is responsible for fetching the simulation results from the API
+   * And for displaying the stepper or the base layout depending on the state of the application.
+   */
+
   import {
     stepperData,
     efficiencyresultstore,
@@ -22,10 +28,12 @@
   let showPopup = false;
   let fetchedData = false;
 
-  /*
+  /**
    * Fetches the simulation results from the API.
    * The API returns the results in chunks of 7 days.
    * This function is called recursively until the simulation is finished.
+   * @param {number} chunkoffset - The offset of the chunk that is to be fetched.
+   * @returns {void}
    */
   const fetchData = async (chunkoffset = 0) => {
     // Don't call the API if the simulation is not started
@@ -78,7 +86,7 @@
     }
   };
 
-  /*
+  /**
    * Stops the polling of the API.
    */
   const stopPolling = () => {

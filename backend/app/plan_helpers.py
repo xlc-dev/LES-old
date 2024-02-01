@@ -174,21 +174,31 @@ def _energy_efficiency_day(
     if costmodel.name == "Fixed Price":
         ratio = costmodel.fixed_price_ratio  # type: ignore
 
-    energy_price_code = costmodel.algorithm
+    algo = costmodel.algorithm
 
-    # Remove trailing parentheses if they exist
-    energy_price_code = energy_price_code.rstrip("()")
+    if costmodel.name not in {"Fixed Price", "TEMO"}:
+        try:
+            local_vars = {}  # type: ignore
+            algo = algo.replace(
+                "cost_model()",
+                f"cost_model(\n    buy_consumer={costmodel.price_network_buy_consumer},\n    sell_consumer={costmodel.price_network_sell_consumer},\n    ratio={ratio}\n)",  # noqa: E501
+            )
 
-    # Adding parameters to the code
-    energy_price_code_with_params = f"""{energy_price_code}(
-    buy_consumer={costmodel.price_network_buy_consumer},
-    sell_consumer={costmodel.price_network_sell_consumer},
-    ratio={ratio})"""
+            exec(algo, globals(), local_vars)
 
-    # Execute the modified code using eval
-    from app.plan_defaults import cost_default  # noqa: F401
+            dynamic_cost_model = local_vars.get("cost_model", None)
 
-    energy_price = eval(energy_price_code_with_params)
+            energy_price = dynamic_cost_model()
+        except Exception as e:
+            Logger.exception(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Error in algorithm: {e}",
+            )
+    else:
+        energy_price_code_with_params = f"{algo.rstrip('()')}(\n    buy_consumer={costmodel.price_network_buy_consumer},\n    sell_consumer={costmodel.price_network_sell_consumer},\n    ratio={ratio})"  # noqa: E501
+        from app.plan_defaults import cost_default  # noqa: F401
+
+        energy_price = eval(energy_price_code_with_params)
 
     if sum(solar_energy_used_self) <= 0:
         energy_price = costmodel.price_network_buy_consumer

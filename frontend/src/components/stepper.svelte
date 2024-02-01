@@ -1,5 +1,5 @@
 <script lang="ts">
-  /*
+  /**
    * The stepper component contains the first views the researcher is presented with.
    * The stepper can be seen as a setup wizard for a single session of using the application
    * and consists of three steps which the researcher goes through to prepare the environment
@@ -100,7 +100,7 @@
   };
 
   let costmodelCode =
-    "def cost_default():\n    return buy_consumer * ratio + sell_consumer * (1 - ratio)";
+    "def cost_model():\n    return buy_consumer * ratio + sell_consumer * (1 - ratio)";
   let algorithmCode =
     "import pandas\nimport numpy\nimport scipy\nimport math\nimport random\n\ndef run():\n    pass\n";
 
@@ -592,6 +592,8 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
     message("Energyflow uploaded");
     simulationData = await SimulateService.getDataApiSimulateLoadDataGet();
+    selectedIDs.energyflow = simulationData.energyflow[simulationData.energyflow.length - 1].id;
+    $stepperData.energyflow = target.name.value;
   };
 
   /**

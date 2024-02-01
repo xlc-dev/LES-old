@@ -1,5 +1,5 @@
 <script lang="ts">
-  /*
+  /**
    * The schedulableLoadGrid component contains the grid raster that is used in each card of the
    * schedulable load table and in the view of each individual household. The x-axis of the grid
    * raster contains the hours of the day and the y-axis contains the appliances of a household.
@@ -9,9 +9,9 @@
    * panels, while the red boxes indicate that the energy used is drawn from the national grid.
    */
 
-  import type { ApplianceRead_Output } from "../lib/client";
-
   import { timeDailies, startDate, daysInPlanning } from "../lib/stores";
+
+  import type { ApplianceRead_Output } from "../lib/client";
 
   export let appliances: ApplianceRead_Output[];
   export let hours: number[];

@@ -107,3 +107,29 @@ The `src` folder has 2 subfolders:
   - `components`: Where all svelte components can be found.
 
 Inside the `src` folder is `App.svelte` which is the entrypoint that is getting loaded by `main.ts`.
+
+
+## Future Work
+
+* Online:
+
+For this project to be more accessible, the application needs to be deployed online. Right now, it is required to run everything locally.
+For instance, you can deploy the frontend to [GitHub Pages](pages.github.com/), and the backend to [Microsoft Azure](azure.microsoft.com/en-us/).
+
+* Accounts:
+
+If the application has been deployed online, it must be secured. User accounts must exist that secure the application and prevent researchers from removing other researchers' algorithms.
+
+* Stock market:
+
+An alternative cost model that works by buying and selling of energy directly to other users can be added to the application.
+Users can provide a price and a quantity for how much energy they want to buy or sell, which will get matched to other offers.
+
+* Improve stepper User Experience (UX):
+
+The User Experience of the stepper can be improved. When a researcher creates a large twin world the user interface can become cluttered and complex.
+It will be required to scroll around a lot to navigate through the user interface, which makes it counterintuitive.
+
+* (Optional) i18n:
+
+If desired, the application can be internationalised by translating it to different languages.

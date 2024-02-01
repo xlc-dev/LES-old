@@ -1,6 +1,10 @@
 <script lang="ts">
-  import { fade } from "svelte/transition";
+  /**
+   *  Message component to show messages to the user in the top right.
+   */
+
   import { onMount, afterUpdate } from "svelte";
+  import { fade } from "svelte/transition";
 
   import { messages } from "../lib/stores";
 
