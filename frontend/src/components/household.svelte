@@ -59,6 +59,7 @@
    * @returns {Date} - The minimum date based on the start date.
    */
   $: setMinDate = new Date($startDate * 1000);
+
   /**
    * Sets the maximum date based on the provided end date timestamp.
    * @param {number} endDate - The end date in seconds, which is a Unix timestamp.
