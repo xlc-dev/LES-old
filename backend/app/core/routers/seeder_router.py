@@ -67,6 +67,7 @@ def create_energyflow():
             timestamp=row["timestamp"] + offset,
             energy_used=row["energy_used"],
             solar_produced=row["solar_produced"],
+            energyflow_upload_id=1,
         )
         hourly_data.append(energy_flow)  # Append each object to the list
 
@@ -83,7 +84,10 @@ def add_appliance_to_session(session: Session, appliance: Appliance):
         timewindow = create_timewindow(day, appliance.id)
         session.add(timewindow)
 
-    start_date, end_date = energyflow_crud.get_start_end_date(session=session)
+    start_date, end_date = energyflow_crud.get_start_end_date(
+        session=session, id=1
+    )
+
     start_date, end_date = floor(start_date.timestamp / 86400), floor(
         end_date.timestamp / 86400
     )
@@ -458,12 +462,20 @@ def create_household(
 def seed(
     seed: float = random.random(), session: Session = Depends(get_session)
 ) -> None:
-    "Seeds the database with initial data for the twinworld. Deletes all previous in the database before seeding."  # noqa: E501
+    "Seeds the database with initial data for the twinworld. Deletes all previous in the database before seeding"  # noqa: E501
 
     delete_db_and_tables()
     create_db_and_tables()
 
     random.seed(seed)
+
+    energyflow_upload = energyflow_model.EnergyFlowUpload(
+        name="Energyflow Zoetermeer",
+        description="The energy data from a green household in Zoetermeer that is associated with the THUAS.",  # noqa: E501
+    )
+
+    session.add(energyflow_upload)
+    session.flush()
 
     energyflow = create_energyflow()
     for x in energyflow:
@@ -518,8 +530,6 @@ def seed(
         energy_usage_factor=7000,
     )
 
-    session.add(twinworld_1)
-
     twinworld_2 = twinworld_model.TwinWorld(
         name="Twinworld Small",
         description="A smaller twinworld consisting of roughly 25 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
@@ -528,6 +538,7 @@ def seed(
     )
 
     session.add(twinworld_2)
+    session.add(twinworld_1)
 
     session.flush()
 

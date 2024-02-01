@@ -2,6 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+/**
+ * Contains the days of the week as variable
+ */
 export enum ApplianceDays {
   MONDAY = "Monday",
   TUESDAY = "Tuesday",

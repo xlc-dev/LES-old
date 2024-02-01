@@ -7,7 +7,7 @@
 
   import { blur } from "svelte/transition";
 
-  import { activatedHousehold, showResult } from "../lib/stores";
+  import { activatedHousehold } from "../lib/stores";
 
   import Sidebar from "./sidebar.svelte";
   import TitleBar from "./titleBar.svelte";
@@ -28,7 +28,7 @@
    *
    * @param {string} action - The action associated with the clicked button.
    */
-  const handleButtonClick = (action) => {
+  const handleButtonClick = (action: string) => {
     // Unsubscribe if previously subscribed
     if (unsubscribe) unsubscribe();
 
@@ -60,12 +60,6 @@
     unsubscribe = activatedHousehold.subscribe((e) => {
       title = e.name;
     });
-  }
-
-  // User can press show result button when simulation is finished, if he does,
-  // the simulation should be stopped and the result will be shown
-  $: if ($showResult === true) {
-    stop = true;
   }
 </script>
 

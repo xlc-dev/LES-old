@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { AlgorithmRead } from "./AlgorithmRead";
 import type { CostModelRead } from "./CostModelRead";
+import type { EnergyFlowUploadRead } from "./EnergyFlowUploadRead";
 import type { HouseholdRead_Input } from "./HouseholdRead_Input";
 import type { TwinWorldRead } from "./TwinWorldRead";
 export type SelectedModelsInput = {
@@ -12,4 +13,5 @@ export type SelectedModelsInput = {
   costmodel: CostModelRead;
   algorithm: AlgorithmRead;
   twinworld: TwinWorldRead;
+  energyflow: EnergyFlowUploadRead;
 };

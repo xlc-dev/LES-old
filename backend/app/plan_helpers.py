@@ -14,7 +14,10 @@ from app.config import settings
 from app.utils import Logger, SECONDS_IN_DAY, HOURS_IN_WEEK, unix_to_hour
 
 from app.core.models.household_model import HouseholdRead
-from app.core.models.energyflow_model import EnergyFlowRead
+from app.core.models.energyflow_model import (
+    EnergyFlowRead,
+    EnergyFlowUploadRead,
+)
 from app.core.models.costmodel_model import CostModelRead
 from app.core.models.twinworld_model import TwinWorldRead
 from app.core.models.algorithm_model import AlgorithmRead
@@ -33,6 +36,7 @@ class SelectedOptions(SQLModel):
     twinworld: TwinWorldRead
     costmodel: CostModelRead
     algorithm: AlgorithmRead
+    energyflow: EnergyFlowUploadRead
     households: list[HouseholdRead]
 
 
@@ -40,6 +44,7 @@ class SimulationData(SQLModel):
     twinworld: list[TwinWorldRead]
     costmodel: list[CostModelRead]
     algorithm: list[AlgorithmRead]
+    energyflow: list[EnergyFlowUploadRead]
 
 
 class SelectedModelsInput(SQLModel):
@@ -48,6 +53,7 @@ class SelectedModelsInput(SQLModel):
     costmodel: CostModelRead
     algorithm: AlgorithmRead
     twinworld: TwinWorldRead
+    energyflow: EnergyFlowUploadRead
 
 
 class SelectedModelsOutput(SQLModel):
@@ -334,12 +340,14 @@ def setup_planning(
         session=session,
         limit=HOURS_IN_WEEK,
         offset=planning.chunkoffset * 24,
+        id=planning.energyflow.id,
     )
 
     appliance_time = appliance_time_daily_crud.get_multi(session=session)
 
     total_start_date, total_end_date = energyflow_crud.get_start_end_date(
-        session=session
+        session=session,
+        id=planning.energyflow.id,
     )
 
     total_start_date = total_start_date.timestamp

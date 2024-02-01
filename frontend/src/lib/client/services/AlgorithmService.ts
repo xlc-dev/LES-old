@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { AlgorithmCreate } from "../models/AlgorithmCreate";
 import type { AlgorithmRead } from "../models/AlgorithmRead";
+import type { AlgorithmUpdate } from "../models/AlgorithmUpdate";
 import type { CancelablePromise } from "../core/CancelablePromise";
 import { OpenAPI } from "../core/OpenAPI";
 import { request as __request } from "../core/request";
@@ -51,6 +52,30 @@ export class AlgorithmService {
       path: {
         id: id,
       },
+      errors: {
+        422: `Validation Error`,
+      },
+    });
+  }
+  /**
+   * Update Algorithm
+   * @param id
+   * @param requestBody
+   * @returns AlgorithmUpdate Successful Response
+   * @throws ApiError
+   */
+  public static updateAlgorithmApiAlgorithmIdPatch(
+    id: number,
+    requestBody: AlgorithmUpdate
+  ): CancelablePromise<AlgorithmUpdate> {
+    return __request(OpenAPI, {
+      method: "PATCH",
+      url: "/api/algorithm/{id}",
+      path: {
+        id: id,
+      },
+      body: requestBody,
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
