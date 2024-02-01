@@ -178,7 +178,7 @@ def _energy_efficiency_day(
 
     if costmodel.name not in {"Fixed Price", "TEMO"}:
         try:
-            local_vars = {}
+            local_vars = {}  # type: ignore
             algo = algo.replace(
                 "cost_model()",
                 f"cost_model(\n    buy_consumer={costmodel.price_network_buy_consumer},\n    sell_consumer={costmodel.price_network_sell_consumer},\n    ratio={ratio}\n)",  # noqa: E501
