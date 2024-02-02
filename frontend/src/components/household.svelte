@@ -118,7 +118,7 @@
       {/if}
     </g>
     <text x="175" y="200" font-size="30" text-anchor="middle" class="dark:text-white text-black">{household.size}m²</text>
-    <text x="175" y="250" font-size="30" text-anchor="middle" class="dark:text-white text-black">{household.name}</text>
+    <text x="175" y="275" font-size="30" text-anchor="middle" class="dark:text-white text-black">{household.name}</text>
   </svg>
 </div>
 
