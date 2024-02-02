@@ -163,19 +163,21 @@ async def plan(
 
     local_vars = locals()
     global_vars = globals()
-    local_vars.update({
-        "days_in_chunk": days_in_chunk,
-        "days_in_planning": days_in_planning,
-        "length_planning": length_planning,
-        "start_date": start_date,
-        "end_date": end_date,
-        "total_start_date": total_start_date,
-        "energyflow_data_sim": energyflow_data_sim,
-        "energyflow_data": energyflow_data,
-        "appliance_time": appliance_time,
-        "household_planning": household_planning,
-        "results": results,
-    })
+    local_vars.update(
+        {
+            "days_in_chunk": days_in_chunk,
+            "days_in_planning": days_in_planning,
+            "length_planning": length_planning,
+            "start_date": start_date,
+            "end_date": end_date,
+            "total_start_date": total_start_date,
+            "energyflow_data_sim": energyflow_data_sim,
+            "energyflow_data": energyflow_data,
+            "appliance_time": appliance_time,
+            "household_planning": household_planning,
+            "results": results,
+        }
+    )
     global_vars.update(local_vars)
 
     for day_iterator in range(1, days_in_chunk + 1):
@@ -196,13 +198,15 @@ async def plan(
             twinworld=planning.twinworld,
         )
 
-        local_vars.update({
-            "date": date,
-            "energyflow_day": energyflow_day,
-            "household_energy": household_energy,
-            "total_available_energy": total_available_energy,
-            "day_number_in_planning": day_number_in_planning,
-        })
+        local_vars.update(
+            {
+                "date": date,
+                "energyflow_day": energyflow_day,
+                "household_energy": household_energy,
+                "total_available_energy": total_available_energy,
+                "day_number_in_planning": day_number_in_planning,
+            }
+        )
         global_vars.update(local_vars)
 
         if (
