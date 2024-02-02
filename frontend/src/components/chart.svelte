@@ -211,7 +211,7 @@
   $: $efficiencyresultstore.length && updateCharts($efficiencyresultstore);
 </script>
 
-<div class="bg-white dark:bg-dark-table-row rounded-lg p-4 grid grid-cols-2 gap-4">
+<div class="grid grid-cols-2 gap-4 rounded-lg bg-white p-4 dark:bg-dark-table-row">
   {#each Array(4) as _, index (index)}
     <div>
       <canvas bind:this={chartContainers[index]}></canvas>

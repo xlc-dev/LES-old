@@ -9,10 +9,10 @@
   export let onSort: () => void;
 </script>
 
-<button class="inline-block cursor-pointer relative" on:click={onSort}>
-  <div class="absolute transform -translate-y-4">
+<button class="relative inline-block cursor-pointer" on:click={onSort}>
+  <div class="absolute -translate-y-4 transform">
     <svg
-      class="w-2 h-2.5 {isSortedAsc ? 'text-les-sort-active' : 'text-les-sort-inactive'}"
+      class="h-2.5 w-2 {isSortedAsc ? 'text-les-sort-active' : 'text-les-sort-inactive'}"
       viewBox="0 0 24 24">
       <path
         id="Triangle-2"
@@ -26,7 +26,7 @@
     </svg>
 
     <svg
-      class="w-2 h-2.5 {isSortedDesc ? 'text-les-sort-active' : 'text-les-sort-inactive'}"
+      class="h-2.5 w-2 {isSortedDesc ? 'text-les-sort-active' : 'text-les-sort-inactive'}"
       viewBox="0 0 24 24">
       <path
         id="Triangle-2"

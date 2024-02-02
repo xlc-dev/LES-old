@@ -12,6 +12,13 @@ improvements, or the user has stopped the simulation, the frontend stops
 calling the /plan endpoint, and ends the simulation.
 """
 
+# Import libraries for exec() by the researcher
+import pandas  # noqa: F401
+import numpy  # noqa: F401
+import scipy  # noqa: F401
+import math  # noqa: F401
+import random  # noqa: F401
+
 from fastapi import APIRouter, Depends, Body, status
 
 from sqlmodel import Session
@@ -154,6 +161,23 @@ async def plan(
         results,
     ) = setup_planning(session=session, planning=planning)
 
+    local_vars = locals()
+    global_vars = globals()
+    local_vars.update({
+        "days_in_chunk": days_in_chunk,
+        "days_in_planning": days_in_planning,
+        "length_planning": length_planning,
+        "start_date": start_date,
+        "end_date": end_date,
+        "total_start_date": total_start_date,
+        "energyflow_data_sim": energyflow_data_sim,
+        "energyflow_data": energyflow_data,
+        "appliance_time": appliance_time,
+        "household_planning": household_planning,
+        "results": results,
+    })
+    global_vars.update(local_vars)
+
     for day_iterator in range(1, days_in_chunk + 1):
         (
             date,
@@ -171,6 +195,15 @@ async def plan(
             energyflow=planning.energyflow,
             twinworld=planning.twinworld,
         )
+
+        local_vars.update({
+            "date": date,
+            "energyflow_day": energyflow_day,
+            "household_energy": household_energy,
+            "total_available_energy": total_available_energy,
+            "day_number_in_planning": day_number_in_planning,
+        })
+        global_vars.update(local_vars)
 
         if (
             planning.algorithm.name == "Greedy planning"
@@ -256,7 +289,16 @@ async def plan(
             planning.algorithm.name != "Greedy planning"
             and planning.algorithm.name != "Simulated Annealing"
         ):
-            eval(planning.algorithm.algorithm)
+            algo = planning.algorithm.algorithm
+            try:
+                exec(algo, global_vars, local_vars)
+                run = local_vars.get("run", None)
+                run()
+            except Exception as e:
+                Logger.exception(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Error in algorithm: {e}",
+                )
 
     start_day = (start_date - total_start_date) // SECONDS_IN_DAY + 1
 

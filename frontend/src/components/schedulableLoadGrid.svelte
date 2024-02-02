@@ -120,10 +120,10 @@
 
 <div class="flex flex-col items-center">
   <div class="flex w-full justify-start">
-    <div class="w-36 text-right pr-2 font-bold dark:text-les-white text-xs">Appliances:</div>
+    <div class="w-36 pr-2 text-right text-xs font-bold dark:text-les-white">Appliances:</div>
     <div class="flex">
       {#each hours as hour}
-        <div class="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 text-center dark:text-les-white text-xs">
+        <div class="h-2 w-2 text-center text-xs dark:text-les-white sm:h-3 sm:w-3 md:h-4 md:w-4">
           {hour}
         </div>
       {/each}
@@ -131,7 +131,7 @@
   </div>
   {#each appliances as appliance}
     <div class="flex items-center">
-      <div class="w-36 text-right pr-2 whitespace-nowrap dark:text-les-white text-xs">
+      <div class="w-36 whitespace-nowrap pr-2 text-right text-xs dark:text-les-white">
         {appliance.name}
       </div>
       {#each hours as hour}
@@ -141,7 +141,7 @@
             hour,
             date,
             appliance.id
-          )} w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4`}>
+          )} h-2 w-2 sm:h-3 sm:w-3 md:h-4 md:w-4`}>
         </div>
       {/each}
     </div>

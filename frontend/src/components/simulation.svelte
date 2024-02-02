@@ -121,11 +121,11 @@
 
 {#if !selectedHousehold}
   <div
-    class="flex justify-between items-center rounded-lg bg-gray-100 p-2 dark:bg-dark-table-header mb-4">
+    class="mb-4 flex items-center justify-between rounded-lg bg-gray-100 p-2 dark:bg-dark-table-header">
     <div class="flex space-x-4">
       <input
         type="text"
-        class="px-3 py-2 border border-gray-300 rounded-md dark:bg-dark-table-row dark:text-les-white"
+        class="rounded-md border border-gray-300 px-3 py-2 dark:bg-dark-table-row dark:text-les-white"
         placeholder="Search by ID or NAME"
         bind:value={searchQuery} />
 
@@ -135,14 +135,14 @@
           id={`${filterName}-dropdown`}
           on:click|stopPropagation={handleClickOutsideFilter(filterName)}>
           <button
-            class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white"
+            class="rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white"
             on:click={() => toggleDropdown(filterName)}>
             {toReadableName(filterName)}
           </button>
 
           {#if showDropdown === filterName}
             <div
-              class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 dark:bg-dark-table-row"
+              class="absolute left-0 z-10 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-dark-table-row"
               in:slide={{ duration: 500 }}
               out:slide={{ duration: 500 }}>
               <div class="py-1">
@@ -166,13 +166,13 @@
   </div>
 
   <div
-    class="grid grid-cols-8 gap-4 justify-between items-center rounded-lg bg-gray-100 p-2 dark:bg-dark-table-row">
+    class="grid grid-cols-8 items-center justify-between gap-4 rounded-lg bg-gray-100 p-2 dark:bg-dark-table-row">
     {#each filteredHouseholds as data}
       <button
-        class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4"
+        class="flex cursor-pointer items-center gap-4 text-gray-800 hover:text-blue-500"
         on:click={() => showHome(data)}>
         <svg
-          class="hover:scale-110 transition-all duration-300 dark:fill-white fill-black"
+          class="fill-black transition-all duration-300 hover:scale-110 dark:fill-white"
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -187,14 +187,14 @@
               dominant-baseline="middle"
               text-anchor="middle"
               font-size="35"
-              class="dark:text-white text-black">{data.size}</text>
+              class="text-black dark:text-white">{data.size}</text>
             <text
               x="50%"
               y="80%"
               dominant-baseline="middle"
               text-anchor="middle"
               font-size="35"
-              class="dark:text-white text-black text-3xl">{data.name}</text>
+              class="text-3xl text-black dark:text-white">{data.name}</text>
 
             {#if hasSolarPanels(data)}
               <svg
