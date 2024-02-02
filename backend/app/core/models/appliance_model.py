@@ -92,7 +92,8 @@ class Appliance(ApplianceBase, table=True):
     )
 
     appliance_time_daily: list["ApplianceTimeDaily"] = Relationship(
-        back_populates="appliance"
+        back_populates="appliance",
+        sa_relationship_kwargs={"cascade": "delete"},
     )
 
 
@@ -161,7 +162,8 @@ class ApplianceTimeDaily(ApplianceTimeDailyBase, table=True):
     )  # id number of the appliance that is being planned in, example=0
 
     appliance: "Appliance" = Relationship(
-        back_populates="appliance_time_daily"
+        back_populates="appliance_time_daily",
+        sa_relationship_kwargs={"cascade": "delete"},
     )
     appliance_id: int = Field(foreign_key="appliance.id")
 
