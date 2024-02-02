@@ -978,7 +978,7 @@
           class="flex flex-col space-y-3">
           <div>
             <label for="name" class="font-bold pt-4">Name:</label>
-            <p class="text-sm text-gray-500">Name of the twinworld</p>
+            <p class="text-sm text-gray-500">The name of the twinworld</p>
           </div>
 
           <input
@@ -990,7 +990,7 @@
 
           <div>
             <label for="description" class="font-bold">Description:</label>
-            <p class="text-sm text-gray-500">Description of the twinworld</p>
+            <p class="text-sm text-gray-500">The description of the twinworld</p>
           </div>
 
           <textarea
@@ -1016,6 +1016,7 @@
           <div class="flex flex-wrap">
             <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
               <label for="name" class="font-bold">Name:</label>
+              <p class="text-sm text-gray-500">The name of the household</p>
               <input
                 id="name"
                 class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1028,6 +1029,7 @@
 
             <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
               <label for="size" class="font-bold">Size:</label>
+              <p class="text-sm text-gray-500">The amount of people in the household</p>
               <input
                 id="size"
                 min="1"
@@ -1040,6 +1042,7 @@
 
             <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
               <label for="energy_usage" class="font-bold">Energy Usage:</label>
+              <p class="text-sm text-gray-500">The household's energy usage in kWh</p>
               <input
                 id="energy_usage"
                 class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1051,6 +1054,7 @@
 
             <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
               <label for="solar_panels" class="font-bold">Solar Panels:</label>
+              <p class="text-sm text-gray-500">The amount of solar panels the household has</p>
               <input
                 id="solar_panels"
                 class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1062,6 +1066,7 @@
 
             <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
               <label for="solar_yield_yearly" class="font-bold">Solar Yield Yearly:</label>
+              <p class="text-sm text-gray-500">The yearly solar energy yield in kWh</p>
               <input
                 id="solar_yield_yearly"
                 class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1090,6 +1095,7 @@
             <div class="flex flex-wrap">
               <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
                 <label for="name" class="font-bold">Name:</label>
+                <p class="text-sm text-gray-500">The name of the appliance</p>
                 <select
                   id="type"
                   class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1102,6 +1108,7 @@
 
               <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
                 <label for="power" class="font-bold">Power:</label>
+                <p class="text-sm text-gray-500">The power the appliance uses in kWh</p>
                 <input
                   id="power"
                   class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1113,6 +1120,7 @@
 
               <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
                 <label for="duration" class="font-bold">Duration:</label>
+                <p class="text-sm text-gray-500">How long the appliance runs in hours</p>
                 <input
                   id="duration"
                   class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1125,6 +1133,7 @@
 
               <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
                 <label for="daily_usage" class="font-bold">Daily Usage:</label>
+                <p class="text-sm text-gray-500">How long the appliance is used daily</p>
                 <input
                   id="daily_usage"
                   class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1239,6 +1248,7 @@
             <div class="flex flex-wrap">
               <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
                 <label for="day" class="font-bold">Day:</label>
+                <p class="text-sm text-gray-500">The day in which the appliance is being planned</p>
                 <select
                   id="day"
                   class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1251,6 +1261,7 @@
 
               <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
                 <label for="appliance_id" class="font-bold">Appliance</label>
+                <p class="text-sm text-gray-500">The name of the appliance that is being planned</p>
                 <select
                   id="appliance_id"
                   class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1263,6 +1274,7 @@
 
               <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
                 <label for="bitmap_window_display" class="font-bold">Bitmap Window Value:</label>
+                <p class="text-sm text-gray-500">The bitmap values of the selected time slots</p>
                 <input
                   id="bitmap_window_display"
                   class="bg-gray-300 cursor-not-allowed p-2.5 rounded-lg border-2 border-gray-400"
@@ -1274,6 +1286,7 @@
 
               <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4 pt-2">
                 <label for="bitmap_window" class="font-bold">Bitmap Window:</label>
+                <p class="text-sm text-gray-500">The time slots in which the appliance can be planned in</p>
                 <div class="flex flex-wrap">
                   {#each hoursArray as hour, hourIndex}
                     <div class="flex items-center w-1/3 pr-4">
@@ -1467,7 +1480,7 @@
           class="flex flex-col space-y-3">
           <div>
             <label for="name" class="font-bold pt-4">Name:</label>
-            <p class="text-sm text-gray-500">Name of the costmodel</p>
+            <p class="text-sm text-gray-500">The name of the costmodel</p>
           </div>
 
           <input
@@ -1479,7 +1492,7 @@
 
           <div>
             <label for="description" class="font-bold">Description:</label>
-            <p class="text-sm text-gray-500">Description of the costmodel</p>
+            <p class="text-sm text-gray-500">The description of the costmodel</p>
           </div>
 
           <textarea
@@ -1565,7 +1578,7 @@
           class="flex flex-col space-y-3">
           <div>
             <label for="name" class="font-bold pt-4">Name:</label>
-            <p class="text-sm text-gray-500">Name for the new algorithm</p>
+            <p class="text-sm text-gray-500">The name of the new algorithm</p>
           </div>
 
           <input
@@ -1577,7 +1590,7 @@
 
           <div>
             <label for="description" class="font-bold">Description:</label>
-            <p class="text-sm text-gray-500">Description for the new algorithm</p>
+            <p class="text-sm text-gray-500">The description of the new algorithm</p>
           </div>
 
           <textarea
@@ -1588,7 +1601,7 @@
 
           <div>
             <label for="description" class="font-bold">Max Temperature:</label>
-            <p class="text-sm text-gray-500">Set the max temperature for your algorithm</p>
+            <p class="text-sm text-gray-500">Sets the max temperature for your algorithm</p>
           </div>
 
           <input
@@ -1628,7 +1641,7 @@
           class="flex flex-col space-y-3">
           <div>
             <label for="name" class="font-bold pt-4">Name:</label>
-            <p class="text-sm text-gray-500">Name for the new energy flow</p>
+            <p class="text-sm text-gray-500">The name of the new energy flow</p>
           </div>
 
           <input
@@ -1640,7 +1653,7 @@
 
           <div>
             <label for="description" class="font-bold">Description:</label>
-            <p class="text-sm text-gray-500">Description for the new energy flow</p>
+            <p class="text-sm text-gray-500">The description of the new energy flow</p>
           </div>
 
           <textarea
@@ -1652,7 +1665,7 @@
           <div>
             <label for="solar_panels_factor" class="font-bold pt-4">Solar Panels Factor:</label>
             <p class="text-sm text-gray-500">
-              Amount of solar panels for the household in the supplied energy table
+              The amount of solar panels for the household in the supplied energy table
             </p>
           </div>
 
@@ -1668,7 +1681,7 @@
           <div>
             <label for="energy_usage_factor" class="font-bold pt-4">Energy Usage Factor:</label>
             <p class="text-sm text-gray-500">
-              Amount of yearly energy used for the household in the supplied energy table
+              The amount of yearly energy used for the household in the supplied energy table
             </p>
           </div>
 
@@ -1683,7 +1696,7 @@
 
           <div>
             <label for="file" class="font-bold">File:</label>
-            <p class="text-sm text-gray-500">CSV file for Energyflow</p>
+            <p class="text-sm text-gray-500">The CSV file of the energy flow</p>
           </div>
 
           <input
