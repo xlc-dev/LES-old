@@ -192,9 +192,9 @@
   <div class="mx-auto max-w-3xl pt-8">
     <Chart />
     <div
-      class="mt-8 bg-white dark:bg-les-gray-600 dark:text-white rounded-lg p-4 mb-8 shadow grid grid-cols-2 gap-4 relative">
-      <p class="absolute left-1/2 transform -translate-x-1/2 mt-4">Runtime: {$runtime} seconds</p>
-      <div class="col-span-2 flex justify-between mt-8">
+      class="relative mb-8 mt-8 grid grid-cols-2 gap-4 rounded-lg bg-white p-4 shadow dark:bg-les-gray-600 dark:text-white">
+      <p class="absolute left-1/2 mt-4 -translate-x-1/2 transform">Runtime: {$runtime} seconds</p>
+      <div class="col-span-2 mt-8 flex justify-between">
         <button
           class="rounded-lg bg-les-blue px-6 py-3 text-white transition-colors duration-200 hover:brightness-110"
           on:click={newSessionButton}>New session</button>

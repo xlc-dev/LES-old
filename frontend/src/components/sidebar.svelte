@@ -62,14 +62,14 @@
 
 <div class="fixed left-0 top-0 flex h-screen w-64 flex-col justify-between bg-gray-900">
   <div>
-    <div class="w-full bg-les-gray-700 p-4 flex gap-3 items-center">
-      <img src="/arrows.png" alt="" class="transform rotate-180" />
+    <div class="flex w-full items-center gap-3 bg-les-gray-700 p-4">
+      <img src="/arrows.png" alt="" class="rotate-180 transform" />
       <p class="text-les-white">LES RESEARCH</p>
     </div>
 
     <div class="mt-4 flex flex-col items-start justify-center gap-3">
       <button
-        class="flex items-center gap-3 hover:bg-les-gray-700 w-full p-4 transition-colors duration-200 {currentComponent ===
+        class="flex w-full items-center gap-3 p-4 transition-colors duration-200 hover:bg-les-gray-700 {currentComponent ===
         'Dashboard'
           ? 'bg-les-gray-700'
           : ''}"
@@ -79,7 +79,7 @@
       </button>
 
       <button
-        class="flex items-center gap-3 hover:bg-les-gray-700 w-full p-4 transition-colors duration-200 {currentComponent ===
+        class="flex w-full items-center gap-3 p-4 transition-colors duration-200 hover:bg-les-gray-700 {currentComponent ===
         'Simulation'
           ? 'bg-les-gray-700'
           : ''}"
@@ -89,7 +89,7 @@
       </button>
 
       <button
-        class="flex items-center gap-3 hover:bg-les-gray-700 w-full p-4 transition-colors duration-200 {currentComponent ===
+        class="flex w-full items-center gap-3 p-4 transition-colors duration-200 hover:bg-les-gray-700 {currentComponent ===
         'Schedulable Loads'
           ? 'bg-les-gray-700'
           : ''}"

@@ -123,10 +123,10 @@
   <BaseLayout on:stop={stopPolling} />
 
   {#if showPopup}
-    <div class="fixed inset-0 flex items-center justify-center z-50">
-      <div class="absolute bg-gray-900 opacity-75 inset-0"></div>
-      <div class="relative bg-white dark:bg-les-gray-600 p-8 rounded-lg shadow-2xl">
-        <h2 class="text-2xl font-bold mb-4 dark:text-white">Simulation finished</h2>
+    <div class="fixed inset-0 z-50 flex items-center justify-center">
+      <div class="absolute inset-0 bg-gray-900 opacity-75"></div>
+      <div class="relative rounded-lg bg-white p-8 shadow-2xl dark:bg-les-gray-600">
+        <h2 class="mb-4 text-2xl font-bold dark:text-white">Simulation finished</h2>
         <div class="flex justify-between">
           <button
             class="mt-4 rounded-lg bg-les-blue p-2 text-white transition duration-200 hover:brightness-110"

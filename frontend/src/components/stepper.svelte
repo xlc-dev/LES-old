@@ -947,7 +947,7 @@
           <div class="relative mt-8 flex justify-between">
             {#if currentStep !== 1}
               <button
-                class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-les-gray-500"
+                class="rounded-lg bg-les-highlight px-6 py-3 text-white transition-colors duration-200 hover:bg-les-gray-500"
                 on:click={prevStep}
                 >Back
               </button>
@@ -989,7 +989,7 @@
           on:submit|preventDefault={uploadTwinWorld}
           class="flex flex-col space-y-3">
           <div>
-            <label for="name" class="font-bold pt-4">Name:</label>
+            <label for="name" class="pt-4 font-bold">Name:</label>
             <p class="text-sm text-gray-500">The name of the twinworld</p>
           </div>
 
@@ -1027,7 +1027,7 @@
 
           <button
             type="submit"
-            class="py-3 bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            class="rounded-lg bg-les-gray-500 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
             >Submit
           </button>
         </form>
@@ -1105,7 +1105,7 @@
             <div class="flex items-end">
               <button
                 type="button"
-                class="py-3 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+                class="rounded-lg bg-les-gray-500 px-4 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
                 on:click={addHousehold}
                 >Add Household
               </button>
@@ -1173,7 +1173,7 @@
               <div class="flex items-end">
                 <button
                   type="button"
-                  class="py-3 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+                  class="rounded-lg bg-les-gray-500 px-4 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
                   on:click={addAppliance}
                   >Add Appliance
                 </button>
@@ -1240,21 +1240,21 @@
                           {#if editingApplianceTimeWindow === appliance_window}
                             <button
                               type="button"
-                              class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-green transition-colors duration-200"
+                              class="hover:bg-les-green rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200"
                               on:click={stopEditingTimewindow}>
                               Done
                             </button>
                           {:else}
                             <button
                               type="button"
-                              class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                              class="rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
                               on:click={() => startEditingTimewindow(appliance_window)}>
                               <img src="/edit.svg" alt="" class="h-4 w-4" />
                             </button>
 
                             <button
                               type="button"
-                              class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-red transition-colors duration-200"
+                              class="rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-les-red"
                               on:click={() => deleteTimewindow(appliance_window.id)}>
                               <img src="/trash.svg" alt="" class="h-4 w-4" />
                             </button>
@@ -1338,7 +1338,7 @@
               <div class="flex h-fit pt-8">
                 <button
                   type="button"
-                  class="py-3 px-4 w-fit bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+                  class="w-fit rounded-lg bg-les-gray-500 px-4 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
                   on:click={addTimewindow}
                   >Add Timewindow
                 </button>
@@ -1466,28 +1466,28 @@
                       {#if editingHousehold === household}
                         <button
                           type="button"
-                          class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-green transition-colors duration-200"
+                          class="hover:bg-les-green rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200"
                           on:click={stopEditingHousehold}>
                           Done
                         </button>
                       {:else}
                         <button
                           type="button"
-                          class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                          class="rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
                           on:click={() => startEditingHousehold(household)}>
                           <img src="/edit.svg" alt="" class="h-4 w-4" />
                         </button>
 
                         <button
                           type="button"
-                          class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-red transition-colors duration-200"
+                          class="rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-les-red"
                           on:click={() => deleteHousehold(household.id)}>
                           <img src="/trash.svg" alt="" class="h-4 w-4" />
                         </button>
 
                         <button
                           type="button"
-                          class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                          class="rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
                           on:click={() => (applianceToAdd = household.id)}>
                           <img src="/plus.svg" alt="" class="h-4 w-4" />
                         </button>
@@ -1495,7 +1495,7 @@
                         {#if household.appliances.length > 0}
                           <button
                             type="button"
-                            class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                            class="rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
                             on:click={() => (timewindowToAdd = household.id)}>
                             <img src="/clock.svg" alt="" class="h-4 w-4" />
                           </button>
@@ -1514,7 +1514,7 @@
           on:submit|preventDefault={uploadCostModel}
           class="flex flex-col space-y-3">
           <div>
-            <label for="name" class="font-bold pt-4">Name:</label>
+            <label for="name" class="pt-4 font-bold">Name:</label>
             <p class="text-sm text-gray-500">The name of the costmodel</p>
           </div>
 
@@ -1602,7 +1602,7 @@
 
           <button
             type="submit"
-            class="py-3 bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            class="rounded-lg bg-les-gray-500 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
             >Submit
           </button>
         </form>
@@ -1612,7 +1612,7 @@
           on:submit|preventDefault={uploadAlgorithm}
           class="flex flex-col space-y-3">
           <div>
-            <label for="name" class="font-bold pt-4">Name:</label>
+            <label for="name" class="pt-4 font-bold">Name:</label>
             <p class="text-sm text-gray-500">The name of the new algorithm</p>
           </div>
 
@@ -1664,7 +1664,7 @@
 
           <button
             type="submit"
-            class="py-3 bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            class="rounded-lg bg-les-gray-500 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
             >Submit
           </button>
         </form>
@@ -1675,7 +1675,7 @@
           on:submit|preventDefault={uploadEnergyFlow}
           class="flex flex-col space-y-3">
           <div>
-            <label for="name" class="font-bold pt-4">Name:</label>
+            <label for="name" class="pt-4 font-bold">Name:</label>
             <p class="text-sm text-gray-500">The name of the new energy flow</p>
           </div>
 
@@ -1743,7 +1743,7 @@
 
           <button
             type="submit"
-            class="py-3 bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            class="rounded-lg bg-les-gray-500 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
             >Submit
           </button>
         </form>
