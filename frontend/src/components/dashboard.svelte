@@ -72,8 +72,7 @@
 
 <div class="mx-auto max-w-7xl">
   <Chart />
-  <div
-    class="mb-8 mt-8 rounded-lg bg-white p-4 px-20 shadow dark:bg-dark-table-row dark:text-white">
+  <div class="mb-8 mt-8 rounded-lg bg-white p-4 px-20 shadow dark:bg-les-gray-600 dark:text-white">
     <table class="w-full">
       <tr class="border-b border-gray-400">
         <td class="p-2">Number of Households:</td>

@@ -112,9 +112,18 @@
   h240.626c3.781,0,6.854-3.066,6.854-6.852V142.216l34.55,28.245c1.273,1.037,2.807,1.545,4.326,1.545
   c1.984,0,3.956-0.87,5.314-2.524C346.648,166.549,346.221,162.235,343.288,159.838z M82.779,51.041h26.071v21.888l-26.071,21.31
   V51.041z M286.367,307.369H59.44V131.015l107.596-87.939c3.414-2.791,8.316-2.791,11.731,0l107.6,87.939V307.369z" />
+      {#if household.solar_panels}
+        <g transform="translate(145, 75) scale(0.5)">
+          <path
+            fill="#fcdb33"
+            d="M30,13.21A3.93,3.93,0,1,1,36.8,9.27L41.86,18A3.94,3.94,0,1,1,35.05,22L30,13.21Zm31.45,13A35.23,35.23,0,1,1,36.52,36.52,35.13,35.13,0,0,1,61.44,26.2ZM58.31,4A3.95,3.95,0,1,1,66.2,4V14.06a3.95,3.95,0,1,1-7.89,0V4ZM87.49,10.1A3.93,3.93,0,1,1,94.3,14l-5.06,8.76a3.93,3.93,0,1,1-6.81-3.92l5.06-8.75ZM109.67,30a3.93,3.93,0,1,1,3.94,6.81l-8.75,5.06a3.94,3.94,0,1,1-4-6.81L109.67,30Zm9.26,28.32a3.95,3.95,0,1,1,0,7.89H108.82a3.95,3.95,0,1,1,0-7.89Zm-6.15,29.18a3.93,3.93,0,1,1-3.91,6.81l-8.76-5.06A3.93,3.93,0,1,1,104,82.43l8.75,5.06ZM92.89,109.67a3.93,3.93,0,1,1-6.81,3.94L81,104.86a3.94,3.94,0,0,1,6.81-4l5.06,8.76Zm-28.32,9.26a3.95,3.95,0,1,1-7.89,0V108.82a3.95,3.95,0,1,1,7.89,0v10.11Zm-29.18-6.15a3.93,3.93,0,0,1-6.81-3.91l5.06-8.76A3.93,3.93,0,1,1,40.45,104l-5.06,8.75ZM13.21,92.89a3.93,3.93,0,1,1-3.94-6.81L18,81A3.94,3.94,0,1,1,22,87.83l-8.76,5.06ZM4,64.57a3.95,3.95,0,1,1,0-7.89H14.06a3.95,3.95,0,1,1,0,7.89ZM10.1,35.39A3.93,3.93,0,1,1,14,28.58l8.76,5.06a3.93,3.93,0,1,1-3.92,6.81L10.1,35.39Z" />
+        </g>
+      {/if}
     </g>
-    <text x="33%" y="70%" font-size="60" class="text-black dark:text-white"
-      >{household.name} Data</text>
+    <text x="175" y="200" font-size="30" text-anchor="middle" class="text-black dark:text-white"
+      >{household.size}</text>
+    <text x="175" y="275" font-size="30" text-anchor="middle" class="text-black dark:text-white"
+      >{household.name}</text>
   </svg>
 </div>
 
@@ -123,27 +132,27 @@
     <thead>
       <tr class="text-left text-xs uppercase tracking-wider">
         <th
-          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >Name
         </th>
 
         <th
-          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >Size
         </th>
 
         <th
-          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >Energy Usage
         </th>
 
         <th
-          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >Solar Panels
         </th>
 
         <th
-          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >Solar Yield Yearly
         </th>
       </tr>
@@ -152,19 +161,19 @@
     <tbody>
       <tr class="text-left text-xs uppercase tracking-wider">
         <td
-          class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >{household.name}</td>
         <td
-          class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >{household.size}</td>
         <td
-          class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >{household.energy_usage}</td>
         <td
-          class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >{household.solar_panels}</td>
         <td
-          class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >{household.solar_yield_yearly}</td>
       </tr>
     </tbody>
@@ -174,22 +183,22 @@
     <thead>
       <tr class="text-left text-xs uppercase tracking-wider">
         <th
-          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >Name
         </th>
 
         <th
-          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >Power
         </th>
 
         <th
-          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >Duration
         </th>
 
         <th
-          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+          class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
           >Daily Usage
         </th>
       </tr>
@@ -199,16 +208,16 @@
       {#each household.appliances as appliance}
         <tr class="text-left text-xs uppercase tracking-wider">
           <td
-            class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+            class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
             >{appliance.name}</td>
           <td
-            class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+            class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
             >{appliance.power}</td>
           <td
-            class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+            class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
             >{appliance.duration}</td>
           <td
-            class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-dark-table-header dark:text-les-white"
+            class="border-b border-gray-200 bg-gray-100 px-5 py-6 text-gray-600 dark:bg-les-gray-700 dark:text-les-white"
             >{appliance.daily_usage}</td>
         </tr>
       {/each}
@@ -219,7 +228,7 @@
 
   <h2 class="text-3xl font-bold dark:text-les-white">Schedulable Load</h2>
 
-  <table class="min-w-full rounded-lg bg-white leading-normal dark:bg-dark-table-header">
+  <table class="min-w-full rounded-lg bg-white leading-normal dark:bg-les-gray-700">
     <div class="flex justify-center pt-4">
       <button class="date-picker-container relative" on:click|stopPropagation>
         <button
@@ -235,7 +244,7 @@
       </button>
     </div>
     <tbody>
-      <tr class="bg-white text-sm dark:bg-dark-table-header">
+      <tr class="bg-white text-sm dark:bg-les-gray-700">
         <td colspan={3}>
           <div class="flex justify-center p-4">
             <div class="flex flex-col items-center gap-4">

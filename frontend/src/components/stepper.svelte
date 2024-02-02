@@ -947,7 +947,7 @@
           <div class="relative mt-8 flex justify-between">
             {#if currentStep !== 1}
               <button
-                class="rounded-lg bg-les-highlight px-6 py-3 text-white transition-colors duration-200 hover:bg-dark-les-bg"
+                class="rounded-lg bg-les-highlight px-6 py-3 text-white transition-colors duration-200 hover:bg-les-gray-500"
                 on:click={prevStep}
                 >Back
               </button>
@@ -990,7 +990,7 @@
           class="flex flex-col space-y-3">
           <div>
             <label for="name" class="pt-4 font-bold">Name:</label>
-            <p class="text-sm text-gray-500">Name of the twinworld</p>
+            <p class="text-sm text-gray-500">The name of the twinworld</p>
           </div>
 
           <input
@@ -1002,7 +1002,7 @@
 
           <div>
             <label for="description" class="font-bold">Description:</label>
-            <p class="text-sm text-gray-500">Description of the twinworld</p>
+            <p class="text-sm text-gray-500">The description of the twinworld</p>
           </div>
 
           <textarea
@@ -1027,7 +1027,7 @@
 
           <button
             type="submit"
-            class="rounded-lg bg-dark-les-bg py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
+            class="rounded-lg bg-les-gray-500 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
             >Submit
           </button>
         </form>
@@ -1040,8 +1040,9 @@
           </h2>
 
           <div class="flex flex-wrap">
-            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+            <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
               <label for="name" class="font-bold">Name:</label>
+              <p class="text-sm text-gray-500">The name of the household</p>
               <input
                 id="name"
                 class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
@@ -1052,8 +1053,9 @@
                 placeholder="Household 10" />
             </div>
 
-            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+            <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
               <label for="size" class="font-bold">Size:</label>
+              <p class="text-sm text-gray-500">The amount of people in the household</p>
               <input
                 id="size"
                 min="1"
@@ -1064,8 +1066,9 @@
                 placeholder="Size" />
             </div>
 
-            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+            <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
               <label for="energy_usage" class="font-bold">Energy Usage:</label>
+              <p class="text-sm text-gray-500">The household's energy usage in kWh</p>
               <input
                 id="energy_usage"
                 class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
@@ -1075,8 +1078,9 @@
                 placeholder="3100" />
             </div>
 
-            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+            <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
               <label for="solar_panels" class="font-bold">Solar Panels:</label>
+              <p class="text-sm text-gray-500">The amount of solar panels the household has</p>
               <input
                 id="solar_panels"
                 class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
@@ -1086,8 +1090,9 @@
                 placeholder="10" />
             </div>
 
-            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+            <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
               <label for="solar_yield_yearly" class="font-bold">Solar Yield Yearly:</label>
+              <p class="text-sm text-gray-500">The yearly solar energy yield in kWh</p>
               <input
                 id="solar_yield_yearly"
                 class="cursor-not-allowed rounded-lg border-2 border-gray-400 bg-gray-300 p-3"
@@ -1100,7 +1105,7 @@
             <div class="flex items-end">
               <button
                 type="button"
-                class="rounded-lg bg-dark-les-bg px-4 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
+                class="rounded-lg bg-les-gray-500 px-4 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
                 on:click={addHousehold}
                 >Add Household
               </button>
@@ -1115,8 +1120,9 @@
             </h2>
 
             <div class="flex flex-wrap">
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="name" class="font-bold">Name:</label>
+                <p class="text-sm text-gray-500">The name of the appliance</p>
                 <select
                   id="type"
                   class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
@@ -1127,8 +1133,9 @@
                 </select>
               </div>
 
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="power" class="font-bold">Power:</label>
+                <p class="text-sm text-gray-500">The power the appliance uses in kWh</p>
                 <input
                   id="power"
                   class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
@@ -1138,8 +1145,9 @@
                   bind:value={newAppliance.power} />
               </div>
 
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="duration" class="font-bold">Duration:</label>
+                <p class="text-sm text-gray-500">How long the appliance runs in hours</p>
                 <input
                   id="duration"
                   class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
@@ -1150,8 +1158,9 @@
                   bind:value={newAppliance.duration} />
               </div>
 
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="daily_usage" class="font-bold">Daily Usage:</label>
+                <p class="text-sm text-gray-500">How long the appliance is used daily</p>
                 <input
                   id="daily_usage"
                   class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
@@ -1164,7 +1173,7 @@
               <div class="flex items-end">
                 <button
                   type="button"
-                  class="rounded-lg bg-dark-les-bg px-4 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
+                  class="rounded-lg bg-les-gray-500 px-4 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
                   on:click={addAppliance}
                   >Add Appliance
                 </button>
@@ -1231,21 +1240,21 @@
                           {#if editingApplianceTimeWindow === appliance_window}
                             <button
                               type="button"
-                              class="hover:bg-les-green rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200"
+                              class="hover:bg-les-green rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200"
                               on:click={stopEditingTimewindow}>
                               Done
                             </button>
                           {:else}
                             <button
                               type="button"
-                              class="rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
+                              class="rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
                               on:click={() => startEditingTimewindow(appliance_window)}>
                               <img src="/edit.svg" alt="" class="h-4 w-4" />
                             </button>
 
                             <button
                               type="button"
-                              class="rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200 hover:bg-les-red"
+                              class="rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-les-red"
                               on:click={() => deleteTimewindow(appliance_window.id)}>
                               <img src="/trash.svg" alt="" class="h-4 w-4" />
                             </button>
@@ -1264,8 +1273,11 @@
             </h2>
 
             <div class="flex flex-wrap">
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="day" class="font-bold">Day:</label>
+                <p class="text-sm text-gray-500">
+                  The day in which the appliance is being planned
+                </p>
                 <select
                   id="day"
                   class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
@@ -1276,8 +1288,11 @@
                 </select>
               </div>
 
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="appliance_id" class="font-bold">Appliance</label>
+                <p class="text-sm text-gray-500">
+                  The name of the appliance that is being planned
+                </p>
                 <select
                   id="appliance_id"
                   class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
@@ -1288,8 +1303,9 @@
                 </select>
               </div>
 
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="bitmap_window_display" class="font-bold">Bitmap Window Value:</label>
+                <p class="text-sm text-gray-500">The bitmap values of the selected time slots</p>
                 <input
                   id="bitmap_window_display"
                   class="cursor-not-allowed rounded-lg border-2 border-gray-400 bg-gray-300 p-2.5"
@@ -1299,8 +1315,11 @@
                   value={newTimeWindow.bitmap_window} />
               </div>
 
-              <div class="flex w-full flex-col pr-4 pt-2 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 pt-2 sm:w-1/2 md:w-1/3">
                 <label for="bitmap_window" class="font-bold">Bitmap Window:</label>
+                <p class="text-sm text-gray-500">
+                  The time slots in which the appliance can be planned in
+                </p>
                 <div class="flex flex-wrap">
                   {#each hoursArray as hour, hourIndex}
                     <div class="flex w-1/3 items-center pr-4">
@@ -1319,7 +1338,7 @@
               <div class="flex h-fit pt-8">
                 <button
                   type="button"
-                  class="w-fit rounded-lg bg-dark-les-bg px-4 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
+                  class="w-fit rounded-lg bg-les-gray-500 px-4 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
                   on:click={addTimewindow}
                   >Add Timewindow
                 </button>
@@ -1447,28 +1466,28 @@
                       {#if editingHousehold === household}
                         <button
                           type="button"
-                          class="hover:bg-les-green rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200"
+                          class="hover:bg-les-green rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200"
                           on:click={stopEditingHousehold}>
                           Done
                         </button>
                       {:else}
                         <button
                           type="button"
-                          class="rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
+                          class="rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
                           on:click={() => startEditingHousehold(household)}>
                           <img src="/edit.svg" alt="" class="h-4 w-4" />
                         </button>
 
                         <button
                           type="button"
-                          class="rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200 hover:bg-les-red"
+                          class="rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-les-red"
                           on:click={() => deleteHousehold(household.id)}>
                           <img src="/trash.svg" alt="" class="h-4 w-4" />
                         </button>
 
                         <button
                           type="button"
-                          class="rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
+                          class="rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
                           on:click={() => (applianceToAdd = household.id)}>
                           <img src="/plus.svg" alt="" class="h-4 w-4" />
                         </button>
@@ -1476,7 +1495,7 @@
                         {#if household.appliances.length > 0}
                           <button
                             type="button"
-                            class="rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
+                            class="rounded-lg bg-les-gray-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
                             on:click={() => (timewindowToAdd = household.id)}>
                             <img src="/clock.svg" alt="" class="h-4 w-4" />
                           </button>
@@ -1496,7 +1515,7 @@
           class="flex flex-col space-y-3">
           <div>
             <label for="name" class="pt-4 font-bold">Name:</label>
-            <p class="text-sm text-gray-500">Name of the costmodel</p>
+            <p class="text-sm text-gray-500">The name of the costmodel</p>
           </div>
 
           <input
@@ -1508,7 +1527,7 @@
 
           <div>
             <label for="description" class="font-bold">Description:</label>
-            <p class="text-sm text-gray-500">Description of the costmodel</p>
+            <p class="text-sm text-gray-500">The description of the costmodel</p>
           </div>
 
           <textarea
@@ -1583,7 +1602,7 @@
 
           <button
             type="submit"
-            class="rounded-lg bg-dark-les-bg py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
+            class="rounded-lg bg-les-gray-500 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
             >Submit
           </button>
         </form>
@@ -1594,7 +1613,7 @@
           class="flex flex-col space-y-3">
           <div>
             <label for="name" class="pt-4 font-bold">Name:</label>
-            <p class="text-sm text-gray-500">Name for the new algorithm</p>
+            <p class="text-sm text-gray-500">The name of the new algorithm</p>
           </div>
 
           <input
@@ -1606,7 +1625,7 @@
 
           <div>
             <label for="description" class="font-bold">Description:</label>
-            <p class="text-sm text-gray-500">Description for the new algorithm</p>
+            <p class="text-sm text-gray-500">The description of the new algorithm</p>
           </div>
 
           <textarea
@@ -1617,7 +1636,7 @@
 
           <div>
             <label for="description" class="font-bold">Max Temperature:</label>
-            <p class="text-sm text-gray-500">Set the max temperature for your algorithm</p>
+            <p class="text-sm text-gray-500">Sets the max temperature for your algorithm</p>
           </div>
 
           <input
@@ -1645,7 +1664,7 @@
 
           <button
             type="submit"
-            class="rounded-lg bg-dark-les-bg py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
+            class="rounded-lg bg-les-gray-500 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
             >Submit
           </button>
         </form>
@@ -1657,7 +1676,7 @@
           class="flex flex-col space-y-3">
           <div>
             <label for="name" class="pt-4 font-bold">Name:</label>
-            <p class="text-sm text-gray-500">Name for the new energy flow</p>
+            <p class="text-sm text-gray-500">The name of the new energy flow</p>
           </div>
 
           <input
@@ -1669,7 +1688,7 @@
 
           <div>
             <label for="description" class="font-bold">Description:</label>
-            <p class="text-sm text-gray-500">Description for the new energy flow</p>
+            <p class="text-sm text-gray-500">The description of the new energy flow</p>
           </div>
 
           <textarea
@@ -1681,7 +1700,7 @@
           <div>
             <label for="solar_panels_factor" class="pt-4 font-bold">Solar Panels Factor:</label>
             <p class="text-sm text-gray-500">
-              Amount of solar panels for the household in the supplied energy table
+              The amount of solar panels for the household in the supplied energy table
             </p>
           </div>
 
@@ -1697,7 +1716,7 @@
           <div>
             <label for="energy_usage_factor" class="pt-4 font-bold">Energy Usage Factor:</label>
             <p class="text-sm text-gray-500">
-              Amount of yearly energy used for the household in the supplied energy table
+              The amount of yearly energy used for the household in the supplied energy table
             </p>
           </div>
 
@@ -1712,7 +1731,7 @@
 
           <div>
             <label for="file" class="font-bold">File:</label>
-            <p class="text-sm text-gray-500">CSV file for Energyflow</p>
+            <p class="text-sm text-gray-500">The CSV file of the energy flow</p>
           </div>
 
           <input
@@ -1724,7 +1743,7 @@
 
           <button
             type="submit"
-            class="rounded-lg bg-dark-les-bg py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
+            class="rounded-lg bg-les-gray-500 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
             >Submit
           </button>
         </form>

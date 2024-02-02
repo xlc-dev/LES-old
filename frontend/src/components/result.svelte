@@ -192,7 +192,7 @@
   <div class="mx-auto max-w-3xl pt-8">
     <Chart />
     <div
-      class="relative mb-8 mt-8 grid grid-cols-2 gap-4 rounded-lg bg-white p-4 shadow dark:bg-dark-table-row dark:text-white">
+      class="relative mb-8 mt-8 grid grid-cols-2 gap-4 rounded-lg bg-white p-4 shadow dark:bg-les-gray-600 dark:text-white">
       <p class="absolute left-1/2 mt-4 -translate-x-1/2 transform">Runtime: {$runtime} seconds</p>
       <div class="col-span-2 mt-8 flex justify-between">
         <button

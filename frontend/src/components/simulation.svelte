@@ -121,11 +121,11 @@
 
 {#if !selectedHousehold}
   <div
-    class="mb-4 flex items-center justify-between rounded-lg bg-gray-100 p-2 dark:bg-dark-table-header">
+    class="mb-4 flex items-center justify-between rounded-lg bg-gray-100 p-2 dark:bg-les-gray-700">
     <div class="flex space-x-4">
       <input
         type="text"
-        class="rounded-md border border-gray-300 px-3 py-2 dark:bg-dark-table-row dark:text-les-white"
+        class="rounded-md border border-gray-300 px-3 py-2 dark:bg-les-gray-600 dark:text-les-white"
         placeholder="Search by ID or NAME"
         bind:value={searchQuery} />
 
@@ -135,20 +135,20 @@
           id={`${filterName}-dropdown`}
           on:click|stopPropagation={handleClickOutsideFilter(filterName)}>
           <button
-            class="rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white"
+            class="rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-les-gray-600 dark:text-les-white"
             on:click={() => toggleDropdown(filterName)}>
             {toReadableName(filterName)}
           </button>
 
           {#if showDropdown === filterName}
             <div
-              class="absolute left-0 z-10 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-dark-table-row"
+              class="absolute left-0 z-10 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-les-gray-600"
               in:slide={{ duration: 500 }}
               out:slide={{ duration: 500 }}>
               <div class="py-1">
                 {#each options as option}
                   <label
-                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-les-white hover:dark:bg-dark-table-header">
+                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-les-white hover:dark:bg-les-gray-700">
                     <input
                       type="checkbox"
                       class="mr-2"
@@ -166,7 +166,7 @@
   </div>
 
   <div
-    class="grid grid-cols-8 items-center justify-between gap-4 rounded-lg bg-gray-100 p-2 dark:bg-dark-table-row">
+    class="grid grid-cols-8 items-center justify-between gap-4 rounded-lg bg-gray-100 p-2 dark:bg-les-gray-600">
     {#each filteredHouseholds as data}
       <button
         class="flex cursor-pointer items-center gap-4 text-gray-800 hover:text-blue-500"

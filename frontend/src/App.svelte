@@ -125,7 +125,7 @@
   {#if showPopup}
     <div class="fixed inset-0 z-50 flex items-center justify-center">
       <div class="absolute inset-0 bg-gray-900 opacity-75"></div>
-      <div class="relative rounded-lg bg-white p-8 shadow-2xl dark:bg-dark-table-row">
+      <div class="relative rounded-lg bg-white p-8 shadow-2xl dark:bg-les-gray-600">
         <h2 class="mb-4 text-2xl font-bold dark:text-white">Simulation finished</h2>
         <div class="flex justify-between">
           <button
