@@ -1040,7 +1040,7 @@
           </h2>
 
           <div class="flex flex-wrap">
-            <div class="flex w-full flex-col pr-4 justify-around sm:w-1/2 md:w-1/3">
+            <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
               <label for="name" class="font-bold">Name:</label>
               <p class="text-sm text-gray-500">The name of the household</p>
               <input
