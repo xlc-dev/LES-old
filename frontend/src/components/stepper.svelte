@@ -1248,7 +1248,9 @@
             <div class="flex flex-wrap">
               <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
                 <label for="day" class="font-bold">Day:</label>
-                <p class="text-sm text-gray-500">The day in which the appliance is being planned</p>
+                <p class="text-sm text-gray-500">
+                  The day in which the appliance is being planned
+                </p>
                 <select
                   id="day"
                   class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1261,7 +1263,9 @@
 
               <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
                 <label for="appliance_id" class="font-bold">Appliance</label>
-                <p class="text-sm text-gray-500">The name of the appliance that is being planned</p>
+                <p class="text-sm text-gray-500">
+                  The name of the appliance that is being planned
+                </p>
                 <select
                   id="appliance_id"
                   class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
@@ -1286,7 +1290,9 @@
 
               <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4 pt-2">
                 <label for="bitmap_window" class="font-bold">Bitmap Window:</label>
-                <p class="text-sm text-gray-500">The time slots in which the appliance can be planned in</p>
+                <p class="text-sm text-gray-500">
+                  The time slots in which the appliance can be planned in
+                </p>
                 <div class="flex flex-wrap">
                   {#each hoursArray as hour, hourIndex}
                     <div class="flex items-center w-1/3 pr-4">

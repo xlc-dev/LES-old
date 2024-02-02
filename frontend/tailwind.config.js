@@ -8,14 +8,14 @@ export default {
     extend: {
       colors: {
         "les-gray": {
-          "50": "#f4f9fb",
-          "100": "#edf5f8",
-          "200": "#dadada",
-          "300": "#838383",
-          "400": "#313131",
-          "500": "#22222c",
-          "600": "#1a1a26",
-          "700": "#12121b"
+          50: "#f4f9fb",
+          100: "#edf5f8",
+          200: "#dadada",
+          300: "#838383",
+          400: "#313131",
+          500: "#22222c",
+          600: "#1a1a26",
+          700: "#12121b",
         },
         "les-blue": "#1565c0",
         "les-red": "#f23f44",
@@ -23,7 +23,7 @@ export default {
         "les-red-dark": "#610000",
         "les-highlight": "#2a2a3d",
         "les-dark-date-picker-text": "#0e8bf8",
-        "sidebar": "#111827"
+        sidebar: "#111827",
       },
       transitionProperty: {
         width: "width",
