@@ -1013,7 +1013,7 @@
 
           <div>
             <label for="solar_panel_capacity" class="pt-4 font-bold">Solar Panel Capacity:</label>
-            <p class="text-sm text-gray-500">Name of the twinworld</p>
+            <p class="text-sm text-gray-500">Average yield of a single solar panel in a year</p>
           </div>
 
           <input
