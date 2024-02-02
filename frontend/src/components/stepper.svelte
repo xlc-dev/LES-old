@@ -935,7 +935,7 @@
           <div class="flex justify-between mt-8 relative">
             {#if currentStep !== 1}
               <button
-                class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-dark-les-bg"
+                class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-les-gray-500"
                 on:click={prevStep}
                 >Back
               </button>
@@ -1001,7 +1001,7 @@
 
           <button
             type="submit"
-            class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            class="py-3 bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
             >Submit
           </button>
         </form>
@@ -1078,7 +1078,7 @@
             <div class="flex items-end">
               <button
                 type="button"
-                class="py-3 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+                class="py-3 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
                 on:click={addHousehold}
                 >Add Household
               </button>
@@ -1146,7 +1146,7 @@
               <div class="flex items-end">
                 <button
                   type="button"
-                  class="py-3 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+                  class="py-3 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
                   on:click={addAppliance}
                   >Add Appliance
                 </button>
@@ -1213,21 +1213,21 @@
                           {#if editingApplianceTimeWindow === appliance_window}
                             <button
                               type="button"
-                              class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-green transition-colors duration-200"
+                              class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-green transition-colors duration-200"
                               on:click={stopEditingTimewindow}>
                               Done
                             </button>
                           {:else}
                             <button
                               type="button"
-                              class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                              class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
                               on:click={() => startEditingTimewindow(appliance_window)}>
                               <img src="/edit.svg" alt="" class="w-4 h-4" />
                             </button>
 
                             <button
                               type="button"
-                              class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-red transition-colors duration-200"
+                              class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-red transition-colors duration-200"
                               on:click={() => deleteTimewindow(appliance_window.id)}>
                               <img src="/trash.svg" alt="" class="w-4 h-4" />
                             </button>
@@ -1305,7 +1305,7 @@
               <div class="flex h-fit pt-8">
                 <button
                   type="button"
-                  class="py-3 px-4 w-fit bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+                  class="py-3 px-4 w-fit bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
                   on:click={addTimewindow}
                   >Add Timewindow
                 </button>
@@ -1431,28 +1431,28 @@
                       {#if editingHousehold === household}
                         <button
                           type="button"
-                          class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-green transition-colors duration-200"
+                          class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-green transition-colors duration-200"
                           on:click={stopEditingHousehold}>
                           Done
                         </button>
                       {:else}
                         <button
                           type="button"
-                          class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                          class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
                           on:click={() => startEditingHousehold(household)}>
                           <img src="/edit.svg" alt="" class="w-4 h-4" />
                         </button>
 
                         <button
                           type="button"
-                          class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-red transition-colors duration-200"
+                          class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-red transition-colors duration-200"
                           on:click={() => deleteHousehold(household.id)}>
                           <img src="/trash.svg" alt="" class="w-4 h-4" />
                         </button>
 
                         <button
                           type="button"
-                          class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                          class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
                           on:click={() => (applianceToAdd = household.id)}>
                           <img src="/plus.svg" alt="" class="w-4 h-4" />
                         </button>
@@ -1460,7 +1460,7 @@
                         {#if household.appliances.length > 0}
                           <button
                             type="button"
-                            class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                            class="py-2 px-4 bg-les-gray-500 rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
                             on:click={() => (timewindowToAdd = household.id)}>
                             <img src="/clock.svg" alt="" class="w-4 h-4" />
                           </button>
@@ -1567,7 +1567,7 @@
 
           <button
             type="submit"
-            class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            class="py-3 bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
             >Submit
           </button>
         </form>
@@ -1629,7 +1629,7 @@
 
           <button
             type="submit"
-            class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            class="py-3 bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
             >Submit
           </button>
         </form>
@@ -1708,7 +1708,7 @@
 
           <button
             type="submit"
-            class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            class="py-3 bg-les-gray-500 rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
             >Submit
           </button>
         </form>

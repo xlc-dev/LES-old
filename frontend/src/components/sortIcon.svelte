@@ -12,7 +12,7 @@
 <button class="inline-block cursor-pointer relative" on:click={onSort}>
   <div class="absolute transform -translate-y-4">
     <svg
-      class="w-2 h-2.5 {isSortedAsc ? 'text-les-sort-active' : 'text-les-sort-inactive'}"
+      class="w-2 h-2.5 {isSortedAsc ? 'text-les-gray-400' : 'text-les-gray-300'}"
       viewBox="0 0 24 24">
       <path
         id="Triangle-2"
@@ -26,7 +26,7 @@
     </svg>
 
     <svg
-      class="w-2 h-2.5 {isSortedDesc ? 'text-les-sort-active' : 'text-les-sort-inactive'}"
+      class="w-2 h-2.5 {isSortedDesc ? 'text-les-gray-400' : 'text-les-gray-300'}"
       viewBox="0 0 24 24">
       <path
         id="Triangle-2"

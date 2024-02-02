@@ -62,16 +62,16 @@
 
 <div class="fixed flex flex-col justify-between left-0 top-0 h-screen w-64 bg-gray-900">
   <div>
-    <div class="w-full bg-dark-table-header p-4 flex gap-3 items-center">
+    <div class="w-full bg-les-gray-700 p-4 flex gap-3 items-center">
       <img src="/arrows.png" alt="" class="transform rotate-180" />
       <p class="text-les-white">LES RESEARCH</p>
     </div>
 
     <div class="flex flex-col items-start justify-center gap-3 mt-4">
       <button
-        class="flex items-center gap-3 hover:bg-les-sidebar-item w-full p-4 transition-colors duration-200 {currentComponent ===
+        class="flex items-center gap-3 hover:bg-les-gray-700 w-full p-4 transition-colors duration-200 {currentComponent ===
         'Dashboard'
-          ? 'bg-les-sidebar-item'
+          ? 'bg-les-gray-700'
           : ''}"
         on:click={() => handleButtonClick("Dashboard")}>
         <img src="/rectangle.png" alt="" />
@@ -79,9 +79,9 @@
       </button>
 
       <button
-        class="flex items-center gap-3 hover:bg-les-sidebar-item w-full p-4 transition-colors duration-200 {currentComponent ===
+        class="flex items-center gap-3 hover:bg-les-gray-700 w-full p-4 transition-colors duration-200 {currentComponent ===
         'Simulation'
-          ? 'bg-les-sidebar-item'
+          ? 'bg-les-gray-700'
           : ''}"
         on:click={() => handleButtonClick("Simulation")}>
         <img src="/adjustment.png" alt="" />
@@ -89,9 +89,9 @@
       </button>
 
       <button
-        class="flex items-center gap-3 hover:bg-les-sidebar-item w-full p-4 transition-colors duration-200 {currentComponent ===
+        class="flex items-center gap-3 hover:bg-les-gray-700 w-full p-4 transition-colors duration-200 {currentComponent ===
         'Schedulable Loads'
-          ? 'bg-les-sidebar-item'
+          ? 'bg-les-gray-700'
           : ''}"
         on:click={() => handleButtonClick("Schedulable Loads")}>
         <img src="/calendar.png" alt="" />

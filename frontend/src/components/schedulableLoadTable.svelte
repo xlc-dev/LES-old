@@ -238,11 +238,11 @@
 </script>
 
 <div
-  class="flex justify-between items-center rounded-lg bg-gray-100 p-2 dark:bg-dark-table-header mb-4">
+  class="flex justify-between items-center rounded-lg bg-gray-100 p-2 dark:bg-les-gray-700 mb-4">
   <div class="flex space-x-4">
     <input
       type="text"
-      class="px-3 py-2 border border-gray-300 rounded-md dark:bg-dark-table-row dark:text-les-white"
+      class="px-3 py-2 border border-gray-300 rounded-md dark:bg-les-gray-600 dark:text-les-white"
       placeholder="Search by ID or NAME"
       bind:value={searchQuery} />
 
@@ -252,7 +252,7 @@
         id={`${filterName}-dropdown`}
         on:click|stopPropagation={handleClickOutsideFilter(filterName)}>
         <button
-          class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white"
+          class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-les-gray-600 dark:text-les-white"
           on:click={() => toggleDropdown(filterName)}
           on:keydown={(e) => e.key === "Enter" && toggleDropdown(filterName)}>
           {toReadableName(filterName)}
@@ -260,13 +260,13 @@
 
         {#if showDropdown === filterName}
           <div
-            class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 dark:bg-dark-table-row"
+            class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 dark:bg-les-gray-600"
             in:slide={{ duration: 500 }}
             out:slide={{ duration: 500 }}>
             <div class="py-1">
               {#each options as option}
                 <label
-                  class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-les-white hover:dark:bg-dark-table-header">
+                  class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-les-white hover:dark:bg-les-gray-700">
                   <input
                     type="checkbox"
                     class="mr-2"
@@ -282,7 +282,7 @@
       </button>
     {/each}
     <button
-      class="ml-2 bg-dark-les-bg hover:brightness-110 text-white py-2 px-4 rounded"
+      class="ml-2 bg-les-gray-500 hover:brightness-110 text-white py-2 px-4 rounded"
       on:click|stopPropagation={toggleCard}>Legend</button>
     <button class="date-picker-container relative" on:click|stopPropagation>
       <button
@@ -300,12 +300,12 @@
     <div class="fixed inset-0 flex justify-center items-center">
       <button
         on:click={toggleCard}
-        class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10 dark:bg-dark-sidebar dark:text-les-white relative legend">
+        class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10 dark:bg-sidebar dark:text-les-white relative legend">
         <button
           class="text-xl text-gray-600 hover:text-gray-800 p-2 absolute top-2 right-2"
           on:click={toggleCard}>
           <svg
-            class="h-4 w-4 fill-current text-white hover:text-les-highlight transition-colors duration-200"
+            class="h-4 w-4 fill-current text-black dark:text-les-white hover:text-les-highlight transition-colors duration-200"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24">
             <path
@@ -337,7 +337,7 @@
   <thead>
     <tr>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-les-gray-700">
         ID
         <SortIcon
           isSortedAsc={sortColumn === "id" && sortOrder === "asc"}
@@ -346,7 +346,7 @@
       </th>
 
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-les-gray-700">
         Name
         <SortIcon
           isSortedAsc={sortColumn === "name" && sortOrder === "asc"}
@@ -355,7 +355,7 @@
       </th>
 
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-les-gray-700">
         Size
         <SortIcon
           isSortedAsc={sortColumn === "size" && sortOrder === "asc"}
@@ -364,7 +364,7 @@
       </th>
 
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-les-gray-700">
         Energy Usage
         <SortIcon
           isSortedAsc={sortColumn === "energy_usage" && sortOrder === "asc"}
@@ -373,7 +373,7 @@
       </th>
 
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-les-gray-700">
         Solar Panels
         <SortIcon
           isSortedAsc={sortColumn === "solar_panels" && sortOrder === "asc"}
@@ -382,7 +382,7 @@
       </th>
 
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-les-gray-700">
         Solar Yield Yearly
         <SortIcon
           isSortedAsc={sortColumn === "solar_yield_yearly" && sortOrder === "asc"}
@@ -391,7 +391,7 @@
       </th>
 
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-les-gray-700">
         Appliances
       </th>
     </tr>
@@ -400,7 +400,7 @@
   <tbody>
     {#each filteredData as data}
       <tr
-        class="hover:!bg-gray-100 bg-white cursor-pointer text-sm hover:dark:!bg-dark-table-header dark:bg-dark-table-row dark:text-white"
+        class="hover:!bg-gray-100 bg-white cursor-pointer text-sm hover:dark:!bg-les-gray-700 dark:bg-les-gray-600 dark:text-white"
         on:click={() => toggleRow(data.id)}>
         <td class="px-5 py-5">
           <button
@@ -443,7 +443,7 @@
       </tr>
       {#if expandedRow === data.id}
         <tr
-          class="bg-white hover:bg-white text-sm dark:bg-dark-table-row border-b border-gray-200 dark:border-les-white">
+          class="bg-white hover:bg-white text-sm dark:bg-les-gray-600 border-b border-gray-200 dark:border-les-white">
           <td colspan={7}>
             <div transition:slide class="p-4 flex justify-center">
               {#key formattedDate}

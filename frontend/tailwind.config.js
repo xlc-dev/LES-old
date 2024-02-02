@@ -7,26 +7,23 @@ export default {
   theme: {
     extend: {
       colors: {
+        "les-gray": {
+          "50": "#f4f9fb",
+          "100": "#edf5f8",
+          "200": "#dadada",
+          "300": "#838383",
+          "400": "#313131",
+          "500": "#22222c",
+          "600": "#1a1a26",
+          "700": "#12121b"
+        },
         "les-blue": "#1565c0",
         "les-red": "#f23f44",
         "les-white": "#ffffff",
         "les-red-dark": "#610000",
         "les-highlight": "#2a2a3d",
-        "les-table-cell": "#373737",
-        "les-sort-inactive": "#838383",
         "les-dark-date-picker-text": "#0e8bf8",
-        "les-sort-active": "#313131",
-        "les-sidebar-item": "#12121b",
-
-        "light-les-bg": "#1e1e2d",
-        "light-les-frame": "#dadada",
-
-        "dark-les-bg": "#22222c",
-        "dark-les-frame": "#dadada",
-
-        "dark-table-header": "#12121b",
-        "dark-table-row": "#1a1a26",
-        "dark-sidebar": "#111827",
+        "sidebar": "#111827"
       },
       transitionProperty: {
         width: "width",
@@ -54,9 +51,9 @@ export default {
         },
         ".calendar-dark": {
           "--date-picker-foreground": theme("colors.les-dark-date-picker-text"),
-          "--date-picker-background": theme("colors.dark-les-bg"),
+          "--date-picker-background": theme("colors.les-gray.500"),
           "--date-picker-highlight-border": theme("colors.les-blue"),
-          "--date-picker-highlight-shadow": theme("colors.les-sidebar-item"),
+          "--date-picker-highlight-shadow": theme("colors.les-gray.700"),
           "--date-picker-selected-color": theme("colors.les-dark"),
           "--date-picker-selected-background": theme("colors.les-blue"),
         },
