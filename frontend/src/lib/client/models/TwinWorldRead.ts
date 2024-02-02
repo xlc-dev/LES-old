@@ -5,5 +5,6 @@
 export type TwinWorldRead = {
   name: string;
   description: string;
+  solar_panel_capacity: number;
   id: number;
 };

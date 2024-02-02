@@ -22,6 +22,7 @@
   import Stepper from "./components/stepper.svelte";
   import BaseLayout from "./components/baseLayout.svelte";
   import Message from "./components/message.svelte";
+  import { message } from "./lib/message";
 
   OpenAPI.BASE = "http://localhost:8000";
 
@@ -77,7 +78,13 @@
       }),
         50;
     } catch (err) {
+      if (err.status === 400) {
+        message(err);
+        $isStarted = false;
+        return;
+      }
       if (err.status !== 500) {
+        message(err);
         $isStarted = false;
         return;
       } else {
@@ -106,7 +113,7 @@
   }
 </script>
 
-<div class="flex flex-col gap-6 fixed top-4 right-4">
+<div class="fixed right-4 top-4 flex flex-col gap-6">
   {#each $messages as message}
     <Message message={message.msg} id={message.id} />
   {/each}
@@ -122,12 +129,12 @@
         <h2 class="text-2xl font-bold mb-4 dark:text-white">Simulation finished</h2>
         <div class="flex justify-between">
           <button
-            class="mt-4 p-2 bg-les-blue hover:brightness-110 transition duration-200 text-white rounded-lg"
+            class="mt-4 rounded-lg bg-les-blue p-2 text-white transition duration-200 hover:brightness-110"
             on:click={() => (showPopup = false)}>
             Continue
           </button>
           <button
-            class="mt-4 p-2 bg-les-blue hover:brightness-110 transition duration-200 text-white rounded-lg"
+            class="mt-4 rounded-lg bg-les-blue p-2 text-white transition duration-200 hover:brightness-110"
             on:click={() => {
               showPopup = false;
               fetchedData = false;

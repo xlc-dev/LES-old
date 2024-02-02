@@ -286,10 +286,10 @@
       on:click|stopPropagation={toggleCard}>Legend</button>
     <button class="date-picker-container relative" on:click|stopPropagation>
       <button
-        class="px-4 py-2 bg-les-blue text-white rounded hover:brightness-110 transition-colors duration-200"
+        class="rounded bg-les-blue px-4 py-2 text-white transition-colors duration-200 hover:brightness-110"
         on:click={toggleDatePicker}>Select Date</button>
       {#if showDatePicker}
-        <div class="absolute z-10 rounded mt-2 calendar dark:calendar-dark">
+        <div class="calendar absolute z-10 mt-2 rounded dark:calendar-dark">
           <DatePicker bind:value={selectedDate} min={setMinDate} max={setMaxDate} />
         </div>
       {/if}
@@ -297,12 +297,12 @@
   </div>
 
   {#if showLegend}
-    <div class="fixed inset-0 flex justify-center items-center">
+    <div class="fixed inset-0 flex items-center justify-center">
       <button
         on:click={toggleCard}
         class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10 dark:bg-sidebar dark:text-les-white relative legend">
         <button
-          class="text-xl text-gray-600 hover:text-gray-800 p-2 absolute top-2 right-2"
+          class="absolute right-2 top-2 p-2 text-xl text-gray-600 hover:text-gray-800"
           on:click={toggleCard}>
           <svg
             class="h-4 w-4 fill-current text-black dark:text-les-white hover:text-les-highlight transition-colors duration-200"
@@ -312,20 +312,20 @@
               d="M12 10.586l4.95-4.95a1 1 0 111.414 1.414L13.414 12l4.95 4.95a1 1 0 11-1.414 1.414L12 13.414l-4.95 4.95a1 1 0 11-1.414-1.414L10.586 12 5.636 7.05a1 1 0 111.414-1.414L12 10.586z" />
           </svg>
         </button>
-        <div class="flex items-center mb-2">
-          <div class="h-4 w-4 bg-gray-700 mr-2"></div>
+        <div class="mb-2 flex items-center">
+          <div class="mr-2 h-4 w-4 bg-gray-700"></div>
           <p>contain the time slots that are unavailable to plan appliances in.</p>
         </div>
-        <div class="flex items-center mb-2">
-          <div class="h-4 w-4 bg-les-blue mr-2"></div>
+        <div class="mb-2 flex items-center">
+          <div class="mr-2 h-4 w-4 bg-les-blue"></div>
           <p>contain the time slots that are available to plan appliances in.</p>
         </div>
-        <div class="flex items-center mb-2">
-          <div class="h-4 w-4 bg-green-700 mr-2"></div>
+        <div class="mb-2 flex items-center">
+          <div class="mr-2 h-4 w-4 bg-green-700"></div>
           <p>indicate that the planned energy used is drawn from solar panels.</p>
         </div>
         <div class="flex items-center">
-          <div class="h-4 w-4 bg-les-red mr-2"></div>
+          <div class="mr-2 h-4 w-4 bg-les-red"></div>
           <p>indicate that the planned energy used is drawn from the national grid.</p>
         </div>
       </button>
@@ -333,7 +333,7 @@
   {/if}
 </div>
 
-<table class="min-w-full leading-normal rounded-lg overflow-hidden">
+<table class="min-w-full overflow-hidden rounded-lg leading-normal">
   <thead>
     <tr>
       <th
@@ -404,7 +404,7 @@
         on:click={() => toggleRow(data.id)}>
         <td class="px-5 py-5">
           <button
-            class="text-gray-800 cursor-pointer hover:!text-les-blue flex items-center gap-4 dark:text-les-white transition-colors duration-200"
+            class="flex cursor-pointer items-center gap-4 text-gray-800 transition-colors duration-200 hover:!text-les-blue dark:text-les-white"
             on:click={() => ($activatedHousehold = data)}>
             {data.id}
           </button>
@@ -412,7 +412,7 @@
 
         <td class="px-5 py-5">
           <button
-            class="text-gray-800 cursor-pointer hover:!text-les-blue flex items-center gap-4 dark:text-les-white transition-colors duration-200"
+            class="flex cursor-pointer items-center gap-4 text-gray-800 transition-colors duration-200 hover:!text-les-blue dark:text-les-white"
             on:click={() => ($activatedHousehold = data)}>
             {data.name}
           </button>
@@ -445,7 +445,7 @@
         <tr
           class="bg-white hover:bg-white text-sm dark:bg-les-gray-600 border-b border-gray-200 dark:border-les-white">
           <td colspan={7}>
-            <div transition:slide class="p-4 flex justify-center">
+            <div transition:slide class="flex justify-center p-4">
               {#key formattedDate}
                 <SchedulableLoadGrid
                   appliances={data.appliances}

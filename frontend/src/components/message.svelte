@@ -43,15 +43,15 @@
 </script>
 
 {#if visible}
-  <div class="flex flex-col items-end z-50 hover:brightness-110 transition-colors duration-200">
+  <div class="z-50 flex flex-col items-end transition-colors duration-200 hover:brightness-110">
     <button
-      class="bg-les-red p-4 rounded shadow transition w-80 mt-2 mr-2 cursor-pointer relative"
+      class="relative mr-2 mt-2 w-80 cursor-pointer rounded bg-les-red p-4 shadow transition"
       on:click={deleteMessage}
       on:keydown
       transition:fade>
-      <button class="absolute top-2 right-2">
+      <button class="absolute right-2 top-2">
         <svg
-          class="h-4 w-4 fill-current text-white hover:text-les-highlight transition-colors duration-200"
+          class="h-4 w-4 fill-current text-white transition-colors duration-200 hover:text-les-highlight"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24">
           <path
@@ -60,7 +60,7 @@
       </button>
       <p>{@html message}</p>
       <div
-        class="progress-bar h-2 rounded bg-les-red-dark mt-2"
+        class="progress-bar mt-2 h-2 rounded bg-les-red-dark"
         style={`animation-duration: 5000ms`} />
     </button>
   </div>

@@ -92,7 +92,7 @@ def _get_potential_energy(
     """
 
     return (
-        solar_produced * household.solar_panels / solar_panels_factor
+        solar_produced * household.solar_yield_yearly / solar_panels_factor
         - energy_used * 0.8 * household.energy_usage / energy_usage_factor
     )
 
@@ -119,9 +119,9 @@ def _energy_efficiency_day(
     all the available generated solar power.
     """
 
-    total_panels = sum(household.solar_panels for household in planning)
+    total_yield = sum(household.solar_yield_yearly for household in planning)
     solar_energy_produced = [
-        ef.solar_produced * total_panels / solar_panels_factor
+        ef.solar_produced * total_yield / solar_panels_factor
         for ef in energy_flow
     ]
 
@@ -130,7 +130,9 @@ def _energy_efficiency_day(
 
     for household in planning:
         household_energy_available = [
-            ef.solar_produced * household.solar_panels / solar_panels_factor
+            ef.solar_produced
+            * household.solar_yield_yearly
+            / solar_panels_factor
             for ef in energy_flow
         ]
 
@@ -369,9 +371,9 @@ def setup_planning(
 
     days_in_chunk = (end_date - start_date) // SECONDS_IN_DAY + 1
 
-    days_in_planning = (
-        total_end_date - total_start_date
-    ) // SECONDS_IN_DAY + 1
+    days_in_planning = appliance_time_daily_crud.get_max_appliance_day(
+        session=session
+    )
 
     results = [[0.0 for _ in range(7)] for _ in range(days_in_chunk)]
 
@@ -537,8 +539,8 @@ def create_results(
         [0.0] * 24,
     )
 
-    total_panels = sum(
-        household.solar_panels for household in household_planning
+    total_yield = sum(
+        household.solar_yield_yearly for household in household_planning
     )
 
     # Energy flow simulation for the current day
@@ -556,7 +558,7 @@ def create_results(
                 for el in energyflow_day_sim
                 if unix_to_hour(el.timestamp) == hour
             )
-            * total_panels
+            * total_yield
             / energyflow.solar_panels_factor
         )
 

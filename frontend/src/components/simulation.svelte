@@ -169,10 +169,10 @@
     class="grid grid-cols-8 gap-4 justify-between items-center rounded-lg bg-gray-100 p-2 dark:bg-les-gray-600">
     {#each filteredHouseholds as data}
       <button
-        class="text-gray-800 cursor-pointer hover:text-blue-500 flex items-center gap-4"
+        class="flex cursor-pointer items-center gap-4 text-gray-800 hover:text-blue-500"
         on:click={() => showHome(data)}>
         <svg
-          class="hover:scale-110 transition-all duration-300 dark:fill-white fill-black"
+          class="fill-black transition-all duration-300 hover:scale-110 dark:fill-white"
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -187,14 +187,14 @@
               dominant-baseline="middle"
               text-anchor="middle"
               font-size="35"
-              class="dark:text-white text-black">{data.size}</text>
+              class="text-black dark:text-white">{data.size}</text>
             <text
               x="50%"
               y="80%"
               dominant-baseline="middle"
               text-anchor="middle"
               font-size="35"
-              class="dark:text-white text-black text-3xl">{data.name}</text>
+              class="text-3xl text-black dark:text-white">{data.name}</text>
 
             {#if hasSolarPanels(data)}
               <svg
