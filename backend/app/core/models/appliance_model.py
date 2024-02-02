@@ -171,7 +171,7 @@ class ApplianceTimeDailyRead(ApplianceTimeDailyBase):
 
 
 class ApplianceTimeDailyCreate(ApplianceTimeDailyBase):
-    pass
+    appliance_id: int
 
 
 class ApplianceTimeDailyUpdate(ApplianceTimeDailyBase):
