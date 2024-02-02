@@ -8,8 +8,8 @@
     "allowJs": true,
     "checkJs": true,
     "isolatedModules": true,
-    "strict": false
+    "strict": false,
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.node.json" }],
 }
