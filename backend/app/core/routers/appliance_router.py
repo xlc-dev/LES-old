@@ -4,12 +4,13 @@ from fastapi import APIRouter, Depends, status
 
 from sqlmodel import Session
 
-from app.utils import Logger, get_session
+from app.utils import MAX_DAYS_IN_YEAR, Logger, get_session
 
 from app.core.models import appliance_model
 
 from app.core.crud.appliance_crud import (
     appliance_crud,
+    appliance_time_daily_crud,
     appliance_time_window_crud,
 )
 
@@ -44,7 +45,18 @@ async def post_appliance(
     form_data: appliance_model.ApplianceCreate,
     session: Session = Depends(get_session),
 ) -> None:
-    appliance_crud.create(session=session, obj_in=form_data)
+    new_appliance = appliance_crud.create(session=session, obj_in=form_data)
+
+    for day in range(1, MAX_DAYS_IN_YEAR + 1):
+        appliance_time_daily_crud.create(
+            session=session,
+            obj_in=appliance_model.ApplianceTimeDailyCreate(
+                day=day,
+                bitmap_plan_energy=0,
+                bitmap_plan_no_energy=0,
+                appliance_id=new_appliance.id,
+            ),
+        )
 
 
 @router.patch("/{id}", response_model=appliance_model.ApplianceUpdate)

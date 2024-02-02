@@ -17,6 +17,7 @@ from app.config import engine
 
 SECONDS_IN_DAY = 86400
 HOURS_IN_WEEK = 168
+MAX_DAYS_IN_YEAR = 366
 
 
 def timestamp_to_unix(timestamp: float) -> int:

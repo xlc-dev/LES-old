@@ -81,8 +81,11 @@
     size: 1,
     energy_usage: 0,
     solar_panels: 0,
-    solar_yield_yearly: 0,
     twinworld_id: 0,
+
+    get solar_yield_yearly() {
+      return this.solar_panels * solarFactor;
+    },
   };
 
   let newAppliance: ApplianceCreate = {
@@ -107,6 +110,8 @@
   let checkboxStates = Array(24).fill(false);
   let currentStep: number = 0;
   let isStepZero: boolean = true;
+
+  let solarFactor = 0;
 
   let currentDescription: string = "";
   let currentAppliances: ApplianceRead_Output[] = null;
@@ -558,6 +563,12 @@
    */
   const fetchHouseholds = async () => {
     if (selectedIDs.twinworld) {
+      const getTwinworld = await TwinWorldService.getTwinworldApiTwinworldIdGet(
+        selectedIDs.twinworld
+      );
+
+      solarFactor = getTwinworld.solar_panel_capacity;
+
       twinworldHouseholds =
         await HouseholdService.getHouseholdsByTwinworldApiHouseholdTwinworldTwinworldIdGet(
           selectedIDs.twinworld
@@ -634,6 +645,7 @@
     const formData = {
       name: target.name.value,
       description: target.description.value,
+      solar_panel_capacity: target.solar_panel_capacity.value,
     };
 
     try {
@@ -804,40 +816,40 @@
   }
 </script>
 
-<div class="max-w-3xl mx-auto pt-8">
+<div class="mx-auto max-w-3xl pt-8">
   {#if !isStepZero}
-    <div class="flex items-center justify-between mt-16">
+    <div class="mt-16 flex items-center justify-between">
       {#key selectedIDs}
         {#each Object.keys(simulationData) as stepName, index}
           <div class="relative flex items-center pb-8">
             <button
-              class={`h-8 w-8 flex items-center justify-center rounded-full border-2
+              class={`flex h-8 w-8 items-center justify-center rounded-full border-2
               ${
                 currentStep === index + 1
-                  ? "bg-les-red-dark border-les-red text-white"
+                  ? "border-les-red bg-les-red-dark text-white"
                   : isStepCompleted(index + 1)
-                    ? "bg-les-highlight border-les-blue hover:bg-les-blue text-white transition-colors duration-200"
-                    : "border-gray-300 text-gray-400 hover:bg-les-blue transition-colors duration-200"
+                    ? "border-les-blue bg-les-highlight text-white transition-colors duration-200 hover:bg-les-blue"
+                    : "border-gray-300 text-gray-400 transition-colors duration-200 hover:bg-les-blue"
               }`}
               on:click={() => goToStep(index + 1)}>
               <span class="text-sm font-bold">
                 {#if isStepCompleted(index + 1)}✔{:else}{index + 1}{/if}
               </span>
 
-              <span class="absolute bottom-20 text-xs font-semibold w-20">
+              <span class="absolute bottom-20 w-20 text-xs font-semibold">
                 {stepName.charAt(0).toUpperCase() + stepName.slice(1).replace("_", " ")}
               </span>
             </button>
 
             {#if index < Object.keys(simulationData).length - 1}
               <div
-                class={`absolute top-4 left-8 border-t-2 w-[13.3rem] transition-colors duration-200 ${
+                class={`absolute left-8 top-4 w-[13.3rem] border-t-2 transition-colors duration-200 ${
                   isStepCompleted(index + 1) ? "border-les-blue" : "border-gray-300"
                 }`}>
               </div>
             {/if}
 
-            <p class="text-white absolute top-10 transform -translate-x-28 w-64 text-center">
+            <p class="absolute top-10 w-64 -translate-x-28 transform text-center text-white">
               {#if selectedIDs.twinworld !== 0 && stepName === "twinworld"}
                 {#if applianceCheck.length > 0}
                   <span class="!text-les-red">{$stepperData.twinworld}</span>
@@ -862,41 +874,41 @@
 
   {#if isStepZero}
     <div class="mx-auto pt-8">
-      <img src="/favicon.png" class="w-48 mx-auto rounded-lg" alt="LES Logo" />
-      <h1 class="font-bold text-4xl text-center text-white pt-4">
+      <img src="/favicon.png" class="mx-auto w-48 rounded-lg" alt="LES Logo" />
+      <h1 class="pt-4 text-center text-4xl font-bold text-white">
         Local Energy System Simulation
       </h1>
-      <p class="text-lg text-center py-4 text-white">
+      <p class="py-4 text-center text-lg text-white">
         Welcome to the LES Research application. You can determine the efficiency of algorithms and
         cost models by creating your own simulations. Please continue with the following steps to
         set up the environment you would like to research.
       </p>
       <button
         on:click={nextStep}
-        class="block w-full py-3 rounded-lg text-white transition duration-200 bg-les-blue hover:brightness-110"
+        class="block w-full rounded-lg bg-les-blue py-3 text-white transition duration-200 hover:brightness-110"
         >Get started</button>
     </div>
   {:else}
     {#each Object.keys(simulationData) as key, index (key)}
       {#if currentStep === index + 1}
-        <div class="mt-8 bg-white rounded-lg p-4 min-h-[20em] border-4 border-gray-400 shadow">
-          <h2 class="text-3xl font-semibold text-center">
+        <div class="mt-8 min-h-[20em] rounded-lg border-4 border-gray-400 bg-white p-4 shadow">
+          <h2 class="text-center text-3xl font-semibold">
             {key.charAt(0).toUpperCase() + key.slice(1).replace("_", " ")}
           </h2>
 
-          <div class="flex space-x-4 mt-4" in:fade>
+          <div class="mt-4 flex space-x-4" in:fade>
             <div class="w-1/2">
-              <h2 class="font-bold text-lg">Option:</h2>
+              <h2 class="text-lg font-bold">Option:</h2>
 
               <div class="border p-4">
-                <ul class="flex flex-col gap-4 items-start">
+                <ul class="flex flex-col items-start gap-4">
                   {#each simulationData[key] as option (option.id)}
-                    <div class="flex gap-2 items-center">
+                    <div class="flex items-center gap-2">
                       <button
                         on:click={() => selectOption(option.id, key, option.name)}
                         on:focus={() => updateDescription(option.description)}
                         on:mouseover={() => updateDescription(option.description)}
-                        class="cursor-pointer hover:text-les-blue relative flex gap-2 items-center transition-colors duration-200"
+                        class="relative flex cursor-pointer items-center gap-2 transition-colors duration-200 hover:text-les-blue"
                         class:text-les-blue={selectedIDs[key] === option.id}>
                         {option.name}
                       </button>
@@ -910,7 +922,7 @@
                             stroke-width="1.5"
                             stroke="currentColor"
                             data-slot="icon"
-                            class="stroke-les-red hover:stroke-les-red-dark h-4 cursor-pointer">
+                            class="h-4 cursor-pointer stroke-les-red hover:stroke-les-red-dark">
                             <path
                               stroke-linecap="round"
                               stroke-linejoin="round"
@@ -925,17 +937,17 @@
             </div>
 
             <div class="w-1/2">
-              <h2 class="font-bold text-lg">Description:</h2>
+              <h2 class="text-lg font-bold">Description:</h2>
 
               <div class="border p-4">
                 <p>{currentDescription}</p>
               </div>
             </div>
           </div>
-          <div class="flex justify-between mt-8 relative">
+          <div class="relative mt-8 flex justify-between">
             {#if currentStep !== 1}
               <button
-                class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-highlight hover:bg-dark-les-bg"
+                class="rounded-lg bg-les-highlight px-6 py-3 text-white transition-colors duration-200 hover:bg-dark-les-bg"
                 on:click={prevStep}
                 >Back
               </button>
@@ -945,7 +957,7 @@
               <button
                 class="{currentStep === 4
                   ? 'ml-auto'
-                  : 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'} px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-red hover:brightness-110"
+                  : 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform'} rounded-lg bg-les-red px-6 py-3 text-white transition-colors duration-200 hover:brightness-110"
                 on:click={startSimulation}>
                 Start
               </button>
@@ -953,7 +965,7 @@
 
             {#if currentStep !== 4}
               <button
-                class="px-6 py-3 rounded-lg text-white transition-colors duration-200 bg-les-blue hover:brightness-110 ml-auto"
+                class="ml-auto rounded-lg bg-les-blue px-6 py-3 text-white transition-colors duration-200 hover:brightness-110"
                 on:click={nextStep}
                 >Next
               </button>
@@ -965,8 +977,8 @@
   {/if}
 
   {#if !isStepZero && simulationData && Object.keys(simulationData).length > 0}
-    <div class="mt-8 bg-white rounded-lg p-4 mb-8 border-4 border-gray-400 shadow">
-      <p class="font-bold text-lg mb-4">
+    <div class="mb-8 mt-8 rounded-lg border-4 border-gray-400 bg-white p-4 shadow">
+      <p class="mb-4 text-lg font-bold">
         Upload Custom {Object.keys(simulationData)[currentStep - 1].charAt(0).toUpperCase() +
           Object.keys(simulationData)[currentStep - 1].slice(1).replace("_", " ")}:
       </p>
@@ -977,14 +989,14 @@
           on:submit|preventDefault={uploadTwinWorld}
           class="flex flex-col space-y-3">
           <div>
-            <label for="name" class="font-bold pt-4">Name:</label>
+            <label for="name" class="pt-4 font-bold">Name:</label>
             <p class="text-sm text-gray-500">Name of the twinworld</p>
           </div>
 
           <input
             type="text"
             name="name"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             placeholder="Custom Twinworld"
             required />
 
@@ -995,13 +1007,27 @@
 
           <textarea
             name="description"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             placeholder="My own twinworld"
             required></textarea>
 
+          <div>
+            <label for="solar_panel_capacity" class="pt-4 font-bold">Solar Panel Capacity:</label>
+            <p class="text-sm text-gray-500">Average yield of a single solar panel in a year</p>
+          </div>
+
+          <input
+            type="number"
+            name="solar_panel_capacity"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
+            step="1"
+            min="1"
+            placeholder="340"
+            required />
+
           <button
             type="submit"
-            class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            class="rounded-lg bg-dark-les-bg py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
             >Submit
           </button>
         </form>
@@ -1009,16 +1035,16 @@
         {#if selectedIDs.twinworld && selectedIDs.twinworld !== 1 && selectedIDs.twinworld !== 2}
           <hr class="my-8 bg-les-highlight" />
 
-          <h2 class="font-bold text-lg mb-4">
+          <h2 class="mb-4 text-lg font-bold">
             Add household for Twin World: {$stepperData.twinworld}
           </h2>
 
           <div class="flex flex-wrap">
-            <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
               <label for="name" class="font-bold">Name:</label>
               <input
                 id="name"
-                class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
                 type="text"
                 minlength="1"
                 required
@@ -1026,54 +1052,55 @@
                 placeholder="Household 10" />
             </div>
 
-            <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
               <label for="size" class="font-bold">Size:</label>
               <input
                 id="size"
                 min="1"
                 max="5"
-                class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
                 type="number"
                 bind:value={newHousehold.size}
                 placeholder="Size" />
             </div>
 
-            <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
               <label for="energy_usage" class="font-bold">Energy Usage:</label>
               <input
                 id="energy_usage"
-                class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
                 type="number"
                 min="0"
                 bind:value={newHousehold.energy_usage}
                 placeholder="3100" />
             </div>
 
-            <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
               <label for="solar_panels" class="font-bold">Solar Panels:</label>
               <input
                 id="solar_panels"
-                class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
                 type="number"
                 min="0"
                 bind:value={newHousehold.solar_panels}
                 placeholder="10" />
             </div>
 
-            <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
               <label for="solar_yield_yearly" class="font-bold">Solar Yield Yearly:</label>
               <input
                 id="solar_yield_yearly"
-                class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                class="cursor-not-allowed rounded-lg border-2 border-gray-400 bg-gray-300 p-3"
                 type="number"
                 min="0"
                 bind:value={newHousehold.solar_yield_yearly}
-                placeholder="3400" />
+                disabled
+                readonly />
             </div>
             <div class="flex items-end">
               <button
                 type="button"
-                class="py-3 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+                class="rounded-lg bg-dark-les-bg px-4 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
                 on:click={addHousehold}
                 >Add Household
               </button>
@@ -1083,16 +1110,16 @@
           {#if applianceToAdd > 0}
             <hr class="my-8 bg-les-highlight" id="applianceLocation" />
 
-            <h2 class="text-lg font-bold pb-4">
+            <h2 class="pb-4 text-lg font-bold">
               Add appliance for household id: {applianceToAdd}
             </h2>
 
             <div class="flex flex-wrap">
-              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
                 <label for="name" class="font-bold">Name:</label>
                 <select
                   id="type"
-                  class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                  class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
                   bind:value={newAppliance.name}>
                   {#each Object.values(ApplianceType) as type (type)}
                     <option value={type}>{type}</option>
@@ -1100,22 +1127,22 @@
                 </select>
               </div>
 
-              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
                 <label for="power" class="font-bold">Power:</label>
                 <input
                   id="power"
-                  class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                  class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
                   type="number"
                   step="0.01"
                   min="0.01"
                   bind:value={newAppliance.power} />
               </div>
 
-              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
                 <label for="duration" class="font-bold">Duration:</label>
                 <input
                   id="duration"
-                  class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                  class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
                   type="number"
                   step="1"
                   min="1"
@@ -1123,11 +1150,11 @@
                   bind:value={newAppliance.duration} />
               </div>
 
-              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
                 <label for="daily_usage" class="font-bold">Daily Usage:</label>
                 <input
                   id="daily_usage"
-                  class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                  class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
                   type="number"
                   step="0.01"
                   min="0.01"
@@ -1137,7 +1164,7 @@
               <div class="flex items-end">
                 <button
                   type="button"
-                  class="py-3 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+                  class="rounded-lg bg-dark-les-bg px-4 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
                   on:click={addAppliance}
                   >Add Appliance
                 </button>
@@ -1150,23 +1177,23 @@
 
             {#each currentAppliances as appliance}
               <hr class="my-8 bg-les-highlight" />
-              <h3 class="font-bold text-lg">Timewindows for: {appliance.name}</h3>
-              <table class="min-w-full leading-normal rounded-lg mt-4 overflow-hidden">
+              <h3 class="text-lg font-bold">Timewindows for: {appliance.name}</h3>
+              <table class="mt-4 min-w-full overflow-hidden rounded-lg leading-normal">
                 {#if currentAppliances.length === 0}
-                  <p class="text-center text-gray-500 py-4">No timewindows added yet.</p>
+                  <p class="py-4 text-center text-gray-500">No timewindows added yet.</p>
                 {:else}
                   <thead>
                     <tr>
                       <th
-                        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600"
                         >Day
                       </th>
                       <th
-                        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600"
                         >Bitmap Window
                       </th>
                       <th
-                        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600"
                         >Options
                       </th>
                     </tr>
@@ -1174,11 +1201,11 @@
                   <tbody>
                     {#each appliance.appliance_windows as appliance_window}
                       <tr class="bg-white text-sm hover:bg-gray-200">
-                        <td class="px-5 py-5 border-b border-gray-200">
+                        <td class="border-b border-gray-200 px-5 py-5">
                           {#if editingApplianceTimeWindow === appliance_window}
                             <select
                               id="day"
-                              class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                              class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
                               bind:value={appliance_window.day}>
                               {#each Object.values(ApplianceDays) as type (type)}
                                 <option value={type}>{type}</option>
@@ -1189,38 +1216,38 @@
                           {/if}
                         </td>
 
-                        <td class="px-5 py-5 border-b border-gray-200">
+                        <td class="border-b border-gray-200 px-5 py-5">
                           {#if editingApplianceTimeWindow === appliance_window}
                             <input
                               bind:value={appliance_window.bitmap_window}
-                              class="border rounded-md px-2 py-1"
+                              class="rounded-md border px-2 py-1"
                               style="max-width: 130px;" />
                           {:else}
                             {appliance_window.bitmap_window}
                           {/if}
                         </td>
 
-                        <td class="px-5 py-5 border-b border-gray-200 space-y-4">
+                        <td class="space-y-4 border-b border-gray-200 px-5 py-5">
                           {#if editingApplianceTimeWindow === appliance_window}
                             <button
                               type="button"
-                              class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-green transition-colors duration-200"
+                              class="hover:bg-les-green rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200"
                               on:click={stopEditingTimewindow}>
                               Done
                             </button>
                           {:else}
                             <button
                               type="button"
-                              class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                              class="rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
                               on:click={() => startEditingTimewindow(appliance_window)}>
-                              <img src="/edit.svg" alt="" class="w-4 h-4" />
+                              <img src="/edit.svg" alt="" class="h-4 w-4" />
                             </button>
 
                             <button
                               type="button"
-                              class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-red transition-colors duration-200"
+                              class="rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200 hover:bg-les-red"
                               on:click={() => deleteTimewindow(appliance_window.id)}>
-                              <img src="/trash.svg" alt="" class="w-4 h-4" />
+                              <img src="/trash.svg" alt="" class="h-4 w-4" />
                             </button>
                           {/if}
                         </td>
@@ -1232,16 +1259,16 @@
             {/each}
             <hr class="my-8 bg-les-highlight" id="applianceLocation" />
 
-            <h2 class="text-lg font-bold pb-4">
+            <h2 class="pb-4 text-lg font-bold">
               Add timewindow for household id: {timewindowToAdd}
             </h2>
 
             <div class="flex flex-wrap">
-              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
                 <label for="day" class="font-bold">Day:</label>
                 <select
                   id="day"
-                  class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                  class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
                   bind:value={newTimeWindow.day}>
                   {#each Object.values(ApplianceDays) as type (type)}
                     <option value={type}>{type}</option>
@@ -1249,11 +1276,11 @@
                 </select>
               </div>
 
-              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
                 <label for="appliance_id" class="font-bold">Appliance</label>
                 <select
                   id="appliance_id"
-                  class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                  class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
                   bind:value={newTimeWindow.appliance_id}>
                   {#each currentAppliances as appliance (appliance.id)}
                     <option value={appliance.id}>{appliance.name}</option>
@@ -1261,25 +1288,25 @@
                 </select>
               </div>
 
-              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4">
+              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
                 <label for="bitmap_window_display" class="font-bold">Bitmap Window Value:</label>
                 <input
                   id="bitmap_window_display"
-                  class="bg-gray-300 cursor-not-allowed p-2.5 rounded-lg border-2 border-gray-400"
+                  class="cursor-not-allowed rounded-lg border-2 border-gray-400 bg-gray-300 p-2.5"
                   type="text"
                   readonly
                   disabled
                   value={newTimeWindow.bitmap_window} />
               </div>
 
-              <div class="flex flex-col w-full sm:w-1/2 md:w-1/3 pr-4 pt-2">
+              <div class="flex w-full flex-col pr-4 pt-2 sm:w-1/2 md:w-1/3">
                 <label for="bitmap_window" class="font-bold">Bitmap Window:</label>
                 <div class="flex flex-wrap">
                   {#each hoursArray as hour, hourIndex}
-                    <div class="flex items-center w-1/3 pr-4">
+                    <div class="flex w-1/3 items-center pr-4">
                       <input
                         id="bitmap_window_{hourIndex}"
-                        class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+                        class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
                         type="checkbox"
                         bind:checked={checkboxStates[hourIndex]}
                         on:change={updateBitmapWindow} />
@@ -1292,45 +1319,45 @@
               <div class="flex h-fit pt-8">
                 <button
                   type="button"
-                  class="py-3 px-4 w-fit bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+                  class="w-fit rounded-lg bg-dark-les-bg px-4 py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
                   on:click={addTimewindow}
                   >Add Timewindow
                 </button>
               </div>
             </div>
           {/if}
-          <table class="min-w-full leading-normal rounded-lg mt-4 overflow-hidden">
+          <table class="mt-4 min-w-full overflow-hidden rounded-lg leading-normal">
             {#if twinworldHouseholds.length === 0}
-              <p class="text-center text-gray-500 py-4">No households added yet.</p>
+              <p class="py-4 text-center text-gray-500">No households added yet.</p>
             {:else}
               <thead>
                 <tr>
                   <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600"
                     >Name
                   </th>
 
                   <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600"
                     >Size
                   </th>
                   <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600"
                     >Energy Usage
                   </th>
 
                   <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600"
                     >Solar Yield Yearly
                   </th>
 
                   <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600"
                     >Appliances
                   </th>
 
                   <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 uppercase tracking-wider"
+                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600"
                     >Options
                   </th>
                 </tr>
@@ -1338,11 +1365,11 @@
               <tbody>
                 {#each twinworldHouseholds as household}
                   <tr class="bg-white text-sm hover:bg-gray-200">
-                    <td class="px-5 py-5 border-b border-gray-200">
+                    <td class="border-b border-gray-200 px-5 py-5">
                       {#if editingHousehold === household}
                         <input
                           bind:value={household.name}
-                          class="border rounded-md px-2 py-1"
+                          class="rounded-md border px-2 py-1"
                           minlength="1"
                           style="max-width: 130px;" />
                       {:else}
@@ -1350,49 +1377,51 @@
                       {/if}
                     </td>
 
-                    <td class="px-5 py-5 border-b border-gray-200">
+                    <td class="border-b border-gray-200 px-5 py-5">
                       {#if editingHousehold === household}
                         <input
                           type="number"
                           bind:value={household.size}
                           min="1"
                           max="5"
-                          class="border rounded-md px-2 py-1"
+                          class="rounded-md border px-2 py-1"
                           style="max-width: 50px;" />
                       {:else}
                         {household.size}
                       {/if}
                     </td>
 
-                    <td class="px-5 py-5 border-b border-gray-200">
+                    <td class="border-b border-gray-200 px-5 py-5">
                       {#if editingHousehold === household}
                         <input
                           type="number"
                           min="0"
                           bind:value={household.energy_usage}
-                          class="border rounded-md px-2 py-1"
+                          class="rounded-md border px-2 py-1"
                           style="max-width: 80px;" />
                       {:else}
                         {household.energy_usage}
                       {/if}
                     </td>
 
-                    <td class="px-5 py-5 border-b border-gray-200">
+                    <td class="border-b border-gray-200 px-5 py-5">
                       {#if editingHousehold === household}
                         <input
                           type="number"
                           min="0"
-                          bind:value={household.solar_yield_yearly}
-                          class="border rounded-md px-2 py-1"
+                          bind:value={household.solar_panels}
+                          class="rounded-md border px-2 py-1"
+                          disabled
+                          readonly
                           style="max-width: 80px;" />
                       {:else}
-                        {household.solar_yield_yearly}
+                        {household.solar_panels}
                       {/if}
                     </td>
 
-                    <td class="px-5 py-5 border-b border-gray-200">
+                    <td class="border-b border-gray-200 px-5 py-5">
                       {#each household.appliances as appliance}
-                        <div class="flex gap-2 justify-between items-center max-w-[25px]">
+                        <div class="flex max-w-[25px] items-center justify-between gap-2">
                           <p class="pb-2">{appliance.name}</p>
 
                           <button on:click={() => deleteAppliance(appliance.id)} class="pb-2">
@@ -1403,7 +1432,7 @@
                               stroke-width="1.5"
                               stroke="currentColor"
                               data-slot="icon"
-                              class="stroke-les-red hover:stroke-les-red-dark h-4 cursor-pointer">
+                              class="h-4 cursor-pointer stroke-les-red hover:stroke-les-red-dark">
                               <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
@@ -1414,42 +1443,42 @@
                       {/each}
                     </td>
 
-                    <td class="px-5 py-5 border-b border-gray-200 space-y-4">
+                    <td class="space-y-4 border-b border-gray-200 px-5 py-5">
                       {#if editingHousehold === household}
                         <button
                           type="button"
-                          class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-green transition-colors duration-200"
+                          class="hover:bg-les-green rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200"
                           on:click={stopEditingHousehold}>
                           Done
                         </button>
                       {:else}
                         <button
                           type="button"
-                          class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                          class="rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
                           on:click={() => startEditingHousehold(household)}>
-                          <img src="/edit.svg" alt="" class="w-4 h-4" />
+                          <img src="/edit.svg" alt="" class="h-4 w-4" />
                         </button>
 
                         <button
                           type="button"
-                          class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-red transition-colors duration-200"
+                          class="rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200 hover:bg-les-red"
                           on:click={() => deleteHousehold(household.id)}>
-                          <img src="/trash.svg" alt="" class="w-4 h-4" />
+                          <img src="/trash.svg" alt="" class="h-4 w-4" />
                         </button>
 
                         <button
                           type="button"
-                          class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                          class="rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
                           on:click={() => (applianceToAdd = household.id)}>
-                          <img src="/plus.svg" alt="" class="w-4 h-4" />
+                          <img src="/plus.svg" alt="" class="h-4 w-4" />
                         </button>
 
                         {#if household.appliances.length > 0}
                           <button
                             type="button"
-                            class="py-2 px-4 bg-dark-les-bg rounded-lg text-white hover:bg-les-blue transition-colors duration-200"
+                            class="rounded-lg bg-dark-les-bg px-4 py-2 text-white transition-colors duration-200 hover:bg-les-blue"
                             on:click={() => (timewindowToAdd = household.id)}>
-                            <img src="/clock.svg" alt="" class="w-4 h-4" />
+                            <img src="/clock.svg" alt="" class="h-4 w-4" />
                           </button>
                         {/if}
                       {/if}
@@ -1466,14 +1495,14 @@
           on:submit|preventDefault={uploadCostModel}
           class="flex flex-col space-y-3">
           <div>
-            <label for="name" class="font-bold pt-4">Name:</label>
+            <label for="name" class="pt-4 font-bold">Name:</label>
             <p class="text-sm text-gray-500">Name of the costmodel</p>
           </div>
 
           <input
             type="text"
             name="name"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             placeholder="custom Costmodel"
             required />
 
@@ -1484,7 +1513,7 @@
 
           <textarea
             name="description"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             required
             placeholder="My own costmodel"
             rows="8"></textarea>
@@ -1501,7 +1530,7 @@
             step="0.1"
             type="number"
             name="price_network_buy_consumer"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             placeholder="0.4"
             required />
 
@@ -1517,7 +1546,7 @@
             step="0.1"
             type="number"
             name="price_network_sell_consumer"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             placeholder="0.1"
             required />
 
@@ -1534,7 +1563,7 @@
             type="number"
             name="fixed_price_ratio"
             placeholder="0.5"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600" />
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600" />
 
           <div>
             <label for="algorithm" class="font-bold">Costmodel Algorithm:</label>
@@ -1549,12 +1578,12 @@
               initialCode: costmodelCode,
               onChange: (code) => (costmodelCode = code),
             }}
-            class="h-48 border-2 border-gray-400 aria-selected:border-gray-600 rounded-lg">
+            class="h-48 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600">
           </div>
 
           <button
             type="submit"
-            class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            class="rounded-lg bg-dark-les-bg py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
             >Submit
           </button>
         </form>
@@ -1564,14 +1593,14 @@
           on:submit|preventDefault={uploadAlgorithm}
           class="flex flex-col space-y-3">
           <div>
-            <label for="name" class="font-bold pt-4">Name:</label>
+            <label for="name" class="pt-4 font-bold">Name:</label>
             <p class="text-sm text-gray-500">Name for the new algorithm</p>
           </div>
 
           <input
             type="text"
             name="name"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             placeholder="Custom Algorithm"
             required />
 
@@ -1582,7 +1611,7 @@
 
           <textarea
             name="description"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             placeholder="My own algorithm"
             required></textarea>
 
@@ -1595,7 +1624,7 @@
             step="number"
             type="number"
             name="max_temperature"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             placeholder="10000" />
 
           <div>
@@ -1611,12 +1640,12 @@
               initialCode: algorithmCode,
               onChange: (code) => (algorithmCode = code),
             }}
-            class="h-48 border-2 border-gray-400 aria-selected:border-gray-600 rounded-lg">
+            class="h-48 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600">
           </div>
 
           <button
             type="submit"
-            class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            class="rounded-lg bg-dark-les-bg py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
             >Submit
           </button>
         </form>
@@ -1627,14 +1656,14 @@
           on:submit|preventDefault={uploadEnergyFlow}
           class="flex flex-col space-y-3">
           <div>
-            <label for="name" class="font-bold pt-4">Name:</label>
+            <label for="name" class="pt-4 font-bold">Name:</label>
             <p class="text-sm text-gray-500">Name for the new energy flow</p>
           </div>
 
           <input
             type="text"
             name="name"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             placeholder="Custom energy flow"
             required />
 
@@ -1645,12 +1674,12 @@
 
           <textarea
             name="description"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             placeholder="My own energy flow data"
             required></textarea>
 
           <div>
-            <label for="solar_panels_factor" class="font-bold pt-4">Solar Panels Factor:</label>
+            <label for="solar_panels_factor" class="pt-4 font-bold">Solar Panels Factor:</label>
             <p class="text-sm text-gray-500">
               Amount of solar panels for the household in the supplied energy table
             </p>
@@ -1659,14 +1688,14 @@
           <input
             type="number"
             name="solar_panels_factor"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             step="1"
             min="1"
             placeholder="25"
             required />
 
           <div>
-            <label for="energy_usage_factor" class="font-bold pt-4">Energy Usage Factor:</label>
+            <label for="energy_usage_factor" class="pt-4 font-bold">Energy Usage Factor:</label>
             <p class="text-sm text-gray-500">
               Amount of yearly energy used for the household in the supplied energy table
             </p>
@@ -1675,7 +1704,7 @@
           <input
             type="number"
             name="energy_usage_factor"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             step="1"
             min="1"
             placeholder="7000"
@@ -1690,12 +1719,12 @@
             type="file"
             name="file"
             accept=".csv"
-            class="bg-les-white p-3 rounded-lg border-2 border-gray-400 aria-selected:border-gray-600"
+            class="rounded-lg border-2 border-gray-400 bg-les-white p-3 aria-selected:border-gray-600"
             required />
 
           <button
             type="submit"
-            class="py-3 bg-dark-les-bg rounded-lg text-white hover:bg-les-highlight transition-colors duration-200"
+            class="rounded-lg bg-dark-les-bg py-3 text-white transition-colors duration-200 hover:bg-les-highlight"
             >Submit
           </button>
         </form>

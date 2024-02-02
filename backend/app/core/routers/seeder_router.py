@@ -16,7 +16,7 @@ import random
 import pandas
 
 from typing import Optional, Dict
-from math import floor, ceil
+from math import ceil
 
 from fastapi import APIRouter, Depends, status
 
@@ -25,6 +25,7 @@ from sqlmodel import Session
 from scipy.stats import norm
 
 from app.utils import (
+    MAX_DAYS_IN_YEAR,
     Logger,
     get_session,
     create_db_and_tables,
@@ -47,8 +48,6 @@ from app.core.models.appliance_model import (
     ApplianceType,
     ApplianceDays,
 )
-
-from app.core.crud.energyflow_crud import energyflow_crud
 
 router = APIRouter()
 
@@ -84,16 +83,7 @@ def add_appliance_to_session(session: Session, appliance: Appliance):
         timewindow = create_timewindow(day, appliance.id)
         session.add(timewindow)
 
-    start_date, end_date = energyflow_crud.get_start_end_date(
-        session=session, id=1
-    )
-
-    start_date, end_date = floor(start_date.timestamp / 86400), floor(
-        end_date.timestamp / 86400
-    )
-    days = round(end_date - start_date + 1)
-
-    for day_number in range(1, days + 1):
+    for day_number in range(1, MAX_DAYS_IN_YEAR + 1):
         daily_planning = create_initial_daily_planning(
             session, day_number, appliance.id
         )
@@ -410,7 +400,7 @@ def create_stove(
 
 
 def create_household(
-    name: str, twinworld_id: int, inv_norm: float
+    name: str, twinworld_id: int, solar_avg: int, inv_norm: float
 ) -> household_model.Household:
     # Map for household size to energy usage
     default_energy_usage = {
@@ -444,7 +434,7 @@ def create_household(
         inv_norm_solar = norm.ppf(random.random(), loc=1, scale=0.1)
         solar_panels = ceil(3 + 2 * household_size * inv_norm_solar)
 
-    solar_yield = solar_panels * 340
+    solar_yield = solar_panels * solar_avg
 
     household = household_model.Household(
         name=name,
@@ -472,7 +462,7 @@ def seed(
     energyflow_upload = energyflow_model.EnergyFlowUpload(
         name="Energyflow Zoetermeer",
         description="The energy data from a green household in Zoetermeer that is associated with the THUAS.",  # noqa: E501
-        solar_panels_factor=25,
+        solar_panels_factor=8500,
         energy_usage_factor=7000,
     )
 
@@ -528,11 +518,13 @@ def seed(
     twinworld_1 = twinworld_model.TwinWorld(
         name="Twinworld Small",
         description="A smaller twinworld consisting of roughly 25 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
+        solar_panel_capacity=340,
     )
 
     twinworld_2 = twinworld_model.TwinWorld(
         name="Twinworld Large",
         description="A larger twinworld consisting of roughly 75 households. These are depicting a typical neighborhood and its energy usage and appliances in the Netherlands. Each house consists of 1 to 5 inhabitants. The schedulable appliances are: Washing machine, tumble dryer, dishwasher, kitchen appliances and Electrical Vehicle. The frequency of use and power usage are randomized for each appliance.",  # noqa: E501
+        solar_panel_capacity=340,
     )
 
     session.add(twinworld_1)
@@ -548,9 +540,13 @@ def seed(
             inv_norm = 0.3
 
         if random.random() > 0.75:
-            household = create_household(f"Household {i}", 1, inv_norm)
+            household = create_household(
+                f"Household {i}", 1, twinworld_1.solar_panel_capacity, inv_norm
+            )
         else:
-            household = create_household(f"Household {i}", 2, inv_norm)
+            household = create_household(
+                f"Household {i}", 2, twinworld_2.solar_panel_capacity, inv_norm
+            )
 
         session.add(household)
         session.flush()

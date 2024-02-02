@@ -238,11 +238,11 @@
 </script>
 
 <div
-  class="flex justify-between items-center rounded-lg bg-gray-100 p-2 dark:bg-dark-table-header mb-4">
+  class="mb-4 flex items-center justify-between rounded-lg bg-gray-100 p-2 dark:bg-dark-table-header">
   <div class="flex space-x-4">
     <input
       type="text"
-      class="px-3 py-2 border border-gray-300 rounded-md dark:bg-dark-table-row dark:text-les-white"
+      class="rounded-md border border-gray-300 px-3 py-2 dark:bg-dark-table-row dark:text-les-white"
       placeholder="Search by ID or NAME"
       bind:value={searchQuery} />
 
@@ -252,7 +252,7 @@
         id={`${filterName}-dropdown`}
         on:click|stopPropagation={handleClickOutsideFilter(filterName)}>
         <button
-          class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white"
+          class="rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-dark-table-row dark:text-les-white"
           on:click={() => toggleDropdown(filterName)}
           on:keydown={(e) => e.key === "Enter" && toggleDropdown(filterName)}>
           {toReadableName(filterName)}
@@ -260,7 +260,7 @@
 
         {#if showDropdown === filterName}
           <div
-            class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 dark:bg-dark-table-row"
+            class="absolute left-0 z-10 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-dark-table-row"
             in:slide={{ duration: 500 }}
             out:slide={{ duration: 500 }}>
             <div class="py-1">
@@ -282,14 +282,14 @@
       </button>
     {/each}
     <button
-      class="ml-2 bg-dark-les-bg hover:brightness-110 text-white py-2 px-4 rounded"
+      class="ml-2 rounded bg-dark-les-bg px-4 py-2 text-white hover:brightness-110"
       on:click|stopPropagation={toggleCard}>Legend</button>
     <button class="date-picker-container relative" on:click|stopPropagation>
       <button
-        class="px-4 py-2 bg-les-blue text-white rounded hover:brightness-110 transition-colors duration-200"
+        class="rounded bg-les-blue px-4 py-2 text-white transition-colors duration-200 hover:brightness-110"
         on:click={toggleDatePicker}>Select Date</button>
       {#if showDatePicker}
-        <div class="absolute z-10 rounded mt-2 calendar dark:calendar-dark">
+        <div class="calendar absolute z-10 mt-2 rounded dark:calendar-dark">
           <DatePicker bind:value={selectedDate} min={setMinDate} max={setMaxDate} />
         </div>
       {/if}
@@ -297,35 +297,35 @@
   </div>
 
   {#if showLegend}
-    <div class="fixed inset-0 flex justify-center items-center">
+    <div class="fixed inset-0 flex items-center justify-center">
       <button
         on:click={toggleCard}
-        class="w-100 bg-white border border-gray-300 rounded shadow-lg p-4 z-10 dark:bg-dark-sidebar dark:text-les-white relative legend">
+        class="w-100 legend relative z-10 rounded border border-gray-300 bg-white p-4 shadow-lg dark:bg-dark-sidebar dark:text-les-white">
         <button
-          class="text-xl text-gray-600 hover:text-gray-800 p-2 absolute top-2 right-2"
+          class="absolute right-2 top-2 p-2 text-xl text-gray-600 hover:text-gray-800"
           on:click={toggleCard}>
           <svg
-            class="h-4 w-4 fill-current text-white hover:text-les-highlight transition-colors duration-200"
+            class="h-4 w-4 fill-current text-white transition-colors duration-200 hover:text-les-highlight"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24">
             <path
               d="M12 10.586l4.95-4.95a1 1 0 111.414 1.414L13.414 12l4.95 4.95a1 1 0 11-1.414 1.414L12 13.414l-4.95 4.95a1 1 0 11-1.414-1.414L10.586 12 5.636 7.05a1 1 0 111.414-1.414L12 10.586z" />
           </svg>
         </button>
-        <div class="flex items-center mb-2">
-          <div class="h-4 w-4 bg-gray-700 mr-2"></div>
+        <div class="mb-2 flex items-center">
+          <div class="mr-2 h-4 w-4 bg-gray-700"></div>
           <p>contain the time slots that are unavailable to plan appliances in.</p>
         </div>
-        <div class="flex items-center mb-2">
-          <div class="h-4 w-4 bg-les-blue mr-2"></div>
+        <div class="mb-2 flex items-center">
+          <div class="mr-2 h-4 w-4 bg-les-blue"></div>
           <p>contain the time slots that are available to plan appliances in.</p>
         </div>
-        <div class="flex items-center mb-2">
-          <div class="h-4 w-4 bg-green-700 mr-2"></div>
+        <div class="mb-2 flex items-center">
+          <div class="mr-2 h-4 w-4 bg-green-700"></div>
           <p>indicate that the planned energy used is drawn from solar panels.</p>
         </div>
         <div class="flex items-center">
-          <div class="h-4 w-4 bg-les-red mr-2"></div>
+          <div class="mr-2 h-4 w-4 bg-les-red"></div>
           <p>indicate that the planned energy used is drawn from the national grid.</p>
         </div>
       </button>
@@ -333,11 +333,11 @@
   {/if}
 </div>
 
-<table class="min-w-full leading-normal rounded-lg overflow-hidden">
+<table class="min-w-full overflow-hidden rounded-lg leading-normal">
   <thead>
     <tr>
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600 dark:bg-dark-table-header dark:text-les-white">
         ID
         <SortIcon
           isSortedAsc={sortColumn === "id" && sortOrder === "asc"}
@@ -346,7 +346,7 @@
       </th>
 
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600 dark:bg-dark-table-header dark:text-les-white">
         Name
         <SortIcon
           isSortedAsc={sortColumn === "name" && sortOrder === "asc"}
@@ -355,7 +355,7 @@
       </th>
 
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600 dark:bg-dark-table-header dark:text-les-white">
         Size
         <SortIcon
           isSortedAsc={sortColumn === "size" && sortOrder === "asc"}
@@ -364,7 +364,7 @@
       </th>
 
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600 dark:bg-dark-table-header dark:text-les-white">
         Energy Usage
         <SortIcon
           isSortedAsc={sortColumn === "energy_usage" && sortOrder === "asc"}
@@ -373,7 +373,7 @@
       </th>
 
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600 dark:bg-dark-table-header dark:text-les-white">
         Solar Panels
         <SortIcon
           isSortedAsc={sortColumn === "solar_panels" && sortOrder === "asc"}
@@ -382,7 +382,7 @@
       </th>
 
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600 dark:bg-dark-table-header dark:text-les-white">
         Solar Yield Yearly
         <SortIcon
           isSortedAsc={sortColumn === "solar_yield_yearly" && sortOrder === "asc"}
@@ -391,7 +391,7 @@
       </th>
 
       <th
-        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs text-gray-600 dark:text-les-white uppercase tracking-wider dark:bg-dark-table-header">
+        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs uppercase tracking-wider text-gray-600 dark:bg-dark-table-header dark:text-les-white">
         Appliances
       </th>
     </tr>
@@ -400,11 +400,11 @@
   <tbody>
     {#each filteredData as data}
       <tr
-        class="hover:!bg-gray-100 bg-white cursor-pointer text-sm hover:dark:!bg-dark-table-header dark:bg-dark-table-row dark:text-white"
+        class="cursor-pointer bg-white text-sm hover:!bg-gray-100 dark:bg-dark-table-row dark:text-white hover:dark:!bg-dark-table-header"
         on:click={() => toggleRow(data.id)}>
         <td class="px-5 py-5">
           <button
-            class="text-gray-800 cursor-pointer hover:!text-les-blue flex items-center gap-4 dark:text-les-white transition-colors duration-200"
+            class="flex cursor-pointer items-center gap-4 text-gray-800 transition-colors duration-200 hover:!text-les-blue dark:text-les-white"
             on:click={() => ($activatedHousehold = data)}>
             {data.id}
           </button>
@@ -412,7 +412,7 @@
 
         <td class="px-5 py-5">
           <button
-            class="text-gray-800 cursor-pointer hover:!text-les-blue flex items-center gap-4 dark:text-les-white transition-colors duration-200"
+            class="flex cursor-pointer items-center gap-4 text-gray-800 transition-colors duration-200 hover:!text-les-blue dark:text-les-white"
             on:click={() => ($activatedHousehold = data)}>
             {data.name}
           </button>
@@ -443,9 +443,9 @@
       </tr>
       {#if expandedRow === data.id}
         <tr
-          class="bg-white hover:bg-white text-sm dark:bg-dark-table-row border-b border-gray-200 dark:border-les-white">
+          class="border-b border-gray-200 bg-white text-sm hover:bg-white dark:border-les-white dark:bg-dark-table-row">
           <td colspan={7}>
-            <div transition:slide class="p-4 flex justify-center">
+            <div transition:slide class="flex justify-center p-4">
               {#key formattedDate}
                 <SchedulableLoadGrid
                   appliances={data.appliances}

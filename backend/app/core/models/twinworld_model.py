@@ -20,6 +20,7 @@ class TwinWorldBase(SQLModel):
 
     name: str = Field(index=True, unique=True, nullable=False)
     description: str = Field(nullable=False, min_length=1, max_length=500)
+    solar_panel_capacity: int = Field(nullable=False, ge=1)
 
     @field_validator("description")
     @classmethod

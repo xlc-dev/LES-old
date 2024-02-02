@@ -60,16 +60,16 @@
   });
 </script>
 
-<div class="fixed flex flex-col justify-between left-0 top-0 h-screen w-64 bg-gray-900">
+<div class="fixed left-0 top-0 flex h-screen w-64 flex-col justify-between bg-gray-900">
   <div>
-    <div class="w-full bg-dark-table-header p-4 flex gap-3 items-center">
-      <img src="/arrows.png" alt="" class="transform rotate-180" />
+    <div class="flex w-full items-center gap-3 bg-dark-table-header p-4">
+      <img src="/arrows.png" alt="" class="rotate-180 transform" />
       <p class="text-les-white">LES RESEARCH</p>
     </div>
 
-    <div class="flex flex-col items-start justify-center gap-3 mt-4">
+    <div class="mt-4 flex flex-col items-start justify-center gap-3">
       <button
-        class="flex items-center gap-3 hover:bg-les-sidebar-item w-full p-4 transition-colors duration-200 {currentComponent ===
+        class="flex w-full items-center gap-3 p-4 transition-colors duration-200 hover:bg-les-sidebar-item {currentComponent ===
         'Dashboard'
           ? 'bg-les-sidebar-item'
           : ''}"
@@ -79,7 +79,7 @@
       </button>
 
       <button
-        class="flex items-center gap-3 hover:bg-les-sidebar-item w-full p-4 transition-colors duration-200 {currentComponent ===
+        class="flex w-full items-center gap-3 p-4 transition-colors duration-200 hover:bg-les-sidebar-item {currentComponent ===
         'Simulation'
           ? 'bg-les-sidebar-item'
           : ''}"
@@ -89,7 +89,7 @@
       </button>
 
       <button
-        class="flex items-center gap-3 hover:bg-les-sidebar-item w-full p-4 transition-colors duration-200 {currentComponent ===
+        class="flex w-full items-center gap-3 p-4 transition-colors duration-200 hover:bg-les-sidebar-item {currentComponent ===
         'Schedulable Loads'
           ? 'bg-les-sidebar-item'
           : ''}"
@@ -102,13 +102,13 @@
 
   <div class="mt-auto">
     <div class="px-4">
-      <h3 class="text-lg font-semibold text-les-white pb-4">Selected Options:</h3>
+      <h3 class="pb-4 text-lg font-semibold text-les-white">Selected Options:</h3>
 
       <p class="text-gray-400">Twin World: {$stepperData.twinworld.name}</p>
       <p class="text-gray-400">Cost Model: {$stepperData.costmodel.name}</p>
       <p class="text-gray-400">Algorithm: {$stepperData.algorithm.name}</p>
 
-      <hr class="border-gray-800 my-4" />
+      <hr class="my-4 border-gray-800" />
 
       <div class="flex items-center pb-4">
         <label for="dark-mode-toggle" class="mr-2 text-les-white"
@@ -122,11 +122,11 @@
         <label for="dark-mode-toggle" class="cursor-pointer">
           <div class="relative">
             <div
-              class={`block w-14 h-8 rounded-full ${isDarkMode ? "bg-les-blue" : "bg-gray-600"}`}>
+              class={`block h-8 w-14 rounded-full ${isDarkMode ? "bg-les-blue" : "bg-gray-600"}`}>
             </div>
             <div
-              class={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition ${
-                isDarkMode ? "transform translate-x-full" : ""
+              class={`absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition ${
+                isDarkMode ? "translate-x-full transform" : ""
               }`}>
             </div>
           </div>
@@ -136,7 +136,7 @@
 
     <button
       id="stop-button"
-      class="flex items-center gap-3 hover:brightness-110 bg-les-red-dark w-full p-4 py-6 transition-colors duration-200"
+      class="flex w-full items-center gap-3 bg-les-red-dark p-4 py-6 transition-colors duration-200 hover:brightness-110"
       on:click={() => handleButtonClick("Stop")}>
       <img src="/stop.png" alt="" />
       <p class="text-les-white">Stop Simulation</p>

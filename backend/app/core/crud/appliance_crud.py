@@ -23,7 +23,13 @@ class CRUDApplianceTimeDaily(
         ApplianceTimeDaily, ApplianceTimeDailyCreate, ApplianceTimeDailyUpdate
     ]
 ):
-    pass
+    def get_max_appliance_day(self, *, session: Session):
+        "Get the maximum day in the ApplianceTimeDaily table"
+        return session.exec(
+            select(ApplianceTimeDaily.day)
+            .order_by(ApplianceTimeDaily.day.desc())  # type: ignore
+            .limit(1)
+        ).first()
 
 
 class CRUDApplianceTimeWindow(
