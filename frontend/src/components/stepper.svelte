@@ -1040,7 +1040,7 @@
           </h2>
 
           <div class="flex flex-wrap">
-            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+            <div class="flex w-full flex-col pr-4 justify-around sm:w-1/2 md:w-1/3">
               <label for="name" class="font-bold">Name:</label>
               <p class="text-sm text-gray-500">The name of the household</p>
               <input
@@ -1053,7 +1053,7 @@
                 placeholder="Household 10" />
             </div>
 
-            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+            <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
               <label for="size" class="font-bold">Size:</label>
               <p class="text-sm text-gray-500">The amount of people in the household</p>
               <input
@@ -1066,7 +1066,7 @@
                 placeholder="Size" />
             </div>
 
-            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+            <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
               <label for="energy_usage" class="font-bold">Energy Usage:</label>
               <p class="text-sm text-gray-500">The household's energy usage in kWh</p>
               <input
@@ -1078,7 +1078,7 @@
                 placeholder="3100" />
             </div>
 
-            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+            <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
               <label for="solar_panels" class="font-bold">Solar Panels:</label>
               <p class="text-sm text-gray-500">The amount of solar panels the household has</p>
               <input
@@ -1090,7 +1090,7 @@
                 placeholder="10" />
             </div>
 
-            <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+            <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
               <label for="solar_yield_yearly" class="font-bold">Solar Yield Yearly:</label>
               <p class="text-sm text-gray-500">The yearly solar energy yield in kWh</p>
               <input
@@ -1120,7 +1120,7 @@
             </h2>
 
             <div class="flex flex-wrap">
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="name" class="font-bold">Name:</label>
                 <p class="text-sm text-gray-500">The name of the appliance</p>
                 <select
@@ -1133,7 +1133,7 @@
                 </select>
               </div>
 
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="power" class="font-bold">Power:</label>
                 <p class="text-sm text-gray-500">The power the appliance uses in kWh</p>
                 <input
@@ -1145,7 +1145,7 @@
                   bind:value={newAppliance.power} />
               </div>
 
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="duration" class="font-bold">Duration:</label>
                 <p class="text-sm text-gray-500">How long the appliance runs in hours</p>
                 <input
@@ -1158,7 +1158,7 @@
                   bind:value={newAppliance.duration} />
               </div>
 
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="daily_usage" class="font-bold">Daily Usage:</label>
                 <p class="text-sm text-gray-500">How long the appliance is used daily</p>
                 <input
@@ -1273,7 +1273,7 @@
             </h2>
 
             <div class="flex flex-wrap">
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="day" class="font-bold">Day:</label>
                 <p class="text-sm text-gray-500">
                   The day in which the appliance is being planned
@@ -1288,7 +1288,7 @@
                 </select>
               </div>
 
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="appliance_id" class="font-bold">Appliance</label>
                 <p class="text-sm text-gray-500">
                   The name of the appliance that is being planned
@@ -1303,7 +1303,7 @@
                 </select>
               </div>
 
-              <div class="flex w-full flex-col pr-4 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 sm:w-1/2 md:w-1/3">
                 <label for="bitmap_window_display" class="font-bold">Bitmap Window Value:</label>
                 <p class="text-sm text-gray-500">The bitmap values of the selected time slots</p>
                 <input
@@ -1315,7 +1315,7 @@
                   value={newTimeWindow.bitmap_window} />
               </div>
 
-              <div class="flex w-full flex-col pr-4 pt-2 sm:w-1/2 md:w-1/3">
+              <div class="flex w-full flex-col justify-around pr-4 pt-2 sm:w-1/2 md:w-1/3">
                 <label for="bitmap_window" class="font-bold">Bitmap Window:</label>
                 <p class="text-sm text-gray-500">
                   The time slots in which the appliance can be planned in
