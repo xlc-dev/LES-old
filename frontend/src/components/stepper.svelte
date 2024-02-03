@@ -874,7 +874,7 @@
 
   {#if isStepZero}
     <div class="mx-auto pt-8">
-      <img src="/logo.png" class="mx-auto w-75 rounded-lg" alt="LES Logo" />
+      <img src="/logo.png" class="w-75 mx-auto rounded-lg" alt="LES Logo" />
       <h1 class="pt-4 text-center text-4xl font-bold text-white">
         Local Energy System Simulation
       </h1>
@@ -888,8 +888,9 @@
         class="block w-full rounded-lg bg-les-blue py-3 text-white transition duration-200 hover:brightness-110"
         >Get started</button>
       <p class="py-4 text-center text-sm text-white">
-        This platform is developed for the UNESCO Chair of AI & DS for Society of the Hague University of Applied Sciences.
-        If you try this tool then please send any comments or feedback to Dr. Hani Alers: HAL@HHS.NL
+        This platform is developed for the UNESCO Chair of AI & DS for Society of the Hague
+        University of Applied Sciences. If you try this tool then please send any comments or
+        feedback to Dr. Hani Alers: HAL@HHS.NL
       </p>
     </div>
   {:else}
