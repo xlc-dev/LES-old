@@ -257,9 +257,9 @@ def plan_simulated_annealing(
         if not check_appliance_time(
             appliance=selected_appliance,
             unix=appliance_new_starttime,
-            appliance_bitmap_plan=bitmap_energy
-            if gets_energy
-            else bitmap_no_energy,
+            appliance_bitmap_plan=(
+                bitmap_energy if gets_energy else bitmap_no_energy
+            ),
         ):
             continue
 
