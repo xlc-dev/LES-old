@@ -1,7 +1,7 @@
 [tool.black]
 line-length=79
-python_version = 3.11
+python_version = 3.12
 
 [tool.mypy]
 ignore_missing_imports = true
-python_version = 3.11
+python_version = 3.12
