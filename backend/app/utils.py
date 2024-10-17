@@ -41,9 +41,9 @@ def unix_to_timestamp(unix: int) -> float:
 def set_sec_headers(*, response: Response):
     "Set security headers in the response"
 
-    response.headers[
-        "Strict-Transport-Security"
-    ] = "max-age=31536000; includeSubDomains"
+    response.headers["Strict-Transport-Security"] = (
+        "max-age=31536000; includeSubDomains"
+    )
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1"
